@@ -18,33 +18,6 @@ private:
   GreeterClient(std::shared_ptr<Channel> channel)
       : stub_(protokol_1::NewStub(channel)) {}
    std::string initial_data(const std::string& user) {
-   // Tampil t_proses;
-
-       QString filename = "rotatinghal.dbb";
-       QString con_name;
-       con_name = QString("LOC_DB%1").arg(1);
-       db =QSqlDatabase::addDatabase("QSQLITE",con_name);
-       db.setDatabaseName(filename);
-       QSqlQuery buka(db);
-       if(!db.open())
-       {
-         qDebug()<<"db gak kebukak";
-         //return;
-       }
-       else{
-           qDebug()<<"buka db"<<filename;
-       }
-
-       QString aa;
-       //proses_q(query,"SELECT ALL id FROM parameter WHERE true");
-       aa = QString("SELECT ALL id_database FROM info_db WHERE true");
-       if(!buka.exec(aa)){qDebug()<< __FUNCTION__ << __LINE__ << "ERROR : "<<buka.lastError().text();}
-       else{ while(buka.next()){
-        //   text1 = "Daftar Semua Data Client ID:"+QString::number(buka.value("id_database").toInt());
-           id_database = buka.value("id_database").toInt();
-       }}
-       mulai_cari(&buka);
-
        counter_s+=1;
 
 //    qDebug()<<"size info:"<<data_n->size()*8<<cacah_data_name.size();
@@ -94,13 +67,9 @@ private:
     Status status = stub_->initial_data(&context,request,&reply );
 
     if (status.ok()) {
-       // if(reply.header_pesan()=="list_server"){
+
             std::cout << request.header_pesan() << std::endl;
             std::cout << reply.header_pesan() << std::endl;
-       // }
-            if(reply.header_pesan()=="list_server"){
-                qDebug()<<"hallo data yang tidak ada di server ini";
-            }
             for(int i=0; i<data_n->size(); i++){
                 data_n[i].clear();
             }
@@ -145,6 +114,32 @@ Tampil::Tampil(QWidget *parent) :
 
 void Tampil::setup_tampil_hirarki_server()
 {
+
+    QString filename = "rotatinghal.dbb";
+    QString con_name;
+    con_name = QString("LOC_DB%1").arg(1);
+    db =QSqlDatabase::addDatabase("QSQLITE",con_name);
+    db.setDatabaseName(filename);
+    QSqlQuery buka(db);
+    if(!db.open())
+    {
+      qDebug()<<"db gak kebukak";
+      //return;
+    }
+    else{
+        qDebug()<<"buka db"<<filename;
+    }
+
+    QString aa;
+    //proses_q(query,"SELECT ALL id FROM parameter WHERE true");
+    aa = QString("SELECT ALL id_database FROM info_db WHERE true");
+    if(!buka.exec(aa)){qDebug()<< __FUNCTION__ << __LINE__ << "ERROR : "<<buka.lastError().text();}
+    else{ while(buka.next()){
+     //   text1 = "Daftar Semua Data Client ID:"+QString::number(buka.value("id_database").toInt());
+        id_database = buka.value("id_database").toInt();
+    }}
+    mulai_cari(&buka);
+
     tree1 = new QStandardItemModel();
     this->load_aset(0, 0, 0);
     connect(ui->treeView,&TreeSubwin::emitEmulateDataByClick,this,&Tampil::on_treeView_clicked);
