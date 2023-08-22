@@ -5,7 +5,8 @@
 #endif // STRC_H
 
 struct T{
-    QVector<int> data_n[6];
+    //QVector<int> data_n[6];
+    int flag;
 };
 
 struct t_m{

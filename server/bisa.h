@@ -57,7 +57,10 @@ public:
    //void proses_q( QSqlQuery *q, const char *s, ...);
     void RunServer();
     void eliminasi_data(QVector<int> id_param, QVector<int> tipe_param,QVector<int> id_rute, QVector<int> time, QVector<int> siklus);
-
+    QVector<int> t_tipe_param;
+    QVector<int> t_id_rute;
+    QVector<int> t_time;
+    QVector<int> t_siklus;
 
 private:
 //    TampilServer jj;

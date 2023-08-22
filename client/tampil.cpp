@@ -19,7 +19,7 @@ private:
     pesan_client request;
     pesan_server reply;
     ClientContext context;
-  GreeterClient(std::shared_ptr<Channel> channel)
+    GreeterClient(std::shared_ptr<Channel> channel)
       : stub_(protokol_1::NewStub(channel)) {}
    std::string initial_data(const std::string& user) {
 
@@ -29,14 +29,67 @@ private:
 
     if (status.ok()) {
         std::cout<<"req: "<<user<< "|rep:"<<reply.header_pesan()<<std::endl;
-
       return reply.header_pesan();
     } else {
-      std::cout << status.error_code() << ": " << status.error_message()
+      std::cout << status.error_code()
+                << ": "
+                << status.error_message()
                 << std::endl;
       return "RPC failed";
     }
   }
+
+   void pesan_pertama(){
+       if(data_n[0].size()!=0){
+           for(int a=0; a<data_n[0].size(); a++ ){
+             QString ay = cacah_data_name[a];
+             qDebug()<<ay<<
+             "id_parm:"<<data_n[1][a]<<
+             "id_tip_parm:"<<data_n[2][a]<<
+             "id_rut:"<<data_n[3][a]<<
+             "time:"<<data_n[4][a]<<
+             "siklus"<<data_n[5][a];
+           }
+           std::vector<int> id_param,id_tip_parm,id_rut,time,siklus;//(data_n[0], n);
+           id_param    = data_n[1].toStdVector();
+           id_tip_parm = data_n[2].toStdVector();
+           id_rut      = data_n[3].toStdVector();
+           time        = data_n[4].toStdVector();
+           siklus      = data_n[5].toStdVector();
+           std::cout <<id_param.size() << id_tip_parm.size() << id_rut.size() << time.size() << siklus.size() <<std::endl;
+           google::protobuf::RepeatedField<int> id_param_s(id_param.begin(), id_param.end());
+           google::protobuf::RepeatedField<int> id_tip_parm_s(id_tip_parm.begin(), id_tip_parm.end());
+           google::protobuf::RepeatedField<int> id_rut_s(id_rut.begin(), id_rut.end());
+           google::protobuf::RepeatedField<int> time_s(time.begin(), time.end());
+           google::protobuf::RepeatedField<int> siklus_s(siklus.begin(), siklus.end());
+           request.mutable_id_param_lama()->Swap(&id_param_s);
+           request.mutable_id_tipe_param()->Swap(&id_tip_parm_s);
+           request.mutable_id_rute_lama()->Swap(&id_rut_s);
+           request.mutable_timestamp()->Swap(&time_s);
+           request.mutable_siklus()->Swap(&siklus_s);
+
+           //sudah terkirim
+           //lanjut ke pesan berikutnya
+           request.set_header_pesan("list_info");
+           id_param.clear();
+           id_tip_parm.clear();
+           id_rut.clear();
+           time.clear();
+           siklus.clear();
+       }
+       else{
+           qDebug()<<"tidak ada data client";
+       }
+   }
+   void pesan_kedua(){
+       std::cout << "terima data yang belum ada di server: " <<reply.id_param_lama_size() << " "
+           << reply.id_param_lama_size() << " "
+           << reply.id_tipe_param_size() << " "
+           << reply.id_rute_lama_size() << " "
+           << reply.timestamp_size() << " "
+           << reply.siklus_size() << " "
+           << std::endl;
+   }
 
  private:
   std::unique_ptr<protokol_1::Stub> stub_;
@@ -95,6 +148,7 @@ void Tampil::setup_tampil_hirarki_server()
 
     QModelIndex index = ui->treeView->model()->index(0,0);
     this->ui->treeView->setCurrentIndex(index);
+    //init_();
 
     //---------------------mulai----------------------------------------//
 }
@@ -665,16 +719,7 @@ void Tampil::getAllChildren(QModelIndex idx, QModelIndexList &list)
 
 void Tampil::kirim1_info()
 {
-//    qDebug()<<"size info:"<<data_n->size()*8<<cacah_data_name.size();
-//    for(int a=0; a<data_n[0].size(); a++ ){
-//        QString ay = cacah_data_name[a];
-//              qDebug()<<ay<<
-//              "id_parm:"<<data_n[1][a]<<
-//              "id_tip_parm:"<<data_n[2][a]<<
-//              "id_rut:"<<data_n[3][a]<<
-//              "time:"<<data_n[4][a]<<
-//              "siklus"<<data_n[5][a];
-//    }
+
 }
 
 void Tampil::terima_data_proses()
@@ -697,14 +742,15 @@ void Tampil::on_PB_kirim_clicked()
 
 void Tampil::on_PB_compare_clicked()
 {
-std::string server_address("127.0.0.1:50051");
-for(int i=0; i<4; i++){
-    if(i==0)CallServer("list_info",i,server_address);
-    else if(i==1)CallServer("balas1",i,server_address);
-    else if(i==2)CallServer("sudah1",i,server_address);
-    else if(i==3)CallServer("finish1",i,server_address);
-}
-
+    std::string server_address("127.0.0.1:50051");
+    flag_sukses=0;
+    for(int i=0; i<4; i++){
+        qDebug()<<"note flag:"<<flag_sukses;
+        if(i==0)CallServer("list_info",0,server_address);
+        if(i==1 && flag_sukses==1)CallServer("balas1",0,server_address);
+        if(i==2 && flag_sukses==2)CallServer("sudah1",0,server_address);
+        if(i==3 && flag_sukses==3)CallServer("finish1",0,server_address);
+    }
 }
 
 void Tampil::CallServer(std::string pesan, int flag, std::string server_address){
@@ -712,7 +758,27 @@ void Tampil::CallServer(std::string pesan, int flag, std::string server_address)
     ch_args.SetMaxReceiveMessageSize(-1);
     GreeterClient greeter( grpc::CreateCustomChannel (server_address, grpc::InsecureChannelCredentials(), ch_args));
     std::cout <<"client:"<<pesan <<std::endl;
-    greeter.initial_data(pesan);
+    if(flag_sukses==0)greeter.pesan_pertama();
+    std::string balasan = greeter.initial_data(pesan);
+    std::cout <<"server:"<<balasan <<std::endl;
+
+    if(balasan=="balas"){
+        flag_sukses=1;
+        greeter.pesan_kedua();
+        std::cout<< "------------balas"<<std::endl;
+    }
+    else if(balasan=="balas2"){
+        flag_sukses=2;
+        std::cout<< "------------balas"<<std::endl;
+    }
+    else if(balasan=="sudah2"){
+        flag_sukses=3;
+        std::cout<< "------------sudah"<<std::endl;
+    }
+    else if(balasan=="finish2"){
+        flag_sukses=4;
+        std::cout<< "------------finish"<<std::endl;
+    }
 }
 
 
@@ -720,4 +786,6 @@ void Tampil::on_PB_synchron_clicked()
 {
 
 }
+
+
 

@@ -47,6 +47,8 @@ public:
     explicit Tampil(QWidget *parent = nullptr);
     ~Tampil();
     //pars a;
+   // void pesan_pertama();
+    int flag_sukses;
     int flag_pengiriman;
     QVector<int>data_n[7];
     int counter_s;
@@ -108,6 +110,7 @@ public slots:
     void on_treeView_clicked(QModelIndex index);
     void on_treeView_expanded(QModelIndex index);
     void on_treeView_activated(QModelIndex index);
+    void CallServer(std::string pesan, int flag, std::string server_alamat);
 
 private slots:
     void on_tableView_clicked(const QModelIndex &index);
@@ -118,8 +121,11 @@ private slots:
     void on_PB_compare_clicked();
     void on_PB_synchron_clicked();
 
+signals:
+    void balas(std::string pesan, int flag, std::string server_alamat);
+
 private:
-    void CallServer(std::string pesan, int flag, std::string server_alamat);
+
 };
 
 #endif // TAMPIL_H
