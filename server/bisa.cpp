@@ -8,6 +8,10 @@
 ///-- Using gRPC 1.46.0
 ///
 ///
+///
+//komunikasi masih belum bisa stabil, coba dicari data yang kemaren
+//untuk balas balasan 1 sama lain dan tidak terikat 1 loop atau membahayakan
+
 #include "bisa.h"
 #include "strc.h"
 //#include <grpcpp/grpcpp.h>
@@ -18,85 +22,44 @@ using grpc::ServerBuilder;
 using grpc::ServerContext;
 using grpc::Status;
 using Cloud::protokol_1;
+
 using Cloud::pesan_client;
 using Cloud::pesan_server;
 
 class GreeterServiceImpl final : public protokol_1::Service  {
     public:
     bisa b;
+   // Cloud::protokol_1::AsyncService service;
     Status initial_data(ServerContext* context, const pesan_client* request, pesan_server* reply) override {
         int flag_pesan=0;
-        QStringList rute_baru;
-        QByteArrayList all_data;
-        QVector<int> data_n[6];
-        QStringList cacah_data_name;
-        QByteArrayList all_rute_param;
-        QVector<int> data_new[7];
-
-        for(int a=0; a<data_new->size(); a++){
-            data_new[a].clear();
-        }
-        std::string prefix("Hello ");
 
         if(request->header_pesan()=="list_info"){
-            flag_pesan=1;
+            qDebug()<<"-------------------------";
+            qDebug()<<"client:"<<"list info";
+            qDebug()<<"server:"<<"balas";
+            reply->set_header_pesan("balas");
+            //return Status::OK;
         }
-        else if(request->header_pesan()=="gas"){
-            flag_pesan=2;
+        else if(request->header_pesan()=="balas1"){
+            qDebug()<<"-------------------------";
+            qDebug()<<"client:"<<"balas1";
+            qDebug()<<"server:"<<"balas2";
+            reply->set_header_pesan("balas2");
         }
-
-        if(flag_pesan==1){
-            std::cout << "mulai cek data: size: " <<request->id_param_lama_size() << " "
-                    << request->id_param_lama_size() << " "
-                    << request->id_tipe_param_size() << " "
-                    << request->id_rute_lama_size() << " "
-                    << request->timestamp_size() << " "
-                    << request->siklus_size() << " "
-                    << std::endl;
-            //masukkan data pertama kali yang dikirim oleh client
-            //data client yang akan dibandingkan dengan data server
-            for (int i = 0; i < request->id_param_lama_size(); i++) {
-                data_new[1].push_back(request->id_param_lama(i));//id_param
-                data_new[2].push_back(request->id_tipe_param(i));//id_tipe_param
-                data_new[3].push_back(request->id_rute_lama(i));//id_rute
-                data_new[4].push_back(request->timestamp(i));//timestamp
-                data_new[5].push_back(request->siklus(i));//siklus
-                std::cout << " "<< request->id_param_lama(i)
-                << " "<< request->id_tipe_param(i)
-                << " "<< request->id_rute_lama(i)
-                << " "<< request->timestamp(i)
-                << " "<< request->siklus(i)
-                << std::endl;
-            }
-            //cek ukuran array datanya yang sudah dimasukkan
-            qDebug()<<"size: "<<data_new[1].size()
-                    <<data_new[2].size()
-                    <<data_new[3].size()
-                    <<data_new[4].size()
-                    <<data_new[5].size();
-            //eliminasi data yaitu melakukan perbandingan data
-            //dengan cara menghapus data yang sudah ada
-
-            b.eliminasi_data(data_new[1],data_new[2],data_new[3],data_new[4],data_new[5]);
-
-            reply->set_header_pesan("list_server");
-            //           std::cout << reply->header_pesan() << std::endl;
-            //           std::cout << request->header_pesan() << std::endl;
-            qDebug()<<"juka sudah diterima clear";
-            for(int a=0; a<data_n->size(); a++){
-                data_n[a].clear();
-            }
-            for(int a=0; a<data_new->size(); a++){
-                data_new[a].clear();
-            }
-                cacah_data_name.clear();
+        else if(request->header_pesan()=="sudah1"){
+            qDebug()<<"-------------------------";
+            qDebug()<<"client:"<<"sudah1";
+            qDebug()<<"server:"<<"sudah2";
+            reply->set_header_pesan("sudah2");
         }
-
-        if(flag_pesan==2){
-            qDebug()<<"masuk pesan gas";
+        else if(request->header_pesan()=="finish1"){
+            qDebug()<<"-------------------------";
+            qDebug()<<"client:"<<"finish1";
+            qDebug()<<"server:"<<"finish2";
+            reply->set_header_pesan("finish2");
         }
-        //request->id_param_lama;
-        return Status::OK;
+    return Status::OK;
+
 }
 };
 
@@ -125,7 +88,8 @@ void bisa::RunServer() {
 
     std::unique_ptr<Server> server(builder.BuildAndStart());
     std::cout << "Server listening on " << server_address << std::endl;
-   // grpc::ServerAsyncResponseWriter<EchoResponse> response_writer()
+
+    // grpc::ServerAsyncResponseWriter<EchoResponse> response_writer()
 
     // 18 agustus 2023
     //informasi grpc bekerja secara asyncronus sehingga bisa langsung multi client, namun

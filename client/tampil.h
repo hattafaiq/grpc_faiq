@@ -23,10 +23,6 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <grpcpp/grpcpp.h>
-//#include "absl/flags/flag.h"
-//#include "absl/flags/parse.h"
-//#include "helloworld.grpc.pb.h"
-//#include "helloworld.pb.h"
 #include "gen_cloud2/Cloud.grpc.pb.h"
 #include "gen_cloud2/Cloud.pb.h"
 
@@ -37,19 +33,6 @@ using grpc::ChannelArguments;
 using Cloud::protokol_1;
 using Cloud::pesan_client;
 using Cloud::pesan_server;
-//using helloworld::Greeter2;
-//using helloworld::HelloReply;
-//using helloworld::HelloRequest;
-
-//class GreeterClient {
-// public:
-//    std::unique_ptr<Greeter2::Stub> stub_;
-//    GreeterClient(std::shared_ptr<Channel> channel)
-//      : stub_(Greeter2::NewStub(channel)) {}
-//   std::string SayHello(const std::string& user) {}
-//};
-
-
 
 namespace Ui {
 class Tampil;
@@ -64,6 +47,7 @@ public:
     explicit Tampil(QWidget *parent = nullptr);
     ~Tampil();
     //pars a;
+    int flag_pengiriman;
     QVector<int>data_n[7];
     int counter_s;
     int conter_loop;
@@ -104,21 +88,22 @@ public:
     QList<int> onRouteChildTree;
     int kind_select;
     int id_select;
-     QStandardItemModel *tree1;
-     QStandardItemModel *tree2;
-     int sudah_ada_aset;
-     QSqlDatabase db;
-     QString con_name;
-     QSqlQuery *pQ;
-     QSqlRelationalTableModel *r_model;
-     QStringList data_ini;
-     int id_database;
-     void mulai_cari(QSqlQuery *query);
-     QByteArrayList all_data;
-      QStringList rute_baru;
-      void cari_induk_paramm(int parameter, int tipe);
-      QByteArrayList all_rute_param;
-      QStringList cacah_data_name;
+    QStandardItemModel *tree1;
+    QStandardItemModel *tree2;
+    int sudah_ada_aset;
+    QSqlDatabase db;
+    QString con_name;
+    QSqlQuery *pQ;
+    QSqlRelationalTableModel *r_model;
+    QStringList data_ini;
+    int id_database;
+    void mulai_cari(QSqlQuery *query);
+    QByteArrayList all_data;
+    QStringList rute_baru;
+    void cari_induk_paramm(int parameter, int tipe);
+    QByteArrayList all_rute_param;
+    QStringList cacah_data_name;
+
 public slots:
     void on_treeView_clicked(QModelIndex index);
     void on_treeView_expanded(QModelIndex index);
@@ -126,9 +111,7 @@ public slots:
 
 private slots:
     void on_tableView_clicked(const QModelIndex &index);
-    //void hapus_data();
     void on_tableView_2_pressed(const QModelIndex &index);
-    //void refresh_data(QString a);
 
     void on_PB_connect_clicked();
     void on_PB_kirim_clicked();
@@ -136,8 +119,7 @@ private slots:
     void on_PB_synchron_clicked();
 
 private:
-
-
+    void CallServer(std::string pesan, int flag, std::string server_alamat);
 };
 
 #endif // TAMPIL_H
