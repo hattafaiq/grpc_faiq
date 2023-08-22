@@ -5,6 +5,7 @@ package Cloud;
 
 service protokol_1 {
   rpc initial_data (pesan_client) returns(pesan_server){}
+  rpc kirim_data (mes_client) returns(mes_server){}
 }
 
 message pesan_client {
@@ -17,14 +18,6 @@ message pesan_client {
   repeated int32 timestamp = 7;
   repeated int32 siklus = 8;
   int32 jumlah_data = 9;
-  string aset = 10;
-  string rute = 11;
-  int32 id_param_lama = 12;
-  int32 id_tipe_param = 13;
-  int32 id_rute_lama = 14;
-  int32 timestamp = 15;
-  int32 siklus = 16;
-  int32 pesan_ke = 17;
 }
 
 message pesan_server {
@@ -37,13 +30,33 @@ message pesan_server {
   repeated int32 timestamp = 7;
   repeated int32 siklus = 8;
   int32 jumlah_data = 9;
-  string aset = 10;
-  string rute = 11;
-  int32 id_param_lama = 12;
-  int32 id_tipe_param = 13;
-  int32 id_rute_lama = 14;
-  int32 timestamp = 15;
-  int32 siklus = 16;
-  int32 pesan_ke = 17;
+}
+
+message mes_client {
+  string header_pesan = 1;
+  int32 jumlah_data = 2;
+  string aset = 3;
+  string rute = 4;
+  int32 id_param_lama = 5;
+  int32 id_tipe_param = 6;
+  int32 id_rute_lama = 7;
+  int32 timestamp = 8;
+  int32 siklus = 9;
+  bytes data =10;
+  int32 pesan_ke = 11;
+}
+
+message mes_server {
+  string header_pesan = 1;
+  int32 jumlah_data = 2;
+  string aset = 3;
+  string rute = 4;
+  int32 id_param_lama = 5;
+  int32 id_tipe_param = 6;
+  int32 id_rute_lama = 7;
+  int32 timestamp = 8;
+  int32 siklus = 9;
+  bytes data =10;
+  int32 pesan_ke = 11;
 }
 

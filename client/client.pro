@@ -14,8 +14,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 HEADERS +=  \
            # helloworld.grpc.pb.h \
            # helloworld.pb.h \
-           gen_cloud2/Cloud.grpc.pb.h \
-           gen_cloud2/Cloud.pb.h \
+           gen_cloud4/Cloud.grpc.pb.h \
+           gen_cloud4/Cloud.pb.h \
             tampil.h \
             treesubwin.h \
             strc.h
@@ -25,8 +25,8 @@ HEADERS +=  \
 SOURCES +=  \#coba_lagi.cpp \
             tampil.cpp \
             treesubwin.cpp \
-            gen_cloud2/Cloud.grpc.pb.cc \
-            gen_cloud2/Cloud.pb.cc \
+            gen_cloud4/Cloud.grpc.pb.cc \
+            gen_cloud4/Cloud.pb.cc \
             #helloworld.grpc.pb.cc \
             #helloworld.pb.cc \
             main.cpp

@@ -23,14 +23,18 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <grpcpp/grpcpp.h>
-#include "gen_cloud2/Cloud.grpc.pb.h"
-#include "gen_cloud2/Cloud.pb.h"
+#include "gen_cloud4/Cloud.grpc.pb.h"
+#include "gen_cloud4/Cloud.pb.h"
 
 using grpc::Channel;
 using grpc::ClientContext;
 using grpc::Status;
 using grpc::ChannelArguments;
 using Cloud::protokol_1;
+using Cloud::protokol_2;
+
+using Cloud::mes_client;
+using Cloud::mes_server;
 using Cloud::pesan_client;
 using Cloud::pesan_server;
 

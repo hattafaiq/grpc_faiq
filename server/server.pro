@@ -17,8 +17,8 @@ QMAKE_LFLAGS+= -fsanitize=address -static-libasan
 #CONFIG += ASAN_OPTIONS=new_delete_type_mismatch=0
 
 HEADERS += \
-    gen_cloud2/Cloud.grpc.pb.h \
-    gen_cloud2/Cloud.pb.h \
+    gen_cloud4/Cloud.grpc.pb.h \
+    gen_cloud4/Cloud.pb.h \
     bisa.h \
     #tampilserver.h
     mainwindow.h \
@@ -26,8 +26,8 @@ HEADERS += \
 
 SOURCES += \
     bisa.cpp \
-    gen_cloud2/Cloud.grpc.pb.cc \
-    gen_cloud2/Cloud.pb.cc \
+    gen_cloud4/Cloud.grpc.pb.cc \
+    gen_cloud4/Cloud.pb.cc \
     main.cpp \
      #tampilserver.cpp
     mainwindow.cpp

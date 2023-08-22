@@ -11,8 +11,8 @@
 
 #include <QFile>
 #include <grpcpp/grpcpp.h>
-#include "gen_cloud2/Cloud.grpc.pb.h"
-#include "gen_cloud2/Cloud.pb.h"
+#include "gen_cloud4/Cloud.grpc.pb.h"
+#include "gen_cloud4/Cloud.pb.h"
 
 //#include "absl/flags/flag.h"
 //#include "absl/flags/parse.h"

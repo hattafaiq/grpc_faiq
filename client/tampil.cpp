@@ -18,6 +18,8 @@ private:
  public:
     pesan_client request;
     pesan_server reply;
+    mes_client mes_request;
+    mes_server mes_reply;
     ClientContext context;
     GreeterClient(std::shared_ptr<Channel> channel)
       : stub_(protokol_1::NewStub(channel)) {}
@@ -81,6 +83,21 @@ private:
            qDebug()<<"tidak ada data client";
        }
    }
+//   std::string kirim_data(const std::string& user){
+//       mes_request.set_header_pesan(user);
+//       Status status = stub_->kirim_data(&context,mes_request,&mes_reply );
+
+//       if (status.ok()) {
+//           std::cout<<"req: "<<user<< "|rep:"<<reply.header_pesan()<<std::endl;
+//         return reply.header_pesan();
+//       } else {
+//         std::cout << status.error_code()
+//                   << ": "
+//                   << status.error_message()
+//                   << std::endl;
+//         return "RPC failed";
+//       }
+//   }
    void pesan_kedua(){
        std::cout << "terima data yang belum ada di server: " <<reply.id_param_lama_size() << " "
            << reply.id_param_lama_size() << " "
@@ -93,6 +110,32 @@ private:
 
  private:
   std::unique_ptr<protokol_1::Stub> stub_;
+};
+
+class GreeterClient2 : public Tampil{
+ public:
+    mes_client request;
+    mes_server reply;
+    ClientContext context;
+    GreeterClient2(std::shared_ptr<Channel> channel)
+      : stub_(protokol_2::NewStub(channel)) {}
+   std::string kirim_data(const std::string& user) {
+      request.set_header_pesan(user);
+      Status status = stub_->kirim_data(&context,request,&reply );
+
+      if (status.ok()) {
+          std::cout<<"req: "<<user<< "|rep:"<<reply.header_pesan()<<std::endl;
+        return reply.header_pesan();
+      } else {
+        std::cout << status.error_code()
+                  << ": "
+                  << status.error_message()
+                  << std::endl;
+        return "RPC failed";
+      }
+   }
+ private:
+    std::unique_ptr<protokol_2::Stub> stub_;
 };
 
 Tampil::Tampil(QWidget *parent) :
@@ -751,6 +794,11 @@ void Tampil::on_PB_compare_clicked()
         if(i==2 && flag_sukses==2)CallServer("sudah1",0,server_address);
         if(i==3 && flag_sukses==3)CallServer("finish1",0,server_address);
     }
+    grpc::ChannelArguments ch_args;
+    ch_args.SetMaxReceiveMessageSize(-1);
+    GreeterClient2 greeter( grpc::CreateCustomChannel (server_address, grpc::InsecureChannelCredentials(), ch_args));
+    std::string balasin = greeter.kirim_data("oiiik");
+    std::cout <<"struct 2 server:"<<balasin <<std::endl;
 }
 
 void Tampil::CallServer(std::string pesan, int flag, std::string server_address){
@@ -760,7 +808,6 @@ void Tampil::CallServer(std::string pesan, int flag, std::string server_address)
     std::cout <<"client:"<<pesan <<std::endl;
     if(flag_sukses==0)greeter.pesan_pertama();
     std::string balasan = greeter.initial_data(pesan);
-    std::cout <<"server:"<<balasan <<std::endl;
 
     if(balasan=="balas"){
         flag_sukses=1;
@@ -768,6 +815,7 @@ void Tampil::CallServer(std::string pesan, int flag, std::string server_address)
         std::cout<< "------------balas"<<std::endl;
     }
     else if(balasan=="balas2"){
+
         flag_sukses=2;
         std::cout<< "------------balas"<<std::endl;
     }

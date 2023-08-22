@@ -22,9 +22,12 @@ using grpc::ServerBuilder;
 using grpc::ServerContext;
 using grpc::Status;
 using Cloud::protokol_1;
+using Cloud::protokol_2;
 
 using Cloud::pesan_client;
 using Cloud::pesan_server;
+using Cloud::mes_client;
+using Cloud::mes_server;
 
 class GreeterServiceImpl final : public protokol_1::Service  {
     public:
@@ -124,6 +127,21 @@ class GreeterServiceImpl final : public protokol_1::Service  {
 
 }
 
+//    Status kirim_data(ServerContext* context, const mes_client* request, mes_server* reply) override {
+
+//    std::cout <<"req struct kirim data test:" << request->header_pesan();
+//    reply->set_header_pesan("sudah masuk?");
+//    return Status::OK;
+//    }
+};
+
+class GreeterServiceImpl2 final : public protokol_2::Service  {
+    public:
+    Status kirim_data(ServerContext* context, const mes_client* request, mes_server* reply) override {
+        std::cout <<"req struct kirim data test:" << request->header_pesan();
+        reply->set_header_pesan("sudah masuk?");
+        return Status::OK;
+    }
 };
 
 bisa::bisa(QObject *parent) : QObject(parent)
@@ -136,6 +154,7 @@ void bisa::RunServer() {
 
 
     GreeterServiceImpl service;
+    GreeterServiceImpl2 service2;
     ServerBuilder builder;
     // Listen on the given address without any authentication mechanism.
 
@@ -148,6 +167,7 @@ void bisa::RunServer() {
 //    grpc::EnableDefaultHealthCheckService(true);
     builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
     builder.RegisterService(&service);
+    builder.RegisterService(&service2);
 
     std::unique_ptr<Server> server(builder.BuildAndStart());
     std::cout << "Server listening on " << server_address << std::endl;
