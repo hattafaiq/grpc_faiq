@@ -6,37 +6,15 @@
 #include <QMainWindow>
 #include "treesubwin.h"
 #include "strc.h"
+#include <controller.h>
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QSqlDatabase>
 #include <QSqlRelationalTableModel>
 #include <QMessageBox>
-
+#include <QFile>
 #include <QObject>
 #include <QDebug>
-#include <iostream>
-#include <memory>
-#include <string>
-#include "grpcpp/support/channel_arguments.h"
-#include <QFile>
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QSqlError>
-#include <grpcpp/grpcpp.h>
-#include "gen_cloud4/Cloud.grpc.pb.h"
-#include "gen_cloud4/Cloud.pb.h"
-
-using grpc::Channel;
-using grpc::ClientContext;
-using grpc::Status;
-using grpc::ChannelArguments;
-using Cloud::protokol_1;
-using Cloud::protokol_2;
-
-using Cloud::mes_client;
-using Cloud::mes_server;
-using Cloud::pesan_client;
-using Cloud::pesan_server;
 
 namespace Ui {
 class Tampil;
@@ -50,8 +28,9 @@ public:
     //std::unique_ptr<Greeter2::Stub> stub_;
     explicit Tampil(QWidget *parent = nullptr);
     ~Tampil();
-    //pars a;
-   // void pesan_pertama();
+    Ui::Tampil *ui;
+     controller *cc;
+
     int flag_sukses;
     int flag_pengiriman;
     QVector<int>data_n[7];
@@ -69,14 +48,11 @@ public:
     QByteArray data_utama;
     int flag_kirim;
     int flag_masukkan_param;
-    void kirim1_info();
-    Ui::Tampil *ui;
+
     QString initial_rute;
     QStringList list_rute;
-    void tambah_aset(int parent, QString aset);
-    QString get_table_name(int tipe);
-    void susun_data(int id_param, int tipe_data);
-    void kirim_data(int id_param, int tipe_data, QByteArray data);
+
+
     void cari_induk_param(int p_id_param);
     void cari_induk(int p_id_param);
     QAction *hapus;
@@ -87,8 +63,6 @@ public:
     QString last_kota;
     void re_write();
     void setup_tampil_hirarki_server();
-    void setup_tampil_hirarki_sofhaliza();
-    void setup_tampil_hirarki_haliza();
     void index_tree_selected(QModelIndex index);
     void getAllChildren(QModelIndex idx, QModelIndexList &list);
     QList<int> onRouteChildTree;
@@ -99,14 +73,11 @@ public:
     int sudah_ada_aset;
     QSqlDatabase db;
     QString con_name;
-    QSqlQuery *pQ;
     QSqlRelationalTableModel *r_model;
     QStringList data_ini;
     int id_database;
-    void mulai_cari(QSqlQuery *query);
     QByteArrayList all_data;
     QStringList rute_baru;
-    void cari_induk_paramm(int parameter, int tipe);
     QByteArrayList all_rute_param;
     QStringList cacah_data_name;
 
@@ -114,7 +85,6 @@ public slots:
     void on_treeView_clicked(QModelIndex index);
     void on_treeView_expanded(QModelIndex index);
     void on_treeView_activated(QModelIndex index);
-    void CallServer(std::string pesan, int flag, std::string server_alamat);
 
 private slots:
     void on_tableView_clicked(const QModelIndex &index);
@@ -125,10 +95,6 @@ private slots:
     void on_PB_compare_clicked();
     void on_PB_synchron_clicked();
 
-signals:
-    void balas(std::string pesan, int flag, std::string server_alamat);
-
-private:
 
 };
 

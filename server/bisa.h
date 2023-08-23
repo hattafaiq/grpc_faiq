@@ -49,6 +49,8 @@ public:
    //void proses_q( QSqlQuery *q, const char *s, ...);
     void RunServer();
     void eliminasi_data(QStringList aset, QVector<int> id_param, QVector<int> tipe_param,QVector<int> id_rute, QVector<int> time, QVector<int> siklus);
+    QStringList list_aset;
+    QVector<int> t_id_param_lama;
     QVector<int> t_tipe_param;
     QVector<int> t_id_rute;
     QVector<int> t_time;

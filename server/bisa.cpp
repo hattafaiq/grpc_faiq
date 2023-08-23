@@ -32,16 +32,13 @@ using Cloud::mes_server;
 class GreeterServiceImpl final : public protokol_1::Service  {
     public:
     bisa b;
-    QStringList rute_baru;
-    QByteArrayList all_data;
-    QVector<int> data_n[6];
-    QStringList cacah_data_aset;
-    QByteArrayList all_rute_param;
-    QVector<int> data_new[7];
-
-
     Status initial_data(ServerContext* context, const pesan_client* request, pesan_server* reply) override {
         int flag_pesan=0;
+        QStringList rute_baru;
+        QByteArrayList all_data;
+        QByteArrayList all_rute_param;
+        QStringList cacah_data_aset;
+        QVector<int> data_new[7];
         if(request->header_pesan()=="list_info"){
             qDebug()<<"-------------------------";
             qDebug()<<"client:"<<"list info";
@@ -50,7 +47,6 @@ class GreeterServiceImpl final : public protokol_1::Service  {
             std::cout << "mulai cek data: size: " <<
                  request->aset_size()
                 <<request->id_param_lama_size() << " "
-                << request->id_param_lama_size() << " "
                 << request->id_tipe_param_size() << " "
                 << request->id_rute_lama_size() << " "
                 << request->timestamp_size() << " "
@@ -73,7 +69,7 @@ class GreeterServiceImpl final : public protokol_1::Service  {
                 << std::endl;
             }
             //cek ukuran array datanya yang sudah dimasukkan
-            qDebug()<<"size: "<<data_new[1].size()
+            qDebug()<<"kenapa size: "<<data_new[1].size()
                 <<data_new[2].size()
                 <<data_new[3].size()
                 <<data_new[4].size()
@@ -84,28 +80,32 @@ class GreeterServiceImpl final : public protokol_1::Service  {
             //-----------------------------------------------------//
 
             //---mulai kirim data yang belum ada-------//
-            qDebug()<<"---inisial data yang belom ada di server---";
-            for(int i=0; i<b.t_tipe_param.size(); i++){
-                qDebug()<<b.t_tipe_param[i]<<b.t_time[i]<<b.t_siklus[i];
-            }
+//            qDebug()<<"---inisial data yang belom ada di server---";
+//            for(int i=0; i<b.t_tipe_param.size(); i++){
+//                qDebug()<<b.t_tipe_param[i]<<b.t_time[i]<<b.t_siklus[i];
+//            }
             std::vector<int> id_param,id_tip_parm,id_rut,time,siklus;
-//            id_param    = b.t_tipe_param.toStdVector();
+            id_param    = b.t_id_param_lama.toStdVector();
             id_tip_parm = b.t_tipe_param.toStdVector();
             id_rut      = b.t_id_rute.toStdVector();
             time        = b.t_time.toStdVector();
             siklus      = b.t_siklus.toStdVector();
 
-            //google::protobuf::RepeatedField<int> id_param_s(id_param.begin(), id_param.end());
+            google::protobuf::RepeatedField<int> id_param_s(id_param.begin(), id_param.end());
             google::protobuf::RepeatedField<int> id_tip_parm_s(id_tip_parm.begin(), id_tip_parm.end());
             google::protobuf::RepeatedField<int> id_rut_s(id_rut.begin(), id_rut.end());
             google::protobuf::RepeatedField<int> time_s(time.begin(), time.end());
             google::protobuf::RepeatedField<int> siklus_s(siklus.begin(), siklus.end());
-            //reply->mutable_id_param_lama()->Swap(&id_param_s);
+            reply->mutable_id_param_lama()->Swap(&id_param_s);
             reply->mutable_id_tipe_param()->Swap(&id_tip_parm_s);
             reply->mutable_id_rute_lama()->Swap(&id_rut_s);
             reply->mutable_timestamp()->Swap(&time_s);
             reply->mutable_siklus()->Swap(&siklus_s);
             //----------------------------------------//
+            for(int x=0; x<b.list_aset.size(); x++){
+                QString ay = b.list_aset[x];
+                reply->mutable_aset()->Add(ay.toStdString());
+            }
             reply->set_header_pesan("balas");
         }
         else if(request->header_pesan()=="balas1"){
@@ -203,6 +203,7 @@ void bisa::mulai_cari_server(QSqlQuery *query)
 
 void bisa::eliminasi_data(QStringList aset, QVector<int> id_param1, QVector<int> tipe_param1,QVector<int> id_rute1, QVector<int> time1, QVector<int> siklus1)
 {
+
     QVector<int> id_param=id_param1;
     QVector<int> tipe_param=tipe_param1;
     QVector<int> id_rute=id_rute1;
@@ -287,6 +288,8 @@ void bisa::eliminasi_data(QStringList aset, QVector<int> id_param1, QVector<int>
                 <<time[a]
                 <<siklus[a];
     }
+    list_aset = cacah_data_aset;
+    t_id_param_lama = id_param;
     t_tipe_param = tipe_param;
     t_id_rute = id_rute;
     t_time = time;

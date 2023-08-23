@@ -61,6 +61,9 @@
      </widget>
     </item>
     <item>
+     <layout class="QVBoxLayout" name="verticalLayout_2"/>
+    </item>
+    <item>
      <widget class="QPushButton" name="PB_connect">
       <property name="text">
        <string>Connect</string>
@@ -103,7 +106,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>22</height>
+     <height>28</height>
     </rect>
    </property>
   </widget>
