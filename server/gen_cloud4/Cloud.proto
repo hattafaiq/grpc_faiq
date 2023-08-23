@@ -8,7 +8,7 @@ service protokol_1 {
 }
 
 service protokol_2{
-	rpc kirim_data (mes_client) returns(mes_server){}
+ rpc kirim_data (mes_client) returns(mes_server){}
 }
 
 message pesan_client {
@@ -46,7 +46,8 @@ message mes_client {
   int32 timestamp = 8;
   int32 siklus = 9;
   bytes data =10;
-  int32 pesan_ke = 11;
+  bytes param = 11;
+  int32 pesan_ke = 12;
 }
 
 message mes_server {
@@ -60,6 +61,7 @@ message mes_server {
   int32 timestamp = 8;
   int32 siklus = 9;
   bytes data =10;
-  int32 pesan_ke = 11;
+  bytes param = 11;
+  int32 pesan_ke = 12;
 }
 

@@ -45,6 +45,7 @@ private:
        if(data_n[0].size()!=0){
            for(int a=0; a<data_n[0].size(); a++ ){
              QString ay = cacah_data_name[a];
+             request.mutable_aset()->Add(ay.toStdString());
              qDebug()<<ay<<
              "id_parm:"<<data_n[1][a]<<
              "id_tip_parm:"<<data_n[2][a]<<
@@ -52,7 +53,9 @@ private:
              "time:"<<data_n[4][a]<<
              "siklus"<<data_n[5][a];
            }
+
            std::vector<int> id_param,id_tip_parm,id_rut,time,siklus;//(data_n[0], n);
+           std::string list_aset;
            id_param    = data_n[1].toStdVector();
            id_tip_parm = data_n[2].toStdVector();
            id_rut      = data_n[3].toStdVector();
@@ -83,21 +86,7 @@ private:
            qDebug()<<"tidak ada data client";
        }
    }
-//   std::string kirim_data(const std::string& user){
-//       mes_request.set_header_pesan(user);
-//       Status status = stub_->kirim_data(&context,mes_request,&mes_reply );
 
-//       if (status.ok()) {
-//           std::cout<<"req: "<<user<< "|rep:"<<reply.header_pesan()<<std::endl;
-//         return reply.header_pesan();
-//       } else {
-//         std::cout << status.error_code()
-//                   << ": "
-//                   << status.error_message()
-//                   << std::endl;
-//         return "RPC failed";
-//       }
-//   }
    void pesan_kedua(){
        std::cout << "terima data yang belum ada di server: " <<reply.id_param_lama_size() << " "
            << reply.id_param_lama_size() << " "
@@ -794,11 +783,12 @@ void Tampil::on_PB_compare_clicked()
         if(i==2 && flag_sukses==2)CallServer("sudah1",0,server_address);
         if(i==3 && flag_sukses==3)CallServer("finish1",0,server_address);
     }
-    grpc::ChannelArguments ch_args;
-    ch_args.SetMaxReceiveMessageSize(-1);
-    GreeterClient2 greeter( grpc::CreateCustomChannel (server_address, grpc::InsecureChannelCredentials(), ch_args));
-    std::string balasin = greeter.kirim_data("oiiik");
-    std::cout <<"struct 2 server:"<<balasin <<std::endl;
+
+    //seharushnya cukup hanya sekali siklus aja karena dari
+    //request pertama sudah dijawab sisa yang belum ada di reply
+
+    //dan untuk service yang kedua harusnya cukup cuma 1 kali pengiriman data sukses, dan
+    //berulang sesuai banyaknya data yang dikirim nanti
 }
 
 void Tampil::CallServer(std::string pesan, int flag, std::string server_address){
@@ -815,7 +805,9 @@ void Tampil::CallServer(std::string pesan, int flag, std::string server_address)
         std::cout<< "------------balas"<<std::endl;
     }
     else if(balasan=="balas2"){
-
+        GreeterClient2 greeter2( grpc::CreateCustomChannel (server_address, grpc::InsecureChannelCredentials(), ch_args));
+        std::string balasin = greeter2.kirim_data("oiiik");
+        std::cout <<"struct 2 server:"<<balasin <<std::endl;
         flag_sukses=2;
         std::cout<< "------------balas"<<std::endl;
     }

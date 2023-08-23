@@ -35,9 +35,10 @@ class GreeterServiceImpl final : public protokol_1::Service  {
     QStringList rute_baru;
     QByteArrayList all_data;
     QVector<int> data_n[6];
-    QStringList cacah_data_name;
+    QStringList cacah_data_aset;
     QByteArrayList all_rute_param;
     QVector<int> data_new[7];
+
 
     Status initial_data(ServerContext* context, const pesan_client* request, pesan_server* reply) override {
         int flag_pesan=0;
@@ -46,7 +47,9 @@ class GreeterServiceImpl final : public protokol_1::Service  {
             qDebug()<<"client:"<<"list info";
             qDebug()<<"server:"<<"balas";
             //-------------------------------------------------//
-            std::cout << "mulai cek data: size: " <<request->id_param_lama_size() << " "
+            std::cout << "mulai cek data: size: " <<
+                 request->aset_size()
+                <<request->id_param_lama_size() << " "
                 << request->id_param_lama_size() << " "
                 << request->id_tipe_param_size() << " "
                 << request->id_rute_lama_size() << " "
@@ -61,7 +64,8 @@ class GreeterServiceImpl final : public protokol_1::Service  {
                 data_new[3].push_back(request->id_rute_lama(i));//id_rute
                 data_new[4].push_back(request->timestamp(i));//timestamp
                 data_new[5].push_back(request->siklus(i));//siklus
-                std::cout << " "<< request->id_param_lama(i)
+                cacah_data_aset.push_back(QString::fromStdString(request->aset(i))); //aset
+                std::cout << request->aset(i)<< " "<< request->id_param_lama(i)
                 << " "<< request->id_tipe_param(i)
                 << " "<< request->id_rute_lama(i)
                 << " "<< request->timestamp(i)
@@ -76,7 +80,7 @@ class GreeterServiceImpl final : public protokol_1::Service  {
                 <<data_new[5].size();
 
             //------mulai eliminasi--------------------//
-            b.eliminasi_data(data_new[1],data_new[2],data_new[3],data_new[4],data_new[5]);
+            b.eliminasi_data(cacah_data_aset,data_new[1],data_new[2],data_new[3],data_new[4],data_new[5]);
             //-----------------------------------------------------//
 
             //---mulai kirim data yang belum ada-------//
@@ -127,12 +131,6 @@ class GreeterServiceImpl final : public protokol_1::Service  {
 
 }
 
-//    Status kirim_data(ServerContext* context, const mes_client* request, mes_server* reply) override {
-
-//    std::cout <<"req struct kirim data test:" << request->header_pesan();
-//    reply->set_header_pesan("sudah masuk?");
-//    return Status::OK;
-//    }
 };
 
 class GreeterServiceImpl2 final : public protokol_2::Service  {
@@ -182,7 +180,7 @@ void bisa::RunServer() {
     //todo berikutnya;
     //---mengenal id client
     //---menghitung size data yang mau dikirim.
-    //---metode pengirimannya seperti apa?
+    //---metode pengirimannya seperti apa? satu satu data
 
     server->Wait();
 }
@@ -203,13 +201,14 @@ void bisa::mulai_cari_server(QSqlQuery *query)
 
 }
 
-void bisa::eliminasi_data(QVector<int> id_param1, QVector<int> tipe_param1,QVector<int> id_rute1, QVector<int> time1, QVector<int> siklus1)
+void bisa::eliminasi_data(QStringList aset, QVector<int> id_param1, QVector<int> tipe_param1,QVector<int> id_rute1, QVector<int> time1, QVector<int> siklus1)
 {
     QVector<int> id_param=id_param1;
     QVector<int> tipe_param=tipe_param1;
     QVector<int> id_rute=id_rute1;
     QVector<int> time=time1;
     QVector<int> siklus=siklus1;
+    QStringList cacah_data_aset = aset;
     QSqlDatabase dbx;
     dbx = QSqlDatabase::addDatabase("QMYSQL");
     dbx.setHostName("127.0.0.1");//port 2121
@@ -255,7 +254,7 @@ void bisa::eliminasi_data(QVector<int> id_param1, QVector<int> tipe_param1,QVect
 //                all_rute_param.erase(all_rute_param.begin()+i);
 //                rute_baru.erase(rute_baru.begin()+i);
 //                all_data.erase(all_data.begin()+i);
-//                cacah_data_name.erase(cacah_data_name.begin()+i);
+                cacah_data_aset.erase(cacah_data_aset.begin()+i);
                 flag_count+=1;
             }
             else{
@@ -268,12 +267,13 @@ void bisa::eliminasi_data(QVector<int> id_param1, QVector<int> tipe_param1,QVect
 //                all_rute_param.erase(all_rute_param.begin()+i-konter);
 //                rute_baru.erase(rute_baru.begin()+i-konter);
 //                all_data.erase(all_data.begin()+i-konter);
-//                cacah_data_name.erase(cacah_data_name.begin()+i-konter);
+                cacah_data_aset.erase(cacah_data_aset.begin()+i-konter);
             }}}
     }
 
 //    //ccek ulang yang tidak ada siapa aja
     qDebug()<<"------------cek sudah eliminasi data----------";
+    qDebug()<<"- jumlah data list aset:"<<cacah_data_aset.size();
     qDebug()<<"- jumlah data id_param:"<< id_param.size();//1
     qDebug()<<"- jumlah data tipe_param:"<< tipe_param.size();//2
     qDebug()<<"- jumlah data id_rute:"<<id_rute.size();//3
@@ -281,7 +281,8 @@ void bisa::eliminasi_data(QVector<int> id_param1, QVector<int> tipe_param1,QVect
     qDebug()<<"- jumlah data siklus:"<<siklus.size();//5
     qDebug()<<"-------------cek data yang sudah dieliminasi---";
     for(int a=0; a<id_param.size(); a++){
-        qDebug()<<tipe_param[a]
+        qDebug()<<cacah_data_aset[a]
+                <<tipe_param[a]
                 <<id_rute[a]
                 <<time[a]
                 <<siklus[a];

@@ -14,14 +14,6 @@
 #include "gen_cloud4/Cloud.grpc.pb.h"
 #include "gen_cloud4/Cloud.pb.h"
 
-//#include "absl/flags/flag.h"
-//#include "absl/flags/parse.h"
-//#include "absl/strings/str_format.h"
-//#include <grpcpp/ext/proto_server_reflection_plugin.h>
-//#include <grpcpp/grpcpp.h>
-//#include <grpcpp/health_check_service_interface.h>
-//#include "tampilserver.h"
-
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QSqlDatabase>
@@ -56,7 +48,7 @@ public:
    void mulai();
    //void proses_q( QSqlQuery *q, const char *s, ...);
     void RunServer();
-    void eliminasi_data(QVector<int> id_param, QVector<int> tipe_param,QVector<int> id_rute, QVector<int> time, QVector<int> siklus);
+    void eliminasi_data(QStringList aset, QVector<int> id_param, QVector<int> tipe_param,QVector<int> id_rute, QVector<int> time, QVector<int> siklus);
     QVector<int> t_tipe_param;
     QVector<int> t_id_rute;
     QVector<int> t_time;

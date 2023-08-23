@@ -881,13 +881,14 @@ class mes_client final :
     kAsetFieldNumber = 3,
     kRuteFieldNumber = 4,
     kDataFieldNumber = 10,
+    kParamFieldNumber = 11,
     kJumlahDataFieldNumber = 2,
     kIdParamLamaFieldNumber = 5,
     kIdTipeParamFieldNumber = 6,
     kIdRuteLamaFieldNumber = 7,
     kTimestampFieldNumber = 8,
     kSiklusFieldNumber = 9,
-    kPesanKeFieldNumber = 11,
+    kPesanKeFieldNumber = 12,
   };
   // string header_pesan = 1;
   void clear_header_pesan();
@@ -945,6 +946,20 @@ class mes_client final :
   std::string* _internal_mutable_data();
   public:
 
+  // bytes param = 11;
+  void clear_param();
+  const std::string& param() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_param(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_param();
+  PROTOBUF_NODISCARD std::string* release_param();
+  void set_allocated_param(std::string* param);
+  private:
+  const std::string& _internal_param() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_param(const std::string& value);
+  std::string* _internal_mutable_param();
+  public:
+
   // int32 jumlah_data = 2;
   void clear_jumlah_data();
   int32_t jumlah_data() const;
@@ -999,7 +1014,7 @@ class mes_client final :
   void _internal_set_siklus(int32_t value);
   public:
 
-  // int32 pesan_ke = 11;
+  // int32 pesan_ke = 12;
   void clear_pesan_ke();
   int32_t pesan_ke() const;
   void set_pesan_ke(int32_t value);
@@ -1019,6 +1034,7 @@ class mes_client final :
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr aset_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr rute_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr data_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr param_;
   int32_t jumlah_data_;
   int32_t id_param_lama_;
   int32_t id_tipe_param_;
@@ -1157,13 +1173,14 @@ class mes_server final :
     kAsetFieldNumber = 3,
     kRuteFieldNumber = 4,
     kDataFieldNumber = 10,
+    kParamFieldNumber = 11,
     kJumlahDataFieldNumber = 2,
     kIdParamLamaFieldNumber = 5,
     kIdTipeParamFieldNumber = 6,
     kIdRuteLamaFieldNumber = 7,
     kTimestampFieldNumber = 8,
     kSiklusFieldNumber = 9,
-    kPesanKeFieldNumber = 11,
+    kPesanKeFieldNumber = 12,
   };
   // string header_pesan = 1;
   void clear_header_pesan();
@@ -1221,6 +1238,20 @@ class mes_server final :
   std::string* _internal_mutable_data();
   public:
 
+  // bytes param = 11;
+  void clear_param();
+  const std::string& param() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_param(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_param();
+  PROTOBUF_NODISCARD std::string* release_param();
+  void set_allocated_param(std::string* param);
+  private:
+  const std::string& _internal_param() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_param(const std::string& value);
+  std::string* _internal_mutable_param();
+  public:
+
   // int32 jumlah_data = 2;
   void clear_jumlah_data();
   int32_t jumlah_data() const;
@@ -1275,7 +1306,7 @@ class mes_server final :
   void _internal_set_siklus(int32_t value);
   public:
 
-  // int32 pesan_ke = 11;
+  // int32 pesan_ke = 12;
   void clear_pesan_ke();
   int32_t pesan_ke() const;
   void set_pesan_ke(int32_t value);
@@ -1295,6 +1326,7 @@ class mes_server final :
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr aset_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr rute_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr data_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr param_;
   int32_t jumlah_data_;
   int32_t id_param_lama_;
   int32_t id_tipe_param_;
@@ -2560,7 +2592,58 @@ inline void mes_client::set_allocated_data(std::string* data) {
   // @@protoc_insertion_point(field_set_allocated:Cloud.mes_client.data)
 }
 
-// int32 pesan_ke = 11;
+// bytes param = 11;
+inline void mes_client::clear_param() {
+  param_.ClearToEmpty();
+}
+inline const std::string& mes_client::param() const {
+  // @@protoc_insertion_point(field_get:Cloud.mes_client.param)
+  return _internal_param();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void mes_client::set_param(ArgT0&& arg0, ArgT... args) {
+ 
+ param_.SetBytes(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Cloud.mes_client.param)
+}
+inline std::string* mes_client::mutable_param() {
+  std::string* _s = _internal_mutable_param();
+  // @@protoc_insertion_point(field_mutable:Cloud.mes_client.param)
+  return _s;
+}
+inline const std::string& mes_client::_internal_param() const {
+  return param_.Get();
+}
+inline void mes_client::_internal_set_param(const std::string& value) {
+  
+  param_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* mes_client::_internal_mutable_param() {
+  
+  return param_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* mes_client::release_param() {
+  // @@protoc_insertion_point(field_release:Cloud.mes_client.param)
+  return param_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void mes_client::set_allocated_param(std::string* param) {
+  if (param != nullptr) {
+    
+  } else {
+    
+  }
+  param_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), param,
+      GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (param_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
+    param_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:Cloud.mes_client.param)
+}
+
+// int32 pesan_ke = 12;
 inline void mes_client::clear_pesan_ke() {
   pesan_ke_ = 0;
 }
@@ -2908,7 +2991,58 @@ inline void mes_server::set_allocated_data(std::string* data) {
   // @@protoc_insertion_point(field_set_allocated:Cloud.mes_server.data)
 }
 
-// int32 pesan_ke = 11;
+// bytes param = 11;
+inline void mes_server::clear_param() {
+  param_.ClearToEmpty();
+}
+inline const std::string& mes_server::param() const {
+  // @@protoc_insertion_point(field_get:Cloud.mes_server.param)
+  return _internal_param();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void mes_server::set_param(ArgT0&& arg0, ArgT... args) {
+ 
+ param_.SetBytes(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Cloud.mes_server.param)
+}
+inline std::string* mes_server::mutable_param() {
+  std::string* _s = _internal_mutable_param();
+  // @@protoc_insertion_point(field_mutable:Cloud.mes_server.param)
+  return _s;
+}
+inline const std::string& mes_server::_internal_param() const {
+  return param_.Get();
+}
+inline void mes_server::_internal_set_param(const std::string& value) {
+  
+  param_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* mes_server::_internal_mutable_param() {
+  
+  return param_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* mes_server::release_param() {
+  // @@protoc_insertion_point(field_release:Cloud.mes_server.param)
+  return param_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void mes_server::set_allocated_param(std::string* param) {
+  if (param != nullptr) {
+    
+  } else {
+    
+  }
+  param_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), param,
+      GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (param_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
+    param_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:Cloud.mes_server.param)
+}
+
+// int32 pesan_ke = 12;
 inline void mes_server::clear_pesan_ke() {
   pesan_ke_ = 0;
 }
