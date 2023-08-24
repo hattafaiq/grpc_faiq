@@ -5,6 +5,10 @@
 //komunikasi masih belum bisa stabil, coba dicari data yang kemaren
 //untuk balas balasan 1 sama lain dan tidak terikat 1 loop atau membahayakan
 
+//tanggal 24 agustus update pak jono todo list
+//tampilan centang untuk data siklus dijadikan 1 data saja agar centangnya per silinder
+//ketika upload sudah jadi membandingkan data yang ada di server namun belum ada di local
+
 #include "tampil.h"
 #include "ui_tampil.h"
 #include <QTreeView>
@@ -19,6 +23,9 @@ Tampil::Tampil(QWidget *parent) :
     this->setWindowTitle("Simulasi Upload Data");
     this->setMaximumSize(600,600);
     setup_tampil_hirarki_server();
+    box2 = new QVBoxLayout(this);
+    list_check = new QListWidget;
+    ui->verticalLayout_2->addLayout(box2);
     show();
 }
 
@@ -343,24 +350,7 @@ void Tampil::index_tree_selected(QModelIndex index){
     {
         qDebug("Punya Anak %d", sd->rowCount());
     }
-//    qDebug()<<"anaknya:"<<onRouteChildTree;
-//    qDebug()<<"param:"<<p_id_aset;
-//    qDebug()<<"tipe data:"<<p_id_tipe_param;
-    //ui->lineEdit->clear();
-    //initial_rute.clear();
-//    controller *cc;
-//    cc = new controller();
-//    cc->cari_induk_param(p_id_aset);
- //   qDebug()<<initial_rute.split('/');
-    QStringList dataList = initial_rute.split('/');
-    data_ini = dataList;
-//    QDataStream dataStreamWrite(&data_utama, QIODevice::WriteOnly);
-//    dataStreamWrite << data_ini;
-//   // QStringList appNameList = appName.split("U");
 
-//   //qDebug()<<"size nama=>"<<sizeof(data_ini)
-//   // susun_data(p_id_aset,p_id_tipe_param);
-//    data_utama.clear();
 }
 
 void Tampil::getAllChildren(QModelIndex idx, QModelIndexList &list)
@@ -395,30 +385,87 @@ void Tampil::on_PB_kirim_clicked()
 void Tampil::on_PB_compare_clicked()
 {
     std::string server_address("127.0.0.1:50051");
-
     cc = new controller();
     cc->initial_database();
     cc->flag_sukses=0;
     cc->CallServer("list_info",0,server_address);
-//    for(int i=0; i<4; i++){
-//        qDebug()<<"note flag:"<<cc->flag_sukses;
-//        if(i==0)cc->CallServer("list_info",0,server_address);
-////        if(i==1 && cc->flag_sukses==1)cc->CallServer("balas1",0,server_address);
-////        if(i==2 && cc->flag_sukses==2)cc->CallServer("sudah1",0,server_address);
-////        if(i==3 && cc->flag_sukses==3)cc->CallServer("finish1",0,server_address);
-//    }
+    if(flag_compare==1)list_check->clear();
+    list_check->addItems(cc->aset_info_tampil);
+    QListWidgetItem* list_item = 0;
+    for(int i=0; i<list_check->count(); i++){
+        list_item = list_check->item(i);
+        list_item->setFlags(list_item->flags() | Qt::ItemIsUserCheckable);
+        list_item->setCheckState(Qt::Checked);
+    }
+    box2->addWidget(list_check);
+    QObject::connect(list_check, SIGNAL(itemChanged(QListWidgetItem*)),
+                     this, SLOT(highlightChecked(QListWidgetItem*)));
+    qDebug()<<"nomor pesan"<<cc->alarm_message;
+    if(cc->alarm_message!=0){
+       QMessageBox::warning(this, "Error ("+QString::number(cc->alarm_message)+")", "Error ("+cc->pesan_alarm+")");
+       //QMessageBox::information(this,"informasi","tidak ada data update");
+    }
+    flag_compare=1;
+}
 
-    //seharushnya cukup hanya sekali siklus aja karena dari
-    //request pertama sudah dijawab sisa yang belum ada di reply
-
-    //dan untuk service yang kedua harusnya cukup cuma 1 kali pengiriman data sukses, dan
-    //berulang sesuai banyaknya data yang dikirim nanti
+void Tampil::highlightChecked(QListWidgetItem *item)
+{
+    if(item->checkState() == Qt::Checked)
+            item->setBackgroundColor(QColor("#ffffb2"));
+        else
+            item->setBackgroundColor(QColor("#ffffff"));
 }
 
 
 void Tampil::on_PB_synchron_clicked()
 {
-
+    if(flag_compare!=1){
+        QMessageBox::information(this,"informasi","lakukan compare terlebih dahulu");
+    }
+    else{
+        if(cc->alarm_message!=0){
+           QMessageBox::warning(this, "Error ("+QString::number(cc->alarm_message)+")", "Error ("+cc->pesan_alarm+")");
+           //QMessageBox::information(this,"informasi","tidak ada data update");
+        }
+        QStringList coba = cc->aset_info_server;//jadi yang menjadi rotasi tidak boleh terpengaruh dengan apapun
+        if(cc->aset_info_server.size()!=0){
+            QListWidgetItem* list_item = 0;
+            int konter=0;
+            for(int i=0; i<list_check->count(); i++){
+                list_item = list_check->item(i);
+                qDebug()<<"status "<<i<<list_item->checkState();
+                QString cek_aset = (QString) cc->aset_info_tampil[i];
+                if(list_item->checkState()==false){
+                    qDebug()<<"ukuran"<<cc->aset_info_server.size();
+                    for(int k=0; k<coba.size(); k++){
+                        //-----------------------------------------------------------------------//
+                        //disederhanakan!!!!
+                        if(cek_aset==coba[k]){
+                           cc->aset_info_server.erase(cc->aset_info_server.begin()+k-konter);
+                           cc->c_id_param_lama.erase(cc->c_id_param_lama.begin()+k-konter);
+                           cc->c_tipe_param.erase(cc->c_tipe_param.begin()+k-konter);
+                           cc->c_id_rute_lama.erase(cc->c_id_rute_lama.begin()+k-konter);
+                           cc->c_time.erase(cc->c_time.begin()+k-konter);
+                           cc->c_siklus.erase(cc->c_siklus.begin()+k-konter);
+                           //diisi list data yang mau persiapan dikirm
+                           konter+=1;
+                        }
+                    }
+                }
+            }
+        }
+        qDebug()<<"- data yang dikirim balik dari server----------------------------->";
+        for(int i=0; i<cc->aset_info_server.size(); i++){
+            qDebug()<<"-"<<cc->aset_info_server[i]
+                      <<cc->c_id_param_lama[i]
+                        <<cc->c_tipe_param[i]
+                          <<cc->c_id_rute_lama[i]
+                            <<cc->c_time[i]
+                              <<cc->c_siklus[i];
+        }
+        qDebug()<<"--------------------------------------------------------------->";
+        flag_compare=0;
+    }
 }
 
 

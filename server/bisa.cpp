@@ -128,7 +128,6 @@ class GreeterServiceImpl final : public protokol_1::Service  {
             reply->set_header_pesan("finish2");
         }
     return Status::OK;
-
 }
 
 };
@@ -203,7 +202,6 @@ void bisa::mulai_cari_server(QSqlQuery *query)
 
 void bisa::eliminasi_data(QStringList aset, QVector<int> id_param1, QVector<int> tipe_param1,QVector<int> id_rute1, QVector<int> time1, QVector<int> siklus1)
 {
-
     QVector<int> id_param=id_param1;
     QVector<int> tipe_param=tipe_param1;
     QVector<int> id_rute=id_rute1;
@@ -235,7 +233,6 @@ void bisa::eliminasi_data(QStringList aset, QVector<int> id_param1, QVector<int>
     }
     QSqlQuery query(dbx);
     int konter=0;
-    int flag_count=0;
     QString qu;
     for(int i=0; i<id_param1.size(); i++){
         //qDebug()<<"2cek data:"<<tipe_param[i]<<time[i]<<siklus[i];
@@ -245,31 +242,14 @@ void bisa::eliminasi_data(QStringList aset, QVector<int> id_param1, QVector<int>
         }
         if(!query.exec(qu)) {}//qDebug()<< "kenapa ERROR:: " <<query.lastError().text();}
         else{while(query.next()){
-            if(flag_count==0){
-                id_param.erase(id_param.begin()+i);
-                tipe_param.erase(tipe_param.begin()+i);
-                id_rute.erase(id_rute.begin()+i);
-                time.erase(time.begin()+i);
-                siklus.erase(siklus.begin()+i);
-
-//                all_rute_param.erase(all_rute_param.begin()+i);
-//                rute_baru.erase(rute_baru.begin()+i);
-//                all_data.erase(all_data.begin()+i);
-                cacah_data_aset.erase(cacah_data_aset.begin()+i);
-                flag_count+=1;
-            }
-            else{
-                konter+=1;
                 id_param.erase(id_param.begin()+i-konter);
                 tipe_param.erase(tipe_param.begin()+i-konter);
                 id_rute.erase(id_rute.begin()+i-konter);
                 time.erase(time.begin()+i-konter);
                 siklus.erase(siklus.begin()+i-konter);
-//                all_rute_param.erase(all_rute_param.begin()+i-konter);
-//                rute_baru.erase(rute_baru.begin()+i-konter);
-//                all_data.erase(all_data.begin()+i-konter);
                 cacah_data_aset.erase(cacah_data_aset.begin()+i-konter);
-            }}}
+                konter+=1;
+            }}
     }
 
 //    //ccek ulang yang tidak ada siapa aja
@@ -282,12 +262,13 @@ void bisa::eliminasi_data(QStringList aset, QVector<int> id_param1, QVector<int>
     qDebug()<<"- jumlah data siklus:"<<siklus.size();//5
     qDebug()<<"-------------cek data yang sudah dieliminasi---";
     for(int a=0; a<id_param.size(); a++){
-        qDebug()<<cacah_data_aset[a]
+        qDebug()<<"-"<<cacah_data_aset[a]
                 <<tipe_param[a]
                 <<id_rute[a]
                 <<time[a]
                 <<siklus[a];
     }
+    qDebug()<<"-----------------------------------------------";
     list_aset = cacah_data_aset;
     t_id_param_lama = id_param;
     t_tipe_param = tipe_param;

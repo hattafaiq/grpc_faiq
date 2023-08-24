@@ -16,6 +16,10 @@
 #include <QObject>
 #include <QDebug>
 
+#include <QCheckBox>
+#include <QVBoxLayout>
+#include <QListWidget>
+#include <QSet>
 namespace Ui {
 class Tampil;
 }
@@ -81,10 +85,17 @@ public:
     QByteArrayList all_rute_param;
     QStringList cacah_data_name;
 
+
+    QVBoxLayout *box2;
+    QListWidget *list_check;
+    QStringList check_bok;
+    int flag_compare;
+
 public slots:
     void on_treeView_clicked(QModelIndex index);
     void on_treeView_expanded(QModelIndex index);
     void on_treeView_activated(QModelIndex index);
+    void highlightChecked(QListWidgetItem* item);
 
 private slots:
     void on_tableView_clicked(const QModelIndex &index);

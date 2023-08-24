@@ -1,3 +1,4 @@
+
 #include "controller.h"
 
 controller::controller()
@@ -6,8 +7,6 @@ controller::controller()
 }
 
 class GreeterClient{
-private:
-//    extern struct T dat;
 
  public:
     pesan_client request;
@@ -15,23 +14,33 @@ private:
     mes_client mes_request;
     mes_server mes_reply;
     ClientContext context;
+    int alarm_pesan;
+    QString s_pesan_alarm;
+    QStringList list_data_tampil;
+    QVector<int> s_id_param_lama;
+    QVector<int> s_tipe_param;
+    QVector<int> s_id_rute_lama;
+    QVector<int> s_time;
+    QVector<int> s_siklus;
+
+
     GreeterClient(std::shared_ptr<Channel> channel)
       : stub_(protokol_1::NewStub(channel)) {}
    std::string initial_data(const std::string& user) {
-
-    std::cout <<"minta:"<< user <<std::endl;
+    std::cout <<"kirim request:"<< user <<std::endl;
     request.set_header_pesan(user);
     Status status = stub_->initial_data(&context,request,&reply );
     //qDebug()<<"pesan 0 user:"<<data_n[0].size()<<data_n[1].size()<<data_n[2].size()<<data_n[3].size();
+    alarm_pesan=0;
     if (status.ok()) {
         std::cout<<"req: "<<user<< "|rep:"<<reply.header_pesan()<<std::endl;
         //qDebug()<<"pesan user:"<<data_n[0].size()<<data_n[1].size()<<data_n[2].size()<<data_n[3].size();
+      alarm_pesan=0;
       return reply.header_pesan();
     } else {
-      std::cout << status.error_code()
-                << ": "
-                << status.error_message()
-                << std::endl;
+      //s_pesan_alarm = QString::fromStdString(status.error_message());
+      std::cout << status.error_code()<< ": "<< status.error_message()<< std::endl;
+      alarm_pesan = (int) status.error_code();
       return "RPC failed";
     }
   }
@@ -70,24 +79,20 @@ private:
            request.mutable_siklus()->Swap(&siklus_s);
 
            request.set_header_pesan("list_info");
-           id_param.clear();
-           id_tip_parm.clear();
-           id_rut.clear();
-           time.clear();
-           siklus.clear();
-           data1.clear();
-           data2.clear();
-           data3.clear();
-           data4.clear();
-           data5.clear();
        }
        else{
            qDebug()<<"tidak ada data client";
        }
    }
 
-   void pesan_kedua(){
+   void proses_eliminasi(){
        for(int i=0; i<reply.aset_size(); i++){
+           list_data_tampil.push_back(QString::fromStdString(reply.aset(i)));
+           s_id_param_lama.push_back(reply.id_param_lama(i));
+           s_tipe_param.push_back(reply.id_tipe_param(i));
+           s_id_rute_lama.push_back(reply.id_rute_lama(i));
+           s_time.push_back(reply.timestamp(i));
+           s_siklus.push_back(reply.siklus(i));
            std::cout << reply.aset(i) << " "
                      << reply.id_param_lama(i) << " "
                      << reply.id_tipe_param(i)<< " "
@@ -204,9 +209,6 @@ void controller::cari_induk(int p_id_aset)
         }
         else{
             cacah_data_name.push_back(initial_rute);
-        //    qDebug()<<"ini"<<initial_rute;
-          //  ui->lineEdit->backspace();
-          //  ui->lineEdit->setText(initial_rute);
             initial_rute.clear();
           //  qDebug()<<"emit";
         }
@@ -280,7 +282,7 @@ void controller::mulai_cari(QSqlQuery *query)
         data_n[3].push_back(data_[3][i]);//id_rute
         data_n[4].push_back(query->value("data_timestamp").toInt());
         if(data_[2][i]==3 || data_[2][i]==28 || data_[2][i]==2|| data_[2][i]==11){
-        data_n[5].push_back(query->value("siklus").toInt());}
+            data_n[5].push_back(query->value("siklus").toInt());}
         else{
             data_n[5].push_back(0);
         }
@@ -296,14 +298,6 @@ void controller::mulai_cari(QSqlQuery *query)
    if(!query->exec(qu)) qDebug()<< __FUNCTION__ << __LINE__ << "ERROR : "<<query->lastError().text();
    else{while(query->next()){
         rute_baru.push_back(query->value("nama_rute").toString());
- //       qDebug()<<"rute:"<<query->value("nama_rute").toString();
-//        QString list_nama_asetku;
-//         list_nama_asetku+=query->value("nama_rute").toString();//rute[info_tipe_data[0][i]];
-//         list_nama_asetku+="/";
-//         list_nama_asetku+= QString::number(data_n[1][i]);
-//         list1 = new QLabel(this);
-//         box1->addWidget(list1);
-//         list1->setText(list_nama_asetku);
     }}}
 
 //--------------------mode cari aset start-----------------------------------------------//
@@ -350,16 +344,34 @@ void controller::CallServer(std::string pesan, int flag, std::string server_alam
                   <<data_n[3].size()
                     <<data_n[4].size()
                       <<data_n[5].size();
-//    cacah_data_name.clear();
-//    for(int i=0; i<cacah_data_name.size(); i++){
-//        data_n[i].clear();
-//        qDebug()<<"->data:"<<data_n[i].size();
-//    }
+    alarm_message=0;
+    if(greeter.alarm_pesan!=0){
+        alarm_message = greeter.alarm_pesan;
+        isi_pesan();
+    }
+
     if(balasan=="balas"){
         flag_sukses=1;
-        greeter.pesan_kedua();
+        greeter.proses_eliminasi();
+        //aset_info_server = greeter.list_data_tampil;
+        aset_info_server = greeter.list_data_tampil;
+        c_id_param_lama = greeter.s_id_param_lama;
+        c_tipe_param = greeter.s_tipe_param;
+        c_id_rute_lama = greeter.s_id_rute_lama;
+        c_time = greeter.s_time;
+        c_siklus = greeter.s_siklus;
+        //proses seleksi nama per siklus menjadi 1 silinder saja
+        QString nama_aset;
+        for(int i=0; i<greeter.list_data_tampil.size(); i++){
+            qDebug()<< (QString) greeter.list_data_tampil[i];
+            QString nama = (QString) greeter.list_data_tampil[i];
+            if(nama!=nama_aset){
+            aset_info_tampil.push_back(nama);}
+            nama_aset= (QString) greeter.list_data_tampil[i];
+        }
         std::cout<< "------------balas"<<std::endl;
     }
+
 //    else if(balasan=="balas2"){
 //        GreeterClient2 greeter2( grpc::CreateCustomChannel (server_alamat, grpc::InsecureChannelCredentials(), ch_args));
 //        std::string balasin = greeter2.kirim_data("oiiik");
@@ -376,6 +388,78 @@ void controller::CallServer(std::string pesan, int flag, std::string server_alam
 //        std::cout<< "------------finish"<<std::endl;
 //    }
 
+}
+
+void controller::isi_pesan()
+{
+    switch (alarm_message){
+        case GRPC_STATUS_CANCELLED:
+            pesan_alarm = "GRPC_STATUS_CANCELLED";
+            qDebug()<<"GRPC_STATUS_CANCELLED";
+            break;
+        case GRPC_STATUS_UNKNOWN:
+            pesan_alarm ="GRPC_STATUS_UNKNOWN";
+            qDebug()<<"GRPC_STATUS_UNKNOWN";
+            break;
+        case GRPC_STATUS_INVALID_ARGUMENT:
+            pesan_alarm ="GRPC_STATUS_INVALID_ARGUMENT";
+            qDebug()<<"GRPC_STATUS_INVALID_ARGUMENT";
+            break;
+        case GRPC_STATUS_DEADLINE_EXCEEDED:
+            pesan_alarm ="GRPC_STATUS_DEADLINE_EXCEEDED";
+            qDebug()<<"GRPC_STATUS_DEADLINE_EXCEEDED";
+            break;
+        case GRPC_STATUS_NOT_FOUND:
+            pesan_alarm ="GRPC_STATUS_NOT_FOUND";
+            qDebug()<<"GRPC_STATUS_NOT_FOUND";
+            break;
+        case GRPC_STATUS_ALREADY_EXISTS:
+            pesan_alarm ="GRPC_STATUS_ALREADY_EXISTS";
+            qDebug()<<"GRPC_STATUS_ALREADY_EXISTS";
+            break;
+        case GRPC_STATUS_PERMISSION_DENIED:
+            pesan_alarm ="GRPC_STATUS_PERMISSION_DENIED";
+            qDebug()<<"GRPC_STATUS_PERMISSION_DENIED";
+            break;
+        case GRPC_STATUS_UNAUTHENTICATED:
+            pesan_alarm ="GRPC_STATUS_UNAUTHENTICATED";
+            qDebug()<<"GRPC_STATUS_UNAUTHENTICATED";
+            break;
+        case GRPC_STATUS_RESOURCE_EXHAUSTED:
+            pesan_alarm ="GRPC_STATUS_RESOURCE_EXHAUSTED";
+            qDebug()<<"GRPC_STATUS_RESOURCE_EXHAUSTED";
+            break;
+        case GRPC_STATUS_FAILED_PRECONDITION:
+            pesan_alarm ="GRPC_STATUS_FAILED_PRECONDITION";
+            qDebug()<<"GRPC_STATUS_FAILED_PRECONDITION";
+            break;
+        case GRPC_STATUS_ABORTED:
+            pesan_alarm ="GRPC_STATUS_ABORTED";
+            qDebug()<<"GRPC_STATUS_ABORTED";
+            break;
+        case GRPC_STATUS_OUT_OF_RANGE:
+            pesan_alarm ="GRPC_STATUS_OUT_OF_RANGE";
+            qDebug()<<"GRPC_STATUS_OUT_OF_RANGE";
+            break;
+        case GRPC_STATUS_UNIMPLEMENTED:
+            pesan_alarm ="GRPC_STATUS_UNIMPLEMENTED";
+            qDebug()<<"GRPC_STATUS_UNIMPLEMENTED";
+            break;
+        case GRPC_STATUS_INTERNAL:
+            pesan_alarm ="GRPC_STATUS_INTERNAL";
+            qDebug()<<"GRPC_STATUS_INTERNAL";
+            break;
+        case GRPC_STATUS_UNAVAILABLE:
+            pesan_alarm ="GRPC_STATUS_UNAVAILABLE";
+            qDebug()<<"GRPC_STATUS_UNAVAILABLE";
+            break;
+        case 15:
+            pesan_alarm ="GRPC_STATUS_DATA_LOSS";
+            qDebug()<<"GRPC_STATUS_DATA_LOSS";
+            break;
+        default:
+            qDebug()<<"ok";
+    }
 }
 
 void controller::initial_database()
