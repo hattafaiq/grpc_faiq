@@ -388,7 +388,7 @@ void Tampil::on_PB_compare_clicked()
     cc = new controller();
     cc->initial_database();
     cc->flag_sukses=0;
-    cc->CallServer("list_info",0,server_address);
+    cc->CallServer("list_info",1,server_address,0,0);
     if(flag_compare==1)list_check->clear();
     list_check->addItems(cc->aset_info_tampil);
     QListWidgetItem* list_item = 0;
@@ -400,12 +400,16 @@ void Tampil::on_PB_compare_clicked()
     box2->addWidget(list_check);
     QObject::connect(list_check, SIGNAL(itemChanged(QListWidgetItem*)),
                      this, SLOT(highlightChecked(QListWidgetItem*)));
-    qDebug()<<"nomor pesan"<<cc->alarm_message;
+    qDebug()<<"nomor status pesan"<<cc->alarm_message;
     if(cc->alarm_message!=0){
        QMessageBox::warning(this, "Error ("+QString::number(cc->alarm_message)+")", "Error ("+cc->pesan_alarm+")");
        //QMessageBox::information(this,"informasi","tidak ada data update");
     }
+    else{
+       QMessageBox::information(this,"informasi","compare data server sukses");
+    }
     flag_compare=1;
+
 }
 
 void Tampil::highlightChecked(QListWidgetItem *item)
@@ -419,6 +423,7 @@ void Tampil::highlightChecked(QListWidgetItem *item)
 
 void Tampil::on_PB_synchron_clicked()
 {
+    cc->flag_emit_cukup=0;
     if(flag_compare!=1){
         QMessageBox::information(this,"informasi","lakukan compare terlebih dahulu");
     }
@@ -453,18 +458,30 @@ void Tampil::on_PB_synchron_clicked()
                     }
                 }
             }
+             //flag 2 khusus untuk sychronize
+
+            //QMessageBox::information(this,"informasi","update data server sukses");
+            flag_compare=0;
+//            qDebug()<<"- data yang dikirim balik dari server----------------------------->";
+//            for(int i=0; i<cc->aset_info_server.size(); i++){
+//                qDebug()<<"-"<<cc->aset_info_server[i]
+//                          <<cc->c_id_param_lama[i]
+//                            <<cc->c_tipe_param[i]
+//                              <<cc->c_id_rute_lama[i]
+//                                <<cc->c_time[i]
+//                                  <<cc->c_siklus[i];
+//            }
+//            qDebug()<<"--------------------------------------------------------------->";
+            //mulai kirim ke server sesuai urutan harus sembari ada feedback
+            //--------------------------------------------------//
+            cc->flag_sukses=0;
+            std::string server_address("127.0.0.1:50051");
+            cc->CallServer("kirim_data",2,server_address,0,0);
+            //--------------------------------------------------//
         }
-        qDebug()<<"- data yang dikirim balik dari server----------------------------->";
-        for(int i=0; i<cc->aset_info_server.size(); i++){
-            qDebug()<<"-"<<cc->aset_info_server[i]
-                      <<cc->c_id_param_lama[i]
-                        <<cc->c_tipe_param[i]
-                          <<cc->c_id_rute_lama[i]
-                            <<cc->c_time[i]
-                              <<cc->c_siklus[i];
+        else{
+            QMessageBox::information(this,"informasi","tidak ada data yang terupdate");
         }
-        qDebug()<<"--------------------------------------------------------------->";
-        flag_compare=0;
     }
 }
 

@@ -26,6 +26,7 @@
 #include <QMessageBox>
 #include <QListWidget>
 #include <QSet>
+#include <QDateTime>
 
 #define FFT_LINES_DISABLE   0
 #define FFT_LINES_50        1
@@ -45,16 +46,28 @@ class bisa: public QObject
 public:
    explicit bisa(QObject *parent=nullptr);
    virtual ~bisa();
-   void mulai();
-   //void proses_q( QSqlQuery *q, const char *s, ...);
     void RunServer();
-    void eliminasi_data(QStringList aset, QVector<int> id_param, QVector<int> tipe_param,QVector<int> id_rute, QVector<int> time, QVector<int> siklus);
+    void eliminasi_data(QStringList rute,QStringList aset, QVector<int> id_param, QVector<int> tipe_param,QVector<int> id_rute, QVector<int> time, QVector<int> siklus);
     QStringList list_aset;
+    QStringList list_rute;
     QVector<int> t_id_param_lama;
     QVector<int> t_tipe_param;
     QVector<int> t_id_rute;
     QVector<int> t_time;
     QVector<int> t_siklus;
+    void save_data(QStringList rute,
+                     QStringList aset,
+                     QVector<int> id_param,
+                     QVector<int> tipe_param,
+                     QVector<int> id_rute,
+                     QVector<int> time,
+                     QVector<int> siklus,
+                     int id_database,
+                     QByteArrayList all_rute_param,
+                     QByteArrayList all_data);
+    QSqlDatabase dbx;
+    QVector<int> s_id_rute_baru;
+
 
 private:
 //    TampilServer jj;

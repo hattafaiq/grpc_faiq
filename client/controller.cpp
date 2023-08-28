@@ -17,6 +17,7 @@ class GreeterClient{
     int alarm_pesan;
     QString s_pesan_alarm;
     QStringList list_data_tampil;
+    QStringList list_rute;
     QVector<int> s_id_param_lama;
     QVector<int> s_tipe_param;
     QVector<int> s_id_rute_lama;
@@ -45,18 +46,20 @@ class GreeterClient{
     }
   }
 
-   void pesan_pertama(QStringList aset, QVector<int> data1, QVector<int> data2, QVector<int> data3, QVector<int> data4, QVector<int> data5){
+   void pesan_pertama(QStringList rute,QStringList aset, QVector<int> data1, QVector<int> data2, QVector<int> data3, QVector<int> data4, QVector<int> data5){
        //qDebug()<<"pesan pertama"<<data2.size()<<data3.size()<<data4.size()<<data5.size();
        if(data1.size()!=0){
            for(int a=0; a<data1.size(); a++ ){
              QString ay = aset[a];
+             QString rutes = (QString) rute[a];
              request.mutable_aset()->Add(ay.toStdString());
+             request.mutable_rute()->Add(rutes.toStdString());
              qDebug()<<ay<<
              "id_parm:"<<data1[a]<<
              "id_tip_parm:"<<data2[a]<<
              "id_rut:"<<data3[a]<<
              "time:"<<data4[a]<<
-             "siklus"<<data5[a];
+             "siklus"<<data5[a]<<rutes;
            }
 
            std::vector<int> id_param,id_tip_parm,id_rut,time,siklus;//(data_n[0], n);
@@ -87,6 +90,7 @@ class GreeterClient{
 
    void proses_eliminasi(){
        for(int i=0; i<reply.aset_size(); i++){
+           list_rute.push_back(QString::fromStdString(reply.rute(i)));
            list_data_tampil.push_back(QString::fromStdString(reply.aset(i)));
            s_id_param_lama.push_back(reply.id_param_lama(i));
            s_tipe_param.push_back(reply.id_tipe_param(i));
@@ -99,14 +103,17 @@ class GreeterClient{
                      << reply.id_rute_lama(i)<< " "
                      << reply.timestamp(i)<< " "
                      << reply.siklus(i)<< " "
+                     << reply.rute(i) << " "
                      << std::endl;
        }
-       std::cout << "terima data yang belum ada di server: " <<reply.id_param_lama_size() << " "
+       std::cout << "terima data yang belum ada di server: "
+           << reply.id_param_lama_size() << " "
            << reply.id_param_lama_size() << " "
            << reply.id_tipe_param_size() << " "
            << reply.id_rute_lama_size() << " "
            << reply.timestamp_size() << " "
            << reply.siklus_size() << " "
+           << reply.rute_size() << " "
            << std::endl;
    }
 
@@ -114,26 +121,48 @@ class GreeterClient{
   std::unique_ptr<protokol_1::Stub> stub_;
 };
 
-class GreeterClient2 : public controller{
+class GreeterClient2{
  public:
     mes_client request;
     mes_server reply;
     ClientContext context;
     GreeterClient2(std::shared_ptr<Channel> channel)
       : stub_(protokol_2::NewStub(channel)) {}
-   std::string kirim_data(const std::string& user) {
+   std::string kirim_data(const std::string& user,
+                          QString asets,
+                          QString rute,
+                          int s_id_param_lama,
+                          int s_tipe_param,
+                          int s_id_rute_lama,
+                          int s_time,
+                          int s_siklus,
+                          QByteArray param_set,
+                          QByteArray data,
+                          int counter
+                          ) {
       request.set_header_pesan(user);
+      request.set_aset(asets.toStdString());
+      request.set_rute(rute.toStdString());
+      request.set_id_param_lama(s_id_param_lama);
+      request.set_id_tipe_param(s_tipe_param);
+      request.set_id_rute_lama(s_id_rute_lama);
+      request.set_timestamp(s_time);
+      request.set_siklus(s_siklus);
+      request.set_param(param_set);
+      request.set_data(data);
       Status status = stub_->kirim_data(&context,request,&reply );
-
+      //counter_data+=1;
+      request.set_pesan_ke(counter);
       if (status.ok()) {
           std::cout<<"req: "<<user<< "|rep:"<<reply.header_pesan()<<std::endl;
+          qDebug()<<"counter pesan="<<counter;
         return reply.header_pesan();
       } else {
         std::cout << status.error_code()
                   << ": "
                   << status.error_message()
                   << std::endl;
-        return "RPC failed";
+        return "error - "+status.error_message();
       }
    }
  private:
@@ -187,6 +216,16 @@ void controller::cari_induk_param(int p_id_aset)
       }
    }
 
+}
+
+void controller::emit_gas_kirim(int counter, int maks)
+{
+    std::string server_address("127.0.0.1:50051");
+    if(counter>=maks){
+        flag_emit_cukup=1;
+    }
+    else{
+    CallServer("kirim_data",2,server_address,counter,maks);}
 }
 
 void controller::cari_induk(int p_id_aset)
@@ -324,20 +363,24 @@ for(int i=0; i<data_n[0].size(); i++){
     for(int i=0; i<data_->size(); i++){
         data_[i].clear();}
     for(int i=0; i<datax->size(); i++){
-    datax[i].clear();}
+        datax[i].clear();}
     qDebug()<<"data size:"<<data_[0].size()<<data_[1].size()<<data_[2].size()<<data_[3].size();
 }
 
-void controller::CallServer(std::string pesan, int flag, std::string server_alamat)
+void controller::CallServer(std::string header, int flag, std::string server_alamat, int counter, int jumlah)
 {
     grpc::ChannelArguments ch_args;
     ch_args.SetMaxReceiveMessageSize(-1);
+
+ if(flag ==1){
     GreeterClient greeter( grpc::CreateCustomChannel (server_alamat, grpc::InsecureChannelCredentials(), ch_args));
-    std::cout <<"client:"<<pesan <<std::endl;
-    if(flag_sukses==0)greeter.pesan_pertama(cacah_data_name,data_n[1],data_n[2],data_n[3],data_n[4],data_n[5]);
-    std::string balasan = greeter.initial_data(pesan);
+    std::cout <<"client:"<<header <<std::endl;
+    qDebug()<<rute_baru.size();//note c_rute masih kosong
+    if(flag_sukses==0)greeter.pesan_pertama(rute_baru,cacah_data_name,data_n[1],data_n[2],data_n[3],data_n[4],data_n[5]);
+    std::string balasan = greeter.initial_data(header);
     qDebug()<<"---------------------------------------------------------------------KK"
-            <<cacah_data_name.size()
+          <<c_rute.size()
+           <<cacah_data_name.size()
             <<data_n[0].size()
               <<data_n[1].size()
                 <<data_n[2].size()
@@ -351,9 +394,11 @@ void controller::CallServer(std::string pesan, int flag, std::string server_alam
     }
 
     if(balasan=="balas"){
+        counter_pesan=0;
+
         flag_sukses=1;
         greeter.proses_eliminasi();
-        //aset_info_server = greeter.list_data_tampil;
+        c_rute = greeter.list_rute;
         aset_info_server = greeter.list_data_tampil;
         c_id_param_lama = greeter.s_id_param_lama;
         c_tipe_param = greeter.s_tipe_param;
@@ -371,23 +416,42 @@ void controller::CallServer(std::string pesan, int flag, std::string server_alam
         }
         std::cout<< "------------balas"<<std::endl;
     }
+ }
+ else if(flag == 2){
+     //int count=0;
 
-//    else if(balasan=="balas2"){
-//        GreeterClient2 greeter2( grpc::CreateCustomChannel (server_alamat, grpc::InsecureChannelCredentials(), ch_args));
-//        std::string balasin = greeter2.kirim_data("oiiik");
-//        std::cout <<"struct 2 server:"<<balasin <<std::endl;
-//        flag_sukses=2;
-//        std::cout<< "------------balas"<<std::endl;
-//    }
-//    else if(balasan=="sudah2"){
-//        flag_sukses=3;
-//        std::cout<< "------------sudah"<<std::endl;
-//    }
-//    else if(balasan=="finish2"){
-//        flag_sukses=4;
-//        std::cout<< "------------finish"<<std::endl;
-//    }
+     GreeterClient2 greeter( grpc::CreateCustomChannel (server_alamat, grpc::InsecureChannelCredentials(), ch_args));
+     std::string balasan;
+    // greeter.counter_data=0;
+   //  //if(flag_sukses==0)greeter.counter_data=0;
+     //masih salah kalau bikin counter
+     //harus dipikirkan kalau misalkan kounternya apakah masih ikut dan
+     //data tiap client apakah beda beda
+    // greeter.jumlah=c_siklus.size();
 
+     balasan = greeter.kirim_data(header,
+                                 (QString) aset_info_server[counter_pesan],
+                                  (QString) c_rute[counter_pesan],
+                                   c_id_param_lama[counter_pesan],
+                                    c_tipe_param[counter_pesan],
+                                     c_id_rute_lama[counter_pesan],
+                                      c_time[counter_pesan],
+                                       c_siklus[counter_pesan],
+                                        (QByteArray) all_rute_param[counter_pesan],
+                                         (QByteArray) all_data[counter_pesan],
+                                          counter_pesan
+                                      );
+     std::cout << balasan<< std::endl;
+     if(balasan=="terima_data"){//lanjutkan kirim data loop
+        qDebug()<<"- setelah direply server, lanjut kirim data ke-->"<<counter_pesan;
+        flag_sukses=1;
+        counter_pesan += 1;
+        if(!flag_emit_cukup)emit_gas_kirim(counter_pesan,10);
+     }
+     else{
+        //flag_sukses=0;
+     }
+ }
 }
 
 void controller::isi_pesan()
@@ -406,7 +470,7 @@ void controller::isi_pesan()
             qDebug()<<"GRPC_STATUS_INVALID_ARGUMENT";
             break;
         case GRPC_STATUS_DEADLINE_EXCEEDED:
-            pesan_alarm ="GRPC_STATUS_DEADLINE_EXCEEDED";
+            pesan_alarm ="GRPC_STATUS_DEADLINE_EXCEEDED";//timeout
             qDebug()<<"GRPC_STATUS_DEADLINE_EXCEEDED";
             break;
         case GRPC_STATUS_NOT_FOUND:
@@ -450,7 +514,7 @@ void controller::isi_pesan()
             qDebug()<<"GRPC_STATUS_INTERNAL";
             break;
         case GRPC_STATUS_UNAVAILABLE:
-            pesan_alarm ="GRPC_STATUS_UNAVAILABLE";
+            pesan_alarm ="GRPC_STATUS_UNAVAILABLE";//alamat tidak ditemukan
             qDebug()<<"GRPC_STATUS_UNAVAILABLE";
             break;
         case 15:

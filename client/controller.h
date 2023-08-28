@@ -174,18 +174,29 @@ public:
     QVector<int> c_id_rute_lama;
     QVector<int> c_time;
     QVector<int> c_siklus;
+    QStringList c_rute;
 
     int alarm_message;
     QString pesan_alarm;
 
-    void CallServer(std::string pesan, int flag, std::string server_alamat);
+    void CallServer(std::string pesan, int flag, std::string server_alamat,int count, int jumlah);
     void isi_pesan();
     void initial_database();
     void cari_induk_param(int p_id_aset);
+    void emit_gas_kirim(int counter, int maks);
+    int flag_emit_cukup;
+    int counter_pesan;
+
 private:
     void cari_induk_paramm(int parameter, int tipe);
     void cari_induk(int p_id_aset);
     void mulai_cari(QSqlQuery *query);
+
+
+//public slots:
+//    void counter();
+//signals:
+//    void gas_kirim();
 
 };
 

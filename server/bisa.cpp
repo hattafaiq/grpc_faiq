@@ -34,7 +34,7 @@ class GreeterServiceImpl final : public protokol_1::Service  {
     bisa b;
     Status initial_data(ServerContext* context, const pesan_client* request, pesan_server* reply) override {
         int flag_pesan=0;
-        QStringList rute_baru;
+        QStringList rute_s;
         QByteArrayList all_data;
         QByteArrayList all_rute_param;
         QStringList cacah_data_aset;
@@ -46,6 +46,7 @@ class GreeterServiceImpl final : public protokol_1::Service  {
             //-------------------------------------------------//
             std::cout << "mulai cek data: size: " <<
                  request->aset_size()
+                << request->rute_size()<<" "
                 <<request->id_param_lama_size() << " "
                 << request->id_tipe_param_size() << " "
                 << request->id_rute_lama_size() << " "
@@ -61,11 +62,13 @@ class GreeterServiceImpl final : public protokol_1::Service  {
                 data_new[4].push_back(request->timestamp(i));//timestamp
                 data_new[5].push_back(request->siklus(i));//siklus
                 cacah_data_aset.push_back(QString::fromStdString(request->aset(i))); //aset
+                rute_s.push_back(QString::fromStdString(request->rute(i)));
                 std::cout << request->aset(i)<< " "<< request->id_param_lama(i)
                 << " "<< request->id_tipe_param(i)
                 << " "<< request->id_rute_lama(i)
                 << " "<< request->timestamp(i)
                 << " "<< request->siklus(i)
+                << " "<<request->rute(i)
                 << std::endl;
             }
             //cek ukuran array datanya yang sudah dimasukkan
@@ -76,7 +79,7 @@ class GreeterServiceImpl final : public protokol_1::Service  {
                 <<data_new[5].size();
 
             //------mulai eliminasi--------------------//
-            b.eliminasi_data(cacah_data_aset,data_new[1],data_new[2],data_new[3],data_new[4],data_new[5]);
+            b.eliminasi_data(rute_s,cacah_data_aset,data_new[1],data_new[2],data_new[3],data_new[4],data_new[5]);
             //-----------------------------------------------------//
 
             //---mulai kirim data yang belum ada-------//
@@ -104,6 +107,8 @@ class GreeterServiceImpl final : public protokol_1::Service  {
             //----------------------------------------//
             for(int x=0; x<b.list_aset.size(); x++){
                 QString ay = b.list_aset[x];
+                QString rute = b.list_rute[x];
+                reply->mutable_rute()->Add(rute.toStdString());
                 reply->mutable_aset()->Add(ay.toStdString());
             }
             reply->set_header_pesan("balas");
@@ -134,9 +139,47 @@ class GreeterServiceImpl final : public protokol_1::Service  {
 
 class GreeterServiceImpl2 final : public protokol_2::Service  {
     public:
+    bisa b;
+    QStringList rute;
+    QStringList aset;
+    QVector<int> id_param;
+    QVector<int> tipe_param;
+    QVector<int> id_rute;
+    QVector<int> time;
+    QVector<int> siklus;
+    int id_database;
+    QByteArrayList all_rute_param;
+    QByteArrayList all_data;
+    //masterdate atau id date yang digunakan untuk memisahkan antara data 1 dan data 2
+    //di dalam param yang sama
     Status kirim_data(ServerContext* context, const mes_client* request, mes_server* reply) override {
         std::cout <<"req struct kirim data test:" << request->header_pesan();
-        reply->set_header_pesan("sudah masuk?");
+        if(request->header_pesan()=="kirim_data"){
+            //cek dulu size nya;
+                std::cout<<"cek data_upload client:" <<
+                          request->jumlah_data()<< " "<<
+                          request->pesan_ke()<< " "<<
+                          request->aset() << " "<<
+                           request->rute() <<" "<<
+                           request->id_param_lama() <<" "<<
+                           request->id_tipe_param() <<" "<<
+                           request->id_rute_lama() <<" "<<
+                           request->timestamp() <<" "<<
+                           request->siklus() <<" "<<
+                           sizeof(request->data()) <<" "<<
+                           sizeof(request->param()) <<" "<<
+                           std::endl;
+                //lanjuting bikin data yang dikirim di client
+//                b.save_data(rute,aset,id_param,tipe_param,
+//                              id_rute,time,siklus,id_database,
+//                              all_rute_param,all_data);
+                int counter = request->pesan_ke();
+                counter+=1;
+                reply->set_pesan_ke(counter);
+                //note harus ditambah flag sudah simpan
+                //agar database server tidak kuwalahan memorinya
+                reply->set_header_pesan("terima_data");
+        }
         return Status::OK;
     }
 };
@@ -200,7 +243,7 @@ void bisa::mulai_cari_server(QSqlQuery *query)
 
 }
 
-void bisa::eliminasi_data(QStringList aset, QVector<int> id_param1, QVector<int> tipe_param1,QVector<int> id_rute1, QVector<int> time1, QVector<int> siklus1)
+void bisa::eliminasi_data(QStringList rute,QStringList aset, QVector<int> id_param1, QVector<int> tipe_param1,QVector<int> id_rute1, QVector<int> time1, QVector<int> siklus1)
 {
     QVector<int> id_param=id_param1;
     QVector<int> tipe_param=tipe_param1;
@@ -208,7 +251,7 @@ void bisa::eliminasi_data(QStringList aset, QVector<int> id_param1, QVector<int>
     QVector<int> time=time1;
     QVector<int> siklus=siklus1;
     QStringList cacah_data_aset = aset;
-    QSqlDatabase dbx;
+
     dbx = QSqlDatabase::addDatabase("QMYSQL");
     dbx.setHostName("127.0.0.1");//port 2121
     dbx.setDatabaseName("test");
@@ -222,6 +265,7 @@ void bisa::eliminasi_data(QStringList aset, QVector<int> id_param1, QVector<int>
     }
     //masukin nilainya per array bro
     qDebug()<<"------------cek eliminasi data awal----------";
+    qDebug()<<"- jumlah data rute:"<<rute.size();
     qDebug()<<"- jumlah data id_param:"<< id_param.size();//1
     qDebug()<<"- jumlah data tipe_param:"<< tipe_param.size();//2
     qDebug()<<"- jumlah data id_rute:"<<id_rute.size();//3
@@ -229,7 +273,7 @@ void bisa::eliminasi_data(QStringList aset, QVector<int> id_param1, QVector<int>
     qDebug()<<"- jumlah data siklus:"<<siklus.size();//5
     qDebug()<<"----------------------------------------";
     for(int i=0; i<id_param.size(); i++){
-        qDebug()<<"cek data:"<<tipe_param[i]<<time[i]<<siklus[i];
+        qDebug()<<"cek data:"<<rute[i]<<tipe_param[i]<<time[i]<<siklus[i];
     }
     QSqlQuery query(dbx);
     int konter=0;
@@ -242,6 +286,7 @@ void bisa::eliminasi_data(QStringList aset, QVector<int> id_param1, QVector<int>
         }
         if(!query.exec(qu)) {}//qDebug()<< "kenapa ERROR:: " <<query.lastError().text();}
         else{while(query.next()){
+                rute.erase(rute.begin()+i-konter);
                 id_param.erase(id_param.begin()+i-konter);
                 tipe_param.erase(tipe_param.begin()+i-konter);
                 id_rute.erase(id_rute.begin()+i-konter);
@@ -254,6 +299,7 @@ void bisa::eliminasi_data(QStringList aset, QVector<int> id_param1, QVector<int>
 
 //    //ccek ulang yang tidak ada siapa aja
     qDebug()<<"------------cek sudah eliminasi data----------";
+    qDebug()<<"- jumlah data rute:"<<rute.size();
     qDebug()<<"- jumlah data list aset:"<<cacah_data_aset.size();
     qDebug()<<"- jumlah data id_param:"<< id_param.size();//1
     qDebug()<<"- jumlah data tipe_param:"<< tipe_param.size();//2
@@ -266,9 +312,11 @@ void bisa::eliminasi_data(QStringList aset, QVector<int> id_param1, QVector<int>
                 <<tipe_param[a]
                 <<id_rute[a]
                 <<time[a]
-                <<siklus[a];
+                <<siklus[a]<<
+                  rute[a];
     }
     qDebug()<<"-----------------------------------------------";
+    list_rute = rute;
     list_aset = cacah_data_aset;
     t_id_param_lama = id_param;
     t_tipe_param = tipe_param;
@@ -277,10 +325,284 @@ void bisa::eliminasi_data(QStringList aset, QVector<int> id_param1, QVector<int>
     t_siklus = siklus;
 }
 
-void bisa::mulai()
+void bisa::save_data(QStringList rute_baru,
+                       QStringList cacah_data_name,
+                       QVector<int> id_param,
+                       QVector<int> tipe_param,
+                       QVector<int> id_rute,
+                       QVector<int> time,
+                       QVector<int> siklus,
+                       int id_database,
+                       QByteArrayList all_rute_param,
+                       QByteArrayList all_data)
 {
+QSqlQuery query(dbx);
+if(rute_baru.size()!=0){
+    int id_aset=0;
+    int id_parent=0;
+    int flag_masuk_param1=0;
+    int flag_masuk_param2=0;
+    //masukkin dulu id nama aset
+    QVector<int> list_data_aset;
+    for(int a=0; a<cacah_data_name.size(); a++){
+        QString qu;
+        int flag_masukkan_param=0;
+        QString nama_aset = cacah_data_name[a];
+        QStringList list_aset = nama_aset.split("/");
+        QString aa;
+        int id_paramnya=0;
 
+        for(int k=0; k<list_aset.size()-1; k++){
+            QString name = (QString) list_aset[k];
+            aa = QString("SELECT id FROM aset"
+                         " WHERE name='%1'AND id_parent=%2 AND id_database=%3").
+                    arg(name,
+                        QString::number(id_parent),
+                        QString::number(id_database));//note id_database yang kurang
+            if(!query.exec(aa)){qDebug()<<"tidak ada1="<<name;}
+            if(query.first()){qDebug()<<"ada="<<name;
+            id_parent = query.value("id").toInt();
+                }
+            else {
+              qDebug()<<"tidak ada2="<<name;
+              flag_masukkan_param=1;
+
+              //id_parent = query1.lastInsertId().toInt();
+              aa = QString("INSERT INTO aset ( name, id_kind, id_parent, id_database, id_user) "
+                           "VALUES('%1',%2,%3,%4,%5)").
+                           arg(name,
+                               QString::number(0),
+                               QString::number(id_parent),
+                               QString::number(id_database),
+                               QString::number(0));
+              if(!query.exec(aa)){qDebug()<<"1gagal simpen"<<name;}
+              else{while(query.next())qDebug()<<"1sukses="<<name;
+              id_paramnya=query.lastInsertId().toInt();//coba
+              }
+
+              if(query.first()){qDebug()<<"2sukses="<<name;}
+              else{qDebug()<<"mulai simpen"<<name;
+              id_parent = query.lastInsertId().toInt();}
+            }
+            id_aset=query.lastInsertId().toInt();
+            //list_data_aset.push_back(id_aset);
+        }
+        if(flag_masukkan_param==0){
+            //aa = QString("INSERT INTO parameter ( id_tipe_param, id_aset, urut) VALUES('%1',%2,%3)").arg(QString::number(data_new[2][a]),QString::number(id_parent),QString::number(1));
+            aa = QString("INSERT INTO parameter (id_tipe_param,id_aset,urut)"
+                         " SELECT %1,%2,%3 WHERE NOT EXISTS "
+                         "(SELECT id_tipe_param,id_aset,urut FROM parameter "
+                         "WHERE id_tipe_param=%4 AND id_aset=%5)").
+                         arg(QString::number(tipe_param[a]),//id_tipe_param
+                             QString::number(id_parent),//id_aset
+                             QString::number(1),//urut
+                             QString::number(tipe_param[a]),//id_tipe_param
+                             QString::number(id_parent));//id_aset
+            qDebug()<<id_parent<<"------<<>>";
+            id_paramnya=id_parent;
+            if(!query.exec(aa)){qDebug()<<"1gagal simpen"<<id_aset;}
+            else{while(query.next()){qDebug()<<"1sukses="<<id_aset;
+                id_paramnya=query.lastInsertId().toInt();
+                flag_masuk_param1=1;
+                }}
+        }
+        else{
+       // aa = QString("INSERT INTO parameter ( id_tipe_param, id_aset, urut) VALUES('%1',%2,%3)").arg(QString::number(data_new[2][a]),QString::number(id_aset),QString::number(1));
+        aa = QString("INSERT INTO parameter (id_tipe_param, id_aset, urut)"
+                     " SELECT %1,%2,%3 WHERE NOT EXISTS "
+                     "(SELECT id_tipe_param,id_aset,urut FROM parameter "
+                     "WHERE id_tipe_param=%4 AND id_aset=%5)").
+                arg(QString::number(tipe_param[a]),//id_tipe_param
+                    QString::number(id_aset),//id_aset
+                    QString::number(1),//urut
+                    QString::number(tipe_param[a]),//id_tipe_param
+                    QString::number(id_aset));//id_aset
+        qDebug()<<qu;
+        if(!query.exec(aa)){qDebug()<<"1gagal simpen"<<id_aset;}
+        else{while(query.next()){qDebug()<<"1sukses="<<id_aset;
+            id_paramnya=query.lastInsertId().toInt();
+            flag_masuk_param2=1;
+            }}
+        flag_masukkan_param=0;
+        }
+    id_param.push_back(id_paramnya);
+    id_parent=0;
+     //cek isi ulang parameter
+    }
+
+//                if(flag_masuk_param1==0 && flag_masuk_param2==0){
+//                    for(int i=0; i<data_new[0].size(); i++){
+//                        for(int k=0; k<list_data_aset.size(); k++){
+//                            qDebug()<<"id param:"<<list_data_aset[k]<<"|tipe_data:"<<data_new[2][i]<<"|tiemstamp:"<<data_new[4][i];
+//                        }
+//                    }
+//                     //id_param.push_back(id_paramnya);
+//                }
+    qDebug()<<"id paramnya size";
+
+    for(int i=0; i<rute_baru.size(); i++){//hapusnya dari rute_baru
+        QString qu;
+        int id_rute_baru;
+        QString rute = (QString)rute_baru[i];
+        qu = QString("INSERT INTO rute (nama_rute,id_database)"
+                     " SELECT '%1',%2 WHERE NOT EXISTS "
+                     "(SELECT nama_rute,id_database FROM rute "
+                     "WHERE nama_rute='%3' AND id_database=%4)").
+                arg(rute,QString::number(id_database),
+                rute,QString::number(id_database));
+        if(!query.exec(qu)) {qDebug()<< "ERROR:: " <<query.lastError().text();}
+        else{while(query.next()){
+                id_rute_baru=query.lastInsertId().toInt();
+                s_id_rute_baru.push_back(id_rute_baru);//new id rute
+                qDebug()<<"id_rute baru tambah:"<<id_rute_baru<<rute;
+        }}}
+    qDebug()<<"------------cek eliminasi data awal----------";
+    qDebug()<<"- jumlah data rute:"<<rute_baru.size();
+    qDebug()<<"- jumlah data id_param:"<< id_param.size();//1
+    qDebug()<<"- jumlah data tipe_param:"<< tipe_param.size();//2
+    qDebug()<<"- jumlah data id_rute:"<<id_rute.size();//3
+    qDebug()<<"- jumlah data time:"<<time.size();//4
+    qDebug()<<"- jumlah data siklus:"<<siklus.size();//5
+    qDebug()<<"----------------------------------------";
+//masukkan isi_rute dulu
+    for(int i=0; i<rute_baru.size(); i++){
+        qint64 mulai;
+        mulai = QDateTime::currentMSecsSinceEpoch() ;
+        QString qu;
+        int id_rute_baru;
+        QString rute = (QString)rute_baru[i];
+        qu = QString("SELECT id FROM rute WHERE nama_rute='%1'").
+                arg(rute);
+        if(!query.exec(qu)) {qDebug()<< "ERROR:: " <<query.lastError().text();}
+        else{while(query.next()){
+                 id_rute_baru=query.value("id").toInt();
+                 s_id_rute_baru.push_back(id_rute_baru);//new id rute
+                 qDebug()<<"id_rute:"<<id_rute_baru <<rute;
+                 QByteArray datax;
+                 datax.resize(100);
+                 QString qa;
+                         qa.sprintf("INSERT INTO rute_isi (id_rute,id_tipe_param,id_last_param,kanal,param_setting)"
+                                    " SELECT :id_rute,:id_tipe_param,:id_last_param,:kanal,:param_setting "
+                                    "WHERE NOT EXISTS (SELECT id_rute,id_last_param FROM rute_isi "
+                                    "WHERE id_rute=:id_rute AND id_last_param=:id_last_param)");
+                         query.exec("pragma synchronous = off;");
+                         query.prepare(qa);
+                         query.bindValue(":id_rute",id_rute_baru);
+                         query.bindValue(":id_tipe_param",tipe_param[i]);
+                         query.bindValue(":id_last_param",id_param[i]);
+                         query.bindValue(":kanal",1);
+                         query.bindValue(":param_setting",all_rute_param[i]);
+                         query.exec();
+  //tampil
+                  qint64 end;
+                  end = QDateTime::currentMSecsSinceEpoch();
+                  qint64 waktu = end-mulai;
+                  qDebug()<<"time save rute_isi: "<<waktu<< " ms";
+                 // qDebug()<<"size:"<<data_new[0].size();
+            }
+        }
+    }
+//----------------------------------------------------------------------------------------------------//
+
+//masukkan masukkan data
+        int total_waktu=0;
+        int ukuran_total=0;
+        int ukuran=0;
+      qDebug()<<"rute baru cek"<<rute_baru.size();
+
+    for(int i=0; i<rute_baru.size(); i++){
+        qint64 mulai;
+
+        mulai = QDateTime::currentMSecsSinceEpoch() ;
+        QString qu;
+        int id_rute_baru;
+        QString rute = (QString)rute_baru[i];
+        qu = QString("SELECT id FROM rute WHERE nama_rute='%1'").
+                arg(rute);
+        if(!query.exec(qu)) {qDebug()<< "ERROR:: " <<query.lastError().text();}
+        else{while(query.next()){
+             id_rute_baru=query.value("id").toInt();
+             s_id_rute_baru.push_back(id_rute_baru);//new id rute}
+             qDebug()<<"tipe_data:"<<tipe_param[i];
+             if(tipe_param[i]==410 || tipe_param[i]==420 || tipe_param[i]==430||
+                tipe_param[i]==41 || tipe_param[i]==42 || tipe_param[i]==43){
+                 //tambahin id_isi_rute?
+                 //
+                 //
+                 //
+                 //
+
+                  QString tipe_data = get_table_name(tipe_param[i]);
+                  QString qa;
+                  qa.sprintf("INSERT INTO %s (id_param,id_rute,data,flag_set_param,data_timestamp)"
+                               " SELECT :id_param,:id_rute,:data,:flag_set_param,:data_timestamp "
+                               "WHERE NOT EXISTS (SELECT id_rute,data_timestamp FROM %s "
+                               "WHERE id_rute=:id_rute AND data_timestamp=:data_timestamp)",
+                                tipe_data.toUtf8().data(),tipe_data.toUtf8().data());
+                                  query.exec("pragma synchronous = off;");
+                                  query.prepare(qa);
+                                  query.bindValue(":id_param",id_param[i]);
+                                  query.bindValue(":id_rute",id_rute_baru);
+                                  query.bindValue(":data",all_data[i]);
+                                  query.bindValue(":flag_set_param",0);
+                                  query.bindValue(":data_timestamp",time[i]);
+                                  query.exec();
+                                  if(!query.exec())qDebug()<<"nggak mmasuk:";
+                 //---------------------------------------------------------------//
+                  qint64 end;
+                  end = QDateTime::currentMSecsSinceEpoch();
+                  qint64 waktu;
+                  waktu = end-mulai;
+                  int waktu_ = waktu;
+                  total_waktu+=waktu_;
+//                              ukuran+=all_data[i].size();
+//                              ui->progressBar->setValue(ukuran);
+                  qDebug()<<"time save data tipe: "<<waktu<< " ms | size:" <<all_data[i].size()/1000<<" Kb";
+            }
+            else if(tipe_param[i]==28 || tipe_param[i]==3 ||tipe_param[i]==2 || tipe_param[i]==11){
+                 //tambahin siklus dan id_isi_rute?
+                 //
+                 //
+                 //
+                 //
+                 qDebug()<<"id_rute:"<<id_rute_baru <<rute;
+                 //qDebug()<<"cek:"<<id_param.size()<<id_rute_baru<<all_data.size()<<data_new[4].size()<<data_new[5].size();
+                 QString tipe_data = get_table_name(tipe_param[i]);
+                 QString qStr;
+                 qStr.sprintf("insert into %s (id_param,id_rute, data, flag_set_param, data_timestamp, siklus) "
+                              "values (:id_param, :id_rute, :data, :flag_set_param, :data_timestamp, :siklus)",tipe_data.toUtf8().data());
+                 query.exec("pragma synchronous = off;");
+                 query.prepare(qStr);
+                 query.bindValue(":id_param",id_param[i]);
+                 query.bindValue(":id_rute", id_rute_baru);
+                 query.bindValue(":data", all_data[i]);
+                 query.bindValue(":flag_set_param", 0);
+                 query.bindValue(":data_timestamp", time[i]);
+                 query.bindValue(":siklus", siklus[i]);
+                 query.exec();
+                 query.clear();
+
+                 qint64 end;
+                 end = QDateTime::currentMSecsSinceEpoch();
+                 qint64 waktu;
+                 waktu = end-mulai;
+                 int waktu_ = waktu;
+                 total_waktu+=waktu_;
+//                             ukuran+=all_data[i].size();
+//                             ui->progressBar->setValue(ukuran);
+                 qDebug()<<"time save data tipe: "<<waktu<< " ms | size:" <<all_data[i].size()/1000 <<" Kb";
+                 }
+             }
+        }
+
+    }
+    if(total_waktu/1000<60)qDebug()<<"TOTAL WAKTU PENGIRIMAN: "<<total_waktu/1000<< " detik";
+    else if(total_waktu/1000>=60)qDebug()<<"TOTAL WAKTU PENGIRIMAN: "<<total_waktu/1000/60<< " menit";
 }
+else{
+//QMessageBox::information(this,"informasi","tidak ada data yang dikirim");
+}}
+
 
 //QVector<int> validasi[3];
 
