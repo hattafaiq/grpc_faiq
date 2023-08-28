@@ -477,7 +477,10 @@ void Tampil::on_PB_synchron_clicked()
             cc->flag_sukses=0;
             std::string server_address("127.0.0.1:50051");
             cc->CallServer("kirim_data",2,server_address,0,0);
-            //--------------------------------------------------//
+            if(cc->alarm_message_data!=0)
+                QMessageBox::warning(this, "Kirim Data Error ("+QString::number(cc->alarm_message_data)+")", "Error ("+cc->pesan_alarm+")"+
+                                     "data ke:"+QString::number(cc->counter_pesan));
+
         }
         else{
             QMessageBox::information(this,"informasi","tidak ada data yang terupdate");

@@ -113,25 +113,6 @@ class GreeterServiceImpl final : public protokol_1::Service  {
             }
             reply->set_header_pesan("balas");
         }
-        else if(request->header_pesan()=="balas1"){
-            qDebug()<<"-------------------------";
-            qDebug()<<"client:"<<"balas1";
-            qDebug()<<"server:"<<"balas2";
-
-            reply->set_header_pesan("balas2");
-        }
-        else if(request->header_pesan()=="sudah1"){
-            qDebug()<<"-------------------------";
-            qDebug()<<"client:"<<"sudah1";
-            qDebug()<<"server:"<<"sudah2";
-            reply->set_header_pesan("sudah2");
-        }
-        else if(request->header_pesan()=="finish1"){
-            qDebug()<<"-------------------------";
-            qDebug()<<"client:"<<"finish1";
-            qDebug()<<"server:"<<"finish2";
-            reply->set_header_pesan("finish2");
-        }
     return Status::OK;
 }
 
@@ -148,12 +129,13 @@ class GreeterServiceImpl2 final : public protokol_2::Service  {
     QVector<int> time;
     QVector<int> siklus;
     int id_database;
+   // int counter;
     QByteArrayList all_rute_param;
     QByteArrayList all_data;
     //masterdate atau id date yang digunakan untuk memisahkan antara data 1 dan data 2
     //di dalam param yang sama
     Status kirim_data(ServerContext* context, const mes_client* request, mes_server* reply) override {
-        std::cout <<"req struct kirim data test:" << request->header_pesan();
+        std::cout <<"req pesan dari client diterima:->" << request->header_pesan() <<std::endl;
         if(request->header_pesan()=="kirim_data"){
             //cek dulu size nya;
                 std::cout<<"cek data_upload client:" <<
@@ -169,15 +151,9 @@ class GreeterServiceImpl2 final : public protokol_2::Service  {
                            sizeof(request->data()) <<" "<<
                            sizeof(request->param()) <<" "<<
                            std::endl;
-                //lanjuting bikin data yang dikirim di client
-//                b.save_data(rute,aset,id_param,tipe_param,
-//                              id_rute,time,siklus,id_database,
-//                              all_rute_param,all_data);
-                int counter = request->pesan_ke();
-                counter+=1;
-                reply->set_pesan_ke(counter);
-                //note harus ditambah flag sudah simpan
-                //agar database server tidak kuwalahan memorinya
+
+               // std::cout <<"counter="<< request->pesan_ke() <<std::endl;
+
                 reply->set_header_pesan("terima_data");
         }
         return Status::OK;

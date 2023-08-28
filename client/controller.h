@@ -16,6 +16,8 @@
 #include "gen_cloud4/Cloud.pb.h"
 
 using grpc::Channel;
+using grpc::ClientAsyncResponseReader;
+using grpc::CompletionQueue;
 using grpc::ClientContext;
 using grpc::Status;
 using grpc::ChannelArguments;
@@ -177,6 +179,7 @@ public:
     QStringList c_rute;
 
     int alarm_message;
+    int alarm_message_data;
     QString pesan_alarm;
 
     void CallServer(std::string pesan, int flag, std::string server_alamat,int count, int jumlah);

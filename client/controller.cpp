@@ -31,18 +31,17 @@ class GreeterClient{
     std::cout <<"kirim request:"<< user <<std::endl;
     request.set_header_pesan(user);
     Status status = stub_->initial_data(&context,request,&reply );
-    //qDebug()<<"pesan 0 user:"<<data_n[0].size()<<data_n[1].size()<<data_n[2].size()<<data_n[3].size();
+
     alarm_pesan=0;
     if (status.ok()) {
-        std::cout<<"req: "<<user<< "|rep:"<<reply.header_pesan()<<std::endl;
-        //qDebug()<<"pesan user:"<<data_n[0].size()<<data_n[1].size()<<data_n[2].size()<<data_n[3].size();
+      //std::cout<<"req: "<<user<< "|rep:"<<reply.header_pesan()<<std::endl;
       alarm_pesan=0;
       return reply.header_pesan();
     } else {
-      //s_pesan_alarm = QString::fromStdString(status.error_message());
+
       std::cout << status.error_code()<< ": "<< status.error_message()<< std::endl;
       alarm_pesan = (int) status.error_code();
-      return "RPC failed";
+      return "error- " + status.error_message();
     }
   }
 
@@ -125,6 +124,7 @@ class GreeterClient2{
  public:
     mes_client request;
     mes_server reply;
+    int alarm_pesan;
     ClientContext context;
     GreeterClient2(std::shared_ptr<Channel> channel)
       : stub_(protokol_2::NewStub(channel)) {}
@@ -141,6 +141,7 @@ class GreeterClient2{
                           int counter
                           ) {
       request.set_header_pesan(user);
+      request.set_pesan_ke(counter);
       request.set_aset(asets.toStdString());
       request.set_rute(rute.toStdString());
       request.set_id_param_lama(s_id_param_lama);
@@ -151,18 +152,20 @@ class GreeterClient2{
       request.set_param(param_set);
       request.set_data(data);
       Status status = stub_->kirim_data(&context,request,&reply );
-      //counter_data+=1;
-      request.set_pesan_ke(counter);
+
+     // qDebug()<<"-counter"<<counter;
       if (status.ok()) {
-          std::cout<<"req: "<<user<< "|rep:"<<reply.header_pesan()<<std::endl;
-          qDebug()<<"counter pesan="<<counter;
+       //   std::cout<<"req: "<<user<< "|rep:"<<reply.header_pesan()<<std::endl;
+         // qDebug()<<"req counter:"<<counter;
+         // std::cout <<"reply pesan:"<< reply.pesan_ke() << std::endl;
         return reply.header_pesan();
       } else {
+        alarm_pesan = (int) status.error_code();
         std::cout << status.error_code()
                   << ": "
                   << status.error_message()
                   << std::endl;
-        return "error - "+status.error_message();
+        return "error - " + status.error_message();
       }
    }
  private:
@@ -190,7 +193,6 @@ void controller::cari_induk_paramm(int parameter, int tipe)
         while (Q2.next())
         {
          id_aset_induk = Q2.value("id_aset").toInt();
-        // qDebug()<<"id_parent:"<<id_aset_induk;
          cari_induk(id_aset_induk);
       }
     }
@@ -211,11 +213,9 @@ void controller::cari_induk_param(int p_id_aset)
         while (Q2.next())
         {
          id_aset_induk = Q2.value("id_aset").toInt();
-      //   qDebug()<<"parent1:"<<id_aset_induk;
          cari_induk(id_aset_induk);
       }
    }
-
 }
 
 void controller::emit_gas_kirim(int counter, int maks)
@@ -378,7 +378,7 @@ void controller::CallServer(std::string header, int flag, std::string server_ala
     qDebug()<<rute_baru.size();//note c_rute masih kosong
     if(flag_sukses==0)greeter.pesan_pertama(rute_baru,cacah_data_name,data_n[1],data_n[2],data_n[3],data_n[4],data_n[5]);
     std::string balasan = greeter.initial_data(header);
-    qDebug()<<"---------------------------------------------------------------------KK"
+    qDebug()<<"-----"
           <<c_rute.size()
            <<cacah_data_name.size()
             <<data_n[0].size()
@@ -386,8 +386,10 @@ void controller::CallServer(std::string header, int flag, std::string server_ala
                 <<data_n[2].size()
                   <<data_n[3].size()
                     <<data_n[4].size()
-                      <<data_n[5].size();
+                      <<data_n[5].size()
+                     <<"----";
     alarm_message=0;
+    alarm_message_data=0;
     if(greeter.alarm_pesan!=0){
         alarm_message = greeter.alarm_pesan;
         isi_pesan();
@@ -395,7 +397,6 @@ void controller::CallServer(std::string header, int flag, std::string server_ala
 
     if(balasan=="balas"){
         counter_pesan=0;
-
         flag_sukses=1;
         greeter.proses_eliminasi();
         c_rute = greeter.list_rute;
@@ -419,16 +420,12 @@ void controller::CallServer(std::string header, int flag, std::string server_ala
  }
  else if(flag == 2){
      //int count=0;
-
      GreeterClient2 greeter( grpc::CreateCustomChannel (server_alamat, grpc::InsecureChannelCredentials(), ch_args));
      std::string balasan;
-    // greeter.counter_data=0;
-   //  //if(flag_sukses==0)greeter.counter_data=0;
-     //masih salah kalau bikin counter
-     //harus dipikirkan kalau misalkan kounternya apakah masih ikut dan
-     //data tiap client apakah beda beda
-    // greeter.jumlah=c_siklus.size();
-
+     if(greeter.alarm_pesan!=0){
+         alarm_message = greeter.alarm_pesan;
+         isi_pesan();
+     }
      balasan = greeter.kirim_data(header,
                                  (QString) aset_info_server[counter_pesan],
                                   (QString) c_rute[counter_pesan],
@@ -441,12 +438,15 @@ void controller::CallServer(std::string header, int flag, std::string server_ala
                                          (QByteArray) all_data[counter_pesan],
                                           counter_pesan
                                       );
-     std::cout << balasan<< std::endl;
+     std::cout <<"reply dari server:->"<< balasan<< std::endl;
      if(balasan=="terima_data"){//lanjutkan kirim data loop
         qDebug()<<"- setelah direply server, lanjut kirim data ke-->"<<counter_pesan;
         flag_sukses=1;
         counter_pesan += 1;
         if(!flag_emit_cukup)emit_gas_kirim(counter_pesan,10);
+        else{
+            qDebug()<<"sudah selesai upload semua data sejumlah="<<10;
+        }
      }
      else{
         //flag_sukses=0;
@@ -458,11 +458,11 @@ void controller::isi_pesan()
 {
     switch (alarm_message){
         case GRPC_STATUS_CANCELLED:
-            pesan_alarm = "GRPC_STATUS_CANCELLED";
+            pesan_alarm = "GRPC_STATUS_CANCELLED";//
             qDebug()<<"GRPC_STATUS_CANCELLED";
             break;
         case GRPC_STATUS_UNKNOWN:
-            pesan_alarm ="GRPC_STATUS_UNKNOWN";
+            pesan_alarm ="GRPC_STATUS_UNKNOWN";//tanpa respon
             qDebug()<<"GRPC_STATUS_UNKNOWN";
             break;
         case GRPC_STATUS_INVALID_ARGUMENT:
