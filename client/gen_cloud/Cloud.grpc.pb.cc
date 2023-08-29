@@ -82,5 +82,66 @@ protokol_1::Service::~Service() {
 }
 
 
+static const char* protokol_2_method_names[] = {
+  "/Cloud.protokol_2/kirim_data",
+};
+
+std::unique_ptr< protokol_2::Stub> protokol_2::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
+  (void)options;
+  std::unique_ptr< protokol_2::Stub> stub(new protokol_2::Stub(channel, options));
+  return stub;
+}
+
+protokol_2::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options)
+  : channel_(channel), rpcmethod_kirim_data_(protokol_2_method_names[0], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  {}
+
+::grpc::Status protokol_2::Stub::kirim_data(::grpc::ClientContext* context, const ::Cloud::mes_client& request, ::Cloud::mes_server* response) {
+  return ::grpc::internal::BlockingUnaryCall< ::Cloud::mes_client, ::Cloud::mes_server, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_kirim_data_, context, request, response);
+}
+
+void protokol_2::Stub::async::kirim_data(::grpc::ClientContext* context, const ::Cloud::mes_client* request, ::Cloud::mes_server* response, std::function<void(::grpc::Status)> f) {
+  ::grpc::internal::CallbackUnaryCall< ::Cloud::mes_client, ::Cloud::mes_server, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_kirim_data_, context, request, response, std::move(f));
+}
+
+void protokol_2::Stub::async::kirim_data(::grpc::ClientContext* context, const ::Cloud::mes_client* request, ::Cloud::mes_server* response, ::grpc::ClientUnaryReactor* reactor) {
+  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_kirim_data_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::Cloud::mes_server>* protokol_2::Stub::PrepareAsynckirim_dataRaw(::grpc::ClientContext* context, const ::Cloud::mes_client& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::Cloud::mes_server, ::Cloud::mes_client, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_kirim_data_, context, request);
+}
+
+::grpc::ClientAsyncResponseReader< ::Cloud::mes_server>* protokol_2::Stub::Asynckirim_dataRaw(::grpc::ClientContext* context, const ::Cloud::mes_client& request, ::grpc::CompletionQueue* cq) {
+  auto* result =
+    this->PrepareAsynckirim_dataRaw(context, request, cq);
+  result->StartCall();
+  return result;
+}
+
+protokol_2::Service::Service() {
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      protokol_2_method_names[0],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< protokol_2::Service, ::Cloud::mes_client, ::Cloud::mes_server, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
+          [](protokol_2::Service* service,
+             ::grpc::ServerContext* ctx,
+             const ::Cloud::mes_client* req,
+             ::Cloud::mes_server* resp) {
+               return service->kirim_data(ctx, req, resp);
+             }, this)));
+}
+
+protokol_2::Service::~Service() {
+}
+
+::grpc::Status protokol_2::Service::kirim_data(::grpc::ServerContext* context, const ::Cloud::mes_client* request, ::Cloud::mes_server* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+
 }  // namespace Cloud
 

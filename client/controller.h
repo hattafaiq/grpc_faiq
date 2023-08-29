@@ -16,8 +16,8 @@
 #include "gen_cloud4/Cloud.pb.h"
 
 using grpc::Channel;
-using grpc::ClientAsyncResponseReader;
-using grpc::CompletionQueue;
+//using grpc::ClientAsyncResponseReader;
+//using grpc::CompletionQueue;
 using grpc::ClientContext;
 using grpc::Status;
 using grpc::ChannelArguments;
@@ -163,20 +163,23 @@ public:
     QSqlDatabase db;
     QString con_name;
     int id_database;
-    QByteArrayList all_data;
+
     QStringList rute_baru;
-    QByteArrayList all_rute_param;
+
     QStringList cacah_data_name;
 
     //-------------persiapan data ke 2-------//
     QStringList aset_info_server;//list aset utuh seluruh data balik server
     QStringList aset_info_tampil;
     QVector<int> c_id_param_lama;
+    QVector<int> c_id_masuk_lama;
     QVector<int> c_tipe_param;
     QVector<int> c_id_rute_lama;
     QVector<int> c_time;
     QVector<int> c_siklus;
     QStringList c_rute;
+    QByteArrayList c_all_rute_param;
+    QByteArrayList c_all_data;
 
     int alarm_message;
     int alarm_message_data;

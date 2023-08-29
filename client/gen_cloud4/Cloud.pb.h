@@ -206,8 +206,9 @@ class pesan_client final :
     kIdRuteLamaFieldNumber = 6,
     kTimestampFieldNumber = 7,
     kSiklusFieldNumber = 8,
+    kIdDataMasukFieldNumber = 9,
     kHeaderPesanFieldNumber = 1,
-    kJumlahDataFieldNumber = 9,
+    kJumlahDataFieldNumber = 10,
   };
   // repeated string aset = 2;
   int aset_size() const;
@@ -367,6 +368,28 @@ class pesan_client final :
   ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
       mutable_siklus();
 
+  // repeated int32 id_data_masuk = 9;
+  int id_data_masuk_size() const;
+  private:
+  int _internal_id_data_masuk_size() const;
+  public:
+  void clear_id_data_masuk();
+  private:
+  int32_t _internal_id_data_masuk(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+      _internal_id_data_masuk() const;
+  void _internal_add_id_data_masuk(int32_t value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+      _internal_mutable_id_data_masuk();
+  public:
+  int32_t id_data_masuk(int index) const;
+  void set_id_data_masuk(int index, int32_t value);
+  void add_id_data_masuk(int32_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+      id_data_masuk() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+      mutable_id_data_masuk();
+
   // string header_pesan = 1;
   void clear_header_pesan();
   const std::string& header_pesan() const;
@@ -381,7 +404,7 @@ class pesan_client final :
   std::string* _internal_mutable_header_pesan();
   public:
 
-  // int32 jumlah_data = 9;
+  // int32 jumlah_data = 10;
   void clear_jumlah_data();
   int32_t jumlah_data() const;
   void set_jumlah_data(int32_t value);
@@ -409,6 +432,8 @@ class pesan_client final :
   mutable std::atomic<int> _timestamp_cached_byte_size_;
   ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t > siklus_;
   mutable std::atomic<int> _siklus_cached_byte_size_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t > id_data_masuk_;
+  mutable std::atomic<int> _id_data_masuk_cached_byte_size_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr header_pesan_;
   int32_t jumlah_data_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -545,8 +570,9 @@ class pesan_server final :
     kIdRuteLamaFieldNumber = 6,
     kTimestampFieldNumber = 7,
     kSiklusFieldNumber = 8,
+    kIdDataMasukFieldNumber = 9,
     kHeaderPesanFieldNumber = 1,
-    kJumlahDataFieldNumber = 9,
+    kJumlahDataFieldNumber = 10,
   };
   // repeated string aset = 2;
   int aset_size() const;
@@ -706,6 +732,28 @@ class pesan_server final :
   ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
       mutable_siklus();
 
+  // repeated int32 id_data_masuk = 9;
+  int id_data_masuk_size() const;
+  private:
+  int _internal_id_data_masuk_size() const;
+  public:
+  void clear_id_data_masuk();
+  private:
+  int32_t _internal_id_data_masuk(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+      _internal_id_data_masuk() const;
+  void _internal_add_id_data_masuk(int32_t value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+      _internal_mutable_id_data_masuk();
+  public:
+  int32_t id_data_masuk(int index) const;
+  void set_id_data_masuk(int index, int32_t value);
+  void add_id_data_masuk(int32_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+      id_data_masuk() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+      mutable_id_data_masuk();
+
   // string header_pesan = 1;
   void clear_header_pesan();
   const std::string& header_pesan() const;
@@ -720,7 +768,7 @@ class pesan_server final :
   std::string* _internal_mutable_header_pesan();
   public:
 
-  // int32 jumlah_data = 9;
+  // int32 jumlah_data = 10;
   void clear_jumlah_data();
   int32_t jumlah_data() const;
   void set_jumlah_data(int32_t value);
@@ -748,6 +796,8 @@ class pesan_server final :
   mutable std::atomic<int> _timestamp_cached_byte_size_;
   ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t > siklus_;
   mutable std::atomic<int> _siklus_cached_byte_size_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t > id_data_masuk_;
+  mutable std::atomic<int> _id_data_masuk_cached_byte_size_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr header_pesan_;
   int32_t jumlah_data_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -880,15 +930,16 @@ class mes_client final :
     kHeaderPesanFieldNumber = 1,
     kAsetFieldNumber = 3,
     kRuteFieldNumber = 4,
-    kDataFieldNumber = 10,
-    kParamFieldNumber = 11,
+    kDataFieldNumber = 11,
+    kParamFieldNumber = 12,
     kJumlahDataFieldNumber = 2,
     kIdParamLamaFieldNumber = 5,
     kIdTipeParamFieldNumber = 6,
     kIdRuteLamaFieldNumber = 7,
     kTimestampFieldNumber = 8,
     kSiklusFieldNumber = 9,
-    kPesanKeFieldNumber = 12,
+    kIdDataMasukFieldNumber = 10,
+    kPesanKeFieldNumber = 13,
   };
   // string header_pesan = 1;
   void clear_header_pesan();
@@ -932,7 +983,7 @@ class mes_client final :
   std::string* _internal_mutable_rute();
   public:
 
-  // bytes data = 10;
+  // bytes data = 11;
   void clear_data();
   const std::string& data() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -946,7 +997,7 @@ class mes_client final :
   std::string* _internal_mutable_data();
   public:
 
-  // bytes param = 11;
+  // bytes param = 12;
   void clear_param();
   const std::string& param() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -1014,7 +1065,16 @@ class mes_client final :
   void _internal_set_siklus(int32_t value);
   public:
 
-  // int32 pesan_ke = 12;
+  // int32 id_data_masuk = 10;
+  void clear_id_data_masuk();
+  int32_t id_data_masuk() const;
+  void set_id_data_masuk(int32_t value);
+  private:
+  int32_t _internal_id_data_masuk() const;
+  void _internal_set_id_data_masuk(int32_t value);
+  public:
+
+  // int32 pesan_ke = 13;
   void clear_pesan_ke();
   int32_t pesan_ke() const;
   void set_pesan_ke(int32_t value);
@@ -1041,6 +1101,7 @@ class mes_client final :
   int32_t id_rute_lama_;
   int32_t timestamp_;
   int32_t siklus_;
+  int32_t id_data_masuk_;
   int32_t pesan_ke_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Cloud_2eproto;
@@ -1172,15 +1233,16 @@ class mes_server final :
     kHeaderPesanFieldNumber = 1,
     kAsetFieldNumber = 3,
     kRuteFieldNumber = 4,
-    kDataFieldNumber = 10,
-    kParamFieldNumber = 11,
+    kDataFieldNumber = 11,
+    kParamFieldNumber = 12,
     kJumlahDataFieldNumber = 2,
     kIdParamLamaFieldNumber = 5,
     kIdTipeParamFieldNumber = 6,
     kIdRuteLamaFieldNumber = 7,
     kTimestampFieldNumber = 8,
     kSiklusFieldNumber = 9,
-    kPesanKeFieldNumber = 12,
+    kIdDataMasukFieldNumber = 10,
+    kPesanKeFieldNumber = 13,
   };
   // string header_pesan = 1;
   void clear_header_pesan();
@@ -1224,7 +1286,7 @@ class mes_server final :
   std::string* _internal_mutable_rute();
   public:
 
-  // bytes data = 10;
+  // bytes data = 11;
   void clear_data();
   const std::string& data() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -1238,7 +1300,7 @@ class mes_server final :
   std::string* _internal_mutable_data();
   public:
 
-  // bytes param = 11;
+  // bytes param = 12;
   void clear_param();
   const std::string& param() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -1306,7 +1368,16 @@ class mes_server final :
   void _internal_set_siklus(int32_t value);
   public:
 
-  // int32 pesan_ke = 12;
+  // int32 id_data_masuk = 10;
+  void clear_id_data_masuk();
+  int32_t id_data_masuk() const;
+  void set_id_data_masuk(int32_t value);
+  private:
+  int32_t _internal_id_data_masuk() const;
+  void _internal_set_id_data_masuk(int32_t value);
+  public:
+
+  // int32 pesan_ke = 13;
   void clear_pesan_ke();
   int32_t pesan_ke() const;
   void set_pesan_ke(int32_t value);
@@ -1333,6 +1404,7 @@ class mes_server final :
   int32_t id_rute_lama_;
   int32_t timestamp_;
   int32_t siklus_;
+  int32_t id_data_masuk_;
   int32_t pesan_ke_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Cloud_2eproto;
@@ -1784,7 +1856,54 @@ pesan_client::mutable_siklus() {
   return _internal_mutable_siklus();
 }
 
-// int32 jumlah_data = 9;
+// repeated int32 id_data_masuk = 9;
+inline int pesan_client::_internal_id_data_masuk_size() const {
+  return id_data_masuk_.size();
+}
+inline int pesan_client::id_data_masuk_size() const {
+  return _internal_id_data_masuk_size();
+}
+inline void pesan_client::clear_id_data_masuk() {
+  id_data_masuk_.Clear();
+}
+inline int32_t pesan_client::_internal_id_data_masuk(int index) const {
+  return id_data_masuk_.Get(index);
+}
+inline int32_t pesan_client::id_data_masuk(int index) const {
+  // @@protoc_insertion_point(field_get:Cloud.pesan_client.id_data_masuk)
+  return _internal_id_data_masuk(index);
+}
+inline void pesan_client::set_id_data_masuk(int index, int32_t value) {
+  id_data_masuk_.Set(index, value);
+  // @@protoc_insertion_point(field_set:Cloud.pesan_client.id_data_masuk)
+}
+inline void pesan_client::_internal_add_id_data_masuk(int32_t value) {
+  id_data_masuk_.Add(value);
+}
+inline void pesan_client::add_id_data_masuk(int32_t value) {
+  _internal_add_id_data_masuk(value);
+  // @@protoc_insertion_point(field_add:Cloud.pesan_client.id_data_masuk)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+pesan_client::_internal_id_data_masuk() const {
+  return id_data_masuk_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+pesan_client::id_data_masuk() const {
+  // @@protoc_insertion_point(field_list:Cloud.pesan_client.id_data_masuk)
+  return _internal_id_data_masuk();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+pesan_client::_internal_mutable_id_data_masuk() {
+  return &id_data_masuk_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+pesan_client::mutable_id_data_masuk() {
+  // @@protoc_insertion_point(field_mutable_list:Cloud.pesan_client.id_data_masuk)
+  return _internal_mutable_id_data_masuk();
+}
+
+// int32 jumlah_data = 10;
 inline void pesan_client::clear_jumlah_data() {
   jumlah_data_ = 0;
 }
@@ -2244,7 +2363,54 @@ pesan_server::mutable_siklus() {
   return _internal_mutable_siklus();
 }
 
-// int32 jumlah_data = 9;
+// repeated int32 id_data_masuk = 9;
+inline int pesan_server::_internal_id_data_masuk_size() const {
+  return id_data_masuk_.size();
+}
+inline int pesan_server::id_data_masuk_size() const {
+  return _internal_id_data_masuk_size();
+}
+inline void pesan_server::clear_id_data_masuk() {
+  id_data_masuk_.Clear();
+}
+inline int32_t pesan_server::_internal_id_data_masuk(int index) const {
+  return id_data_masuk_.Get(index);
+}
+inline int32_t pesan_server::id_data_masuk(int index) const {
+  // @@protoc_insertion_point(field_get:Cloud.pesan_server.id_data_masuk)
+  return _internal_id_data_masuk(index);
+}
+inline void pesan_server::set_id_data_masuk(int index, int32_t value) {
+  id_data_masuk_.Set(index, value);
+  // @@protoc_insertion_point(field_set:Cloud.pesan_server.id_data_masuk)
+}
+inline void pesan_server::_internal_add_id_data_masuk(int32_t value) {
+  id_data_masuk_.Add(value);
+}
+inline void pesan_server::add_id_data_masuk(int32_t value) {
+  _internal_add_id_data_masuk(value);
+  // @@protoc_insertion_point(field_add:Cloud.pesan_server.id_data_masuk)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+pesan_server::_internal_id_data_masuk() const {
+  return id_data_masuk_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+pesan_server::id_data_masuk() const {
+  // @@protoc_insertion_point(field_list:Cloud.pesan_server.id_data_masuk)
+  return _internal_id_data_masuk();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+pesan_server::_internal_mutable_id_data_masuk() {
+  return &id_data_masuk_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+pesan_server::mutable_id_data_masuk() {
+  // @@protoc_insertion_point(field_mutable_list:Cloud.pesan_server.id_data_masuk)
+  return _internal_mutable_id_data_masuk();
+}
+
+// int32 jumlah_data = 10;
 inline void pesan_server::clear_jumlah_data() {
   jumlah_data_ = 0;
 }
@@ -2541,7 +2707,27 @@ inline void mes_client::set_siklus(int32_t value) {
   // @@protoc_insertion_point(field_set:Cloud.mes_client.siklus)
 }
 
-// bytes data = 10;
+// int32 id_data_masuk = 10;
+inline void mes_client::clear_id_data_masuk() {
+  id_data_masuk_ = 0;
+}
+inline int32_t mes_client::_internal_id_data_masuk() const {
+  return id_data_masuk_;
+}
+inline int32_t mes_client::id_data_masuk() const {
+  // @@protoc_insertion_point(field_get:Cloud.mes_client.id_data_masuk)
+  return _internal_id_data_masuk();
+}
+inline void mes_client::_internal_set_id_data_masuk(int32_t value) {
+  
+  id_data_masuk_ = value;
+}
+inline void mes_client::set_id_data_masuk(int32_t value) {
+  _internal_set_id_data_masuk(value);
+  // @@protoc_insertion_point(field_set:Cloud.mes_client.id_data_masuk)
+}
+
+// bytes data = 11;
 inline void mes_client::clear_data() {
   data_.ClearToEmpty();
 }
@@ -2592,7 +2778,7 @@ inline void mes_client::set_allocated_data(std::string* data) {
   // @@protoc_insertion_point(field_set_allocated:Cloud.mes_client.data)
 }
 
-// bytes param = 11;
+// bytes param = 12;
 inline void mes_client::clear_param() {
   param_.ClearToEmpty();
 }
@@ -2643,7 +2829,7 @@ inline void mes_client::set_allocated_param(std::string* param) {
   // @@protoc_insertion_point(field_set_allocated:Cloud.mes_client.param)
 }
 
-// int32 pesan_ke = 12;
+// int32 pesan_ke = 13;
 inline void mes_client::clear_pesan_ke() {
   pesan_ke_ = 0;
 }
@@ -2940,7 +3126,27 @@ inline void mes_server::set_siklus(int32_t value) {
   // @@protoc_insertion_point(field_set:Cloud.mes_server.siklus)
 }
 
-// bytes data = 10;
+// int32 id_data_masuk = 10;
+inline void mes_server::clear_id_data_masuk() {
+  id_data_masuk_ = 0;
+}
+inline int32_t mes_server::_internal_id_data_masuk() const {
+  return id_data_masuk_;
+}
+inline int32_t mes_server::id_data_masuk() const {
+  // @@protoc_insertion_point(field_get:Cloud.mes_server.id_data_masuk)
+  return _internal_id_data_masuk();
+}
+inline void mes_server::_internal_set_id_data_masuk(int32_t value) {
+  
+  id_data_masuk_ = value;
+}
+inline void mes_server::set_id_data_masuk(int32_t value) {
+  _internal_set_id_data_masuk(value);
+  // @@protoc_insertion_point(field_set:Cloud.mes_server.id_data_masuk)
+}
+
+// bytes data = 11;
 inline void mes_server::clear_data() {
   data_.ClearToEmpty();
 }
@@ -2991,7 +3197,7 @@ inline void mes_server::set_allocated_data(std::string* data) {
   // @@protoc_insertion_point(field_set_allocated:Cloud.mes_server.data)
 }
 
-// bytes param = 11;
+// bytes param = 12;
 inline void mes_server::clear_param() {
   param_.ClearToEmpty();
 }
@@ -3042,7 +3248,7 @@ inline void mes_server::set_allocated_param(std::string* param) {
   // @@protoc_insertion_point(field_set_allocated:Cloud.mes_server.param)
 }
 
-// int32 pesan_ke = 12;
+// int32 pesan_ke = 13;
 inline void mes_server::clear_pesan_ke() {
   pesan_ke_ = 0;
 }

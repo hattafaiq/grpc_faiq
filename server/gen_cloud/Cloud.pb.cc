@@ -73,6 +73,7 @@ constexpr mes_client::mes_client(
   , aset_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
   , rute_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
   , data_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , param_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
   , jumlah_data_(0)
   , id_param_lama_(0)
   , id_tipe_param_(0)
@@ -95,6 +96,7 @@ constexpr mes_server::mes_server(
   , aset_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
   , rute_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
   , data_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , param_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
   , jumlah_data_(0)
   , id_param_lama_(0)
   , id_tipe_param_(0)
@@ -163,6 +165,7 @@ const uint32_t TableStruct_Cloud_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pr
   PROTOBUF_FIELD_OFFSET(::Cloud::mes_client, timestamp_),
   PROTOBUF_FIELD_OFFSET(::Cloud::mes_client, siklus_),
   PROTOBUF_FIELD_OFFSET(::Cloud::mes_client, data_),
+  PROTOBUF_FIELD_OFFSET(::Cloud::mes_client, param_),
   PROTOBUF_FIELD_OFFSET(::Cloud::mes_client, pesan_ke_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Cloud::mes_server, _internal_metadata_),
@@ -180,13 +183,14 @@ const uint32_t TableStruct_Cloud_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pr
   PROTOBUF_FIELD_OFFSET(::Cloud::mes_server, timestamp_),
   PROTOBUF_FIELD_OFFSET(::Cloud::mes_server, siklus_),
   PROTOBUF_FIELD_OFFSET(::Cloud::mes_server, data_),
+  PROTOBUF_FIELD_OFFSET(::Cloud::mes_server, param_),
   PROTOBUF_FIELD_OFFSET(::Cloud::mes_server, pesan_ke_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Cloud::pesan_client)},
   { 15, -1, -1, sizeof(::Cloud::pesan_server)},
   { 30, -1, -1, sizeof(::Cloud::mes_client)},
-  { 47, -1, -1, sizeof(::Cloud::mes_server)},
+  { 48, -1, -1, sizeof(::Cloud::mes_server)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -207,25 +211,26 @@ const char descriptor_table_protodef_Cloud_2eproto[] PROTOBUF_SECTION_VARIABLE(p
   "\n\rid_param_lama\030\004 \003(\005\022\025\n\rid_tipe_param\030\005"
   " \003(\005\022\024\n\014id_rute_lama\030\006 \003(\005\022\021\n\ttimestamp\030"
   "\007 \003(\005\022\016\n\006siklus\030\010 \003(\005\022\023\n\013jumlah_data\030\t \001"
-  "(\005\"\332\001\n\nmes_client\022\024\n\014header_pesan\030\001 \001(\t\022"
+  "(\005\"\351\001\n\nmes_client\022\024\n\014header_pesan\030\001 \001(\t\022"
   "\023\n\013jumlah_data\030\002 \001(\005\022\014\n\004aset\030\003 \001(\t\022\014\n\004ru"
   "te\030\004 \001(\t\022\025\n\rid_param_lama\030\005 \001(\005\022\025\n\rid_ti"
   "pe_param\030\006 \001(\005\022\024\n\014id_rute_lama\030\007 \001(\005\022\021\n\t"
   "timestamp\030\010 \001(\005\022\016\n\006siklus\030\t \001(\005\022\014\n\004data\030"
-  "\n \001(\014\022\020\n\010pesan_ke\030\013 \001(\005\"\332\001\n\nmes_server\022\024"
-  "\n\014header_pesan\030\001 \001(\t\022\023\n\013jumlah_data\030\002 \001("
-  "\005\022\014\n\004aset\030\003 \001(\t\022\014\n\004rute\030\004 \001(\t\022\025\n\rid_para"
-  "m_lama\030\005 \001(\005\022\025\n\rid_tipe_param\030\006 \001(\005\022\024\n\014i"
-  "d_rute_lama\030\007 \001(\005\022\021\n\ttimestamp\030\010 \001(\005\022\016\n\006"
-  "siklus\030\t \001(\005\022\014\n\004data\030\n \001(\014\022\020\n\010pesan_ke\030\013"
-  " \001(\0052~\n\nprotokol_1\022:\n\014initial_data\022\023.Clo"
-  "ud.pesan_client\032\023.Cloud.pesan_server\"\000\0224"
-  "\n\nkirim_data\022\021.Cloud.mes_client\032\021.Cloud."
-  "mes_server\"\000b\006proto3"
+  "\n \001(\014\022\r\n\005param\030\013 \001(\014\022\020\n\010pesan_ke\030\014 \001(\005\"\351"
+  "\001\n\nmes_server\022\024\n\014header_pesan\030\001 \001(\t\022\023\n\013j"
+  "umlah_data\030\002 \001(\005\022\014\n\004aset\030\003 \001(\t\022\014\n\004rute\030\004"
+  " \001(\t\022\025\n\rid_param_lama\030\005 \001(\005\022\025\n\rid_tipe_p"
+  "aram\030\006 \001(\005\022\024\n\014id_rute_lama\030\007 \001(\005\022\021\n\ttime"
+  "stamp\030\010 \001(\005\022\016\n\006siklus\030\t \001(\005\022\014\n\004data\030\n \001("
+  "\014\022\r\n\005param\030\013 \001(\014\022\020\n\010pesan_ke\030\014 \001(\0052H\n\npr"
+  "otokol_1\022:\n\014initial_data\022\023.Cloud.pesan_c"
+  "lient\032\023.Cloud.pesan_server\"\0002B\n\nprotokol"
+  "_2\0224\n\nkirim_data\022\021.Cloud.mes_client\032\021.Cl"
+  "oud.mes_server\"\000b\006proto3"
   ;
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_Cloud_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_Cloud_2eproto = {
-  false, false, 980, descriptor_table_protodef_Cloud_2eproto, "Cloud.proto", 
+  false, false, 1024, descriptor_table_protodef_Cloud_2eproto, "Cloud.proto", 
   &descriptor_table_Cloud_2eproto_once, nullptr, 0, 4,
   schemas, file_default_instances, TableStruct_Cloud_2eproto::offsets,
   file_level_metadata_Cloud_2eproto, file_level_enum_descriptors_Cloud_2eproto, file_level_service_descriptors_Cloud_2eproto,
@@ -1298,6 +1303,14 @@ mes_client::mes_client(const mes_client& from)
     data_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_data(), 
       GetArenaForAllocation());
   }
+  param_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    param_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_param().empty()) {
+    param_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_param(), 
+      GetArenaForAllocation());
+  }
   ::memcpy(&jumlah_data_, &from.jumlah_data_,
     static_cast<size_t>(reinterpret_cast<char*>(&pesan_ke_) -
     reinterpret_cast<char*>(&jumlah_data_)) + sizeof(pesan_ke_));
@@ -1321,6 +1334,10 @@ data_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlready
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
   data_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+param_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  param_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 ::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
     reinterpret_cast<char*>(&jumlah_data_) - reinterpret_cast<char*>(this)),
     0, static_cast<size_t>(reinterpret_cast<char*>(&pesan_ke_) -
@@ -1340,6 +1357,7 @@ inline void mes_client::SharedDtor() {
   aset_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   rute_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   data_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  param_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
 void mes_client::ArenaDtor(void* object) {
@@ -1362,6 +1380,7 @@ void mes_client::Clear() {
   aset_.ClearToEmpty();
   rute_.ClearToEmpty();
   data_.ClearToEmpty();
+  param_.ClearToEmpty();
   ::memset(&jumlah_data_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&pesan_ke_) -
       reinterpret_cast<char*>(&jumlah_data_)) + sizeof(pesan_ke_));
@@ -1461,9 +1480,18 @@ const char* mes_client::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID:
         } else
           goto handle_unusual;
         continue;
-      // int32 pesan_ke = 11;
+      // bytes param = 11;
       case 11:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 88)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 90)) {
+          auto str = _internal_mutable_param();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 pesan_ke = 12;
+      case 12:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 96)) {
           pesan_ke_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
@@ -1570,10 +1598,16 @@ uint8_t* mes_client::_InternalSerialize(
         10, this->_internal_data(), target);
   }
 
-  // int32 pesan_ke = 11;
+  // bytes param = 11;
+  if (!this->_internal_param().empty()) {
+    target = stream->WriteBytesMaybeAliased(
+        11, this->_internal_param(), target);
+  }
+
+  // int32 pesan_ke = 12;
   if (this->_internal_pesan_ke() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(11, this->_internal_pesan_ke(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(12, this->_internal_pesan_ke(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -1620,6 +1654,13 @@ size_t mes_client::ByteSizeLong() const {
         this->_internal_data());
   }
 
+  // bytes param = 11;
+  if (!this->_internal_param().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
+        this->_internal_param());
+  }
+
   // int32 jumlah_data = 2;
   if (this->_internal_jumlah_data() != 0) {
     total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_jumlah_data());
@@ -1650,7 +1691,7 @@ size_t mes_client::ByteSizeLong() const {
     total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_siklus());
   }
 
-  // int32 pesan_ke = 11;
+  // int32 pesan_ke = 12;
   if (this->_internal_pesan_ke() != 0) {
     total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_pesan_ke());
   }
@@ -1688,6 +1729,9 @@ void mes_client::MergeFrom(const mes_client& from) {
   }
   if (!from._internal_data().empty()) {
     _internal_set_data(from._internal_data());
+  }
+  if (!from._internal_param().empty()) {
+    _internal_set_param(from._internal_param());
   }
   if (from._internal_jumlah_data() != 0) {
     _internal_set_jumlah_data(from._internal_jumlah_data());
@@ -1748,6 +1792,11 @@ void mes_client::InternalSwap(mes_client* other) {
       &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
       &data_, lhs_arena,
       &other->data_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &param_, lhs_arena,
+      &other->param_, rhs_arena
   );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
       PROTOBUF_FIELD_OFFSET(mes_client, pesan_ke_)
@@ -1813,6 +1862,14 @@ mes_server::mes_server(const mes_server& from)
     data_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_data(), 
       GetArenaForAllocation());
   }
+  param_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    param_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_param().empty()) {
+    param_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_param(), 
+      GetArenaForAllocation());
+  }
   ::memcpy(&jumlah_data_, &from.jumlah_data_,
     static_cast<size_t>(reinterpret_cast<char*>(&pesan_ke_) -
     reinterpret_cast<char*>(&jumlah_data_)) + sizeof(pesan_ke_));
@@ -1836,6 +1893,10 @@ data_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlready
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
   data_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+param_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  param_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 ::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
     reinterpret_cast<char*>(&jumlah_data_) - reinterpret_cast<char*>(this)),
     0, static_cast<size_t>(reinterpret_cast<char*>(&pesan_ke_) -
@@ -1855,6 +1916,7 @@ inline void mes_server::SharedDtor() {
   aset_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   rute_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   data_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  param_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
 void mes_server::ArenaDtor(void* object) {
@@ -1877,6 +1939,7 @@ void mes_server::Clear() {
   aset_.ClearToEmpty();
   rute_.ClearToEmpty();
   data_.ClearToEmpty();
+  param_.ClearToEmpty();
   ::memset(&jumlah_data_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&pesan_ke_) -
       reinterpret_cast<char*>(&jumlah_data_)) + sizeof(pesan_ke_));
@@ -1976,9 +2039,18 @@ const char* mes_server::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID:
         } else
           goto handle_unusual;
         continue;
-      // int32 pesan_ke = 11;
+      // bytes param = 11;
       case 11:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 88)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 90)) {
+          auto str = _internal_mutable_param();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 pesan_ke = 12;
+      case 12:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 96)) {
           pesan_ke_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
@@ -2085,10 +2157,16 @@ uint8_t* mes_server::_InternalSerialize(
         10, this->_internal_data(), target);
   }
 
-  // int32 pesan_ke = 11;
+  // bytes param = 11;
+  if (!this->_internal_param().empty()) {
+    target = stream->WriteBytesMaybeAliased(
+        11, this->_internal_param(), target);
+  }
+
+  // int32 pesan_ke = 12;
   if (this->_internal_pesan_ke() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(11, this->_internal_pesan_ke(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(12, this->_internal_pesan_ke(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -2135,6 +2213,13 @@ size_t mes_server::ByteSizeLong() const {
         this->_internal_data());
   }
 
+  // bytes param = 11;
+  if (!this->_internal_param().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
+        this->_internal_param());
+  }
+
   // int32 jumlah_data = 2;
   if (this->_internal_jumlah_data() != 0) {
     total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_jumlah_data());
@@ -2165,7 +2250,7 @@ size_t mes_server::ByteSizeLong() const {
     total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_siklus());
   }
 
-  // int32 pesan_ke = 11;
+  // int32 pesan_ke = 12;
   if (this->_internal_pesan_ke() != 0) {
     total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_pesan_ke());
   }
@@ -2203,6 +2288,9 @@ void mes_server::MergeFrom(const mes_server& from) {
   }
   if (!from._internal_data().empty()) {
     _internal_set_data(from._internal_data());
+  }
+  if (!from._internal_param().empty()) {
+    _internal_set_param(from._internal_param());
   }
   if (from._internal_jumlah_data() != 0) {
     _internal_set_jumlah_data(from._internal_jumlah_data());
@@ -2263,6 +2351,11 @@ void mes_server::InternalSwap(mes_server* other) {
       &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
       &data_, lhs_arena,
       &other->data_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &param_, lhs_arena,
+      &other->param_, rhs_arena
   );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
       PROTOBUF_FIELD_OFFSET(mes_server, pesan_ke_)

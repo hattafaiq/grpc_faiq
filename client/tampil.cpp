@@ -26,6 +26,11 @@ Tampil::Tampil(QWidget *parent) :
     box2 = new QVBoxLayout(this);
     list_check = new QListWidget;
     ui->verticalLayout_2->addLayout(box2);
+    //ui->progressBar->setMinimum(0);
+    ui->progressBar->setMaximum(100);
+    ui->progressBar->setValue(0);
+    ui->PB_synchron->setEnabled(false);
+    ui->PB_connect->setEnabled(false);
     show();
 }
 
@@ -384,20 +389,24 @@ void Tampil::on_PB_kirim_clicked()
 
 void Tampil::on_PB_compare_clicked()
 {
+    ui->PB_synchron->setEnabled(true);
+    ui->PB_compare->setEnabled(false);
     std::string server_address("127.0.0.1:50051");
     cc = new controller();
     cc->initial_database();
     cc->flag_sukses=0;
     cc->CallServer("list_info",1,server_address,0,0);
-    if(flag_compare==1)list_check->clear();
-    list_check->addItems(cc->aset_info_tampil);
-    QListWidgetItem* list_item = 0;
-    for(int i=0; i<list_check->count(); i++){
-        list_item = list_check->item(i);
-        list_item->setFlags(list_item->flags() | Qt::ItemIsUserCheckable);
-        list_item->setCheckState(Qt::Checked);
+    //setelah singkron masih nambah di list comparenya
+    if(!flag_compare){
+        list_check->addItems(cc->aset_info_tampil);
+        QListWidgetItem* list_item = 0;
+        for(int i=0; i<list_check->count(); i++){
+            list_item = list_check->item(i);
+            list_item->setFlags(list_item->flags() | Qt::ItemIsUserCheckable);
+            list_item->setCheckState(Qt::Checked);
+        }
+        box2->addWidget(list_check);
     }
-    box2->addWidget(list_check);
     QObject::connect(list_check, SIGNAL(itemChanged(QListWidgetItem*)),
                      this, SLOT(highlightChecked(QListWidgetItem*)));
     qDebug()<<"nomor status pesan"<<cc->alarm_message;
@@ -423,6 +432,9 @@ void Tampil::highlightChecked(QListWidgetItem *item)
 
 void Tampil::on_PB_synchron_clicked()
 {
+    ui->PB_synchron->setEnabled(false);
+    ui->PB_compare->setEnabled(true);
+
     cc->flag_emit_cukup=0;
     if(flag_compare!=1){
         QMessageBox::information(this,"informasi","lakukan compare terlebih dahulu");
@@ -447,6 +459,7 @@ void Tampil::on_PB_synchron_clicked()
                         //disederhanakan!!!!
                         if(cek_aset==coba[k]){
                            cc->aset_info_server.erase(cc->aset_info_server.begin()+k-konter);
+                           cc->c_id_masuk_lama.erase(cc->c_id_masuk_lama.begin()+k-konter);
                            cc->c_id_param_lama.erase(cc->c_id_param_lama.begin()+k-konter);
                            cc->c_tipe_param.erase(cc->c_tipe_param.begin()+k-konter);
                            cc->c_id_rute_lama.erase(cc->c_id_rute_lama.begin()+k-konter);
@@ -459,24 +472,13 @@ void Tampil::on_PB_synchron_clicked()
                 }
             }
              //flag 2 khusus untuk sychronize
-
             //QMessageBox::information(this,"informasi","update data server sukses");
-            flag_compare=0;
-//            qDebug()<<"- data yang dikirim balik dari server----------------------------->";
-//            for(int i=0; i<cc->aset_info_server.size(); i++){
-//                qDebug()<<"-"<<cc->aset_info_server[i]
-//                          <<cc->c_id_param_lama[i]
-//                            <<cc->c_tipe_param[i]
-//                              <<cc->c_id_rute_lama[i]
-//                                <<cc->c_time[i]
-//                                  <<cc->c_siklus[i];
-//            }
-//            qDebug()<<"--------------------------------------------------------------->";
-            //mulai kirim ke server sesuai urutan harus sembari ada feedback
-            //--------------------------------------------------//
+            cc->aset_info_tampil.clear();
+            //flag_compare=0;
             cc->flag_sukses=0;
             std::string server_address("127.0.0.1:50051");
             cc->CallServer("kirim_data",2,server_address,0,0);
+            //ui->progressBar->setValue(cc->counter_pesan);
             if(cc->alarm_message_data!=0)
                 QMessageBox::warning(this, "Kirim Data Error ("+QString::number(cc->alarm_message_data)+")", "Error ("+cc->pesan_alarm+")"+
                                      "data ke:"+QString::number(cc->counter_pesan));

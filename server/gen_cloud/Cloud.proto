@@ -7,6 +7,10 @@ service protokol_1 {
   rpc initial_data (pesan_client) returns(pesan_server){}
 }
 
+service protokol_2{
+ rpc kirim_data (mes_client) returns(mes_server){}
+}
+
 message pesan_client {
   string header_pesan = 1;
   repeated string aset = 2;
@@ -29,5 +33,35 @@ message pesan_server {
   repeated int32 timestamp = 7;
   repeated int32 siklus = 8;
   int32 jumlah_data = 9;
+}
+
+message mes_client {
+  string header_pesan = 1;
+  int32 jumlah_data = 2;
+  string aset = 3;
+  string rute = 4;
+  int32 id_param_lama = 5;
+  int32 id_tipe_param = 6;
+  int32 id_rute_lama = 7;
+  int32 timestamp = 8;
+  int32 siklus = 9;
+  bytes data =10;
+  bytes param = 11;
+  int32 pesan_ke = 12;
+}
+
+message mes_server {
+  string header_pesan = 1;
+  int32 jumlah_data = 2;
+  string aset = 3;
+  string rute = 4;
+  int32 id_param_lama = 5;
+  int32 id_tipe_param = 6;
+  int32 id_rute_lama = 7;
+  int32 timestamp = 8;
+  int32 siklus = 9;
+  bytes data =10;
+  bytes param = 11;
+  int32 pesan_ke = 12;
 }
 

@@ -47,26 +47,28 @@ public:
    explicit bisa(QObject *parent=nullptr);
    virtual ~bisa();
     void RunServer();
-    void eliminasi_data(QStringList rute,QStringList aset, QVector<int> id_param, QVector<int> tipe_param,QVector<int> id_rute, QVector<int> time, QVector<int> siklus);
+    void eliminasi_data(QStringList rute,QStringList aset,QVector<int> data_masuk, QVector<int> id_param, QVector<int> tipe_param,QVector<int> id_rute, QVector<int> time, QVector<int> siklus);
     QStringList list_aset;
     QStringList list_rute;
     QVector<int> t_id_param_lama;
+    QVector<int> t_id_data_masuk;
     QVector<int> t_tipe_param;
     QVector<int> t_id_rute;
     QVector<int> t_time;
     QVector<int> t_siklus;
-    void save_data(QStringList rute,
-                     QStringList aset,
-                     QVector<int> id_param,
-                     QVector<int> tipe_param,
-                     QVector<int> id_rute,
-                     QVector<int> time,
-                     QVector<int> siklus,
+    int save_data(QString rute,
+                     QString aset,
+                     int id_data_masuk,
+                     int id_param,
+                     int tipe_param,
+                     int id_rute,
+                     int time,
+                     int siklus,
                      int id_database,
-                     QByteArrayList all_rute_param,
-                     QByteArrayList all_data);
+                     QByteArray all_rute_param,
+                     QByteArray all_data);
     QSqlDatabase dbx;
-    QVector<int> s_id_rute_baru;
+    int s_id_rute_baru;
 
 
 private:
@@ -85,6 +87,36 @@ private:
     QVBoxLayout *box2;
     QVBoxLayout *box3;
     QLabel *list3;
+
+    void simpan_param(QSqlQuery *query,
+                      int id_paramnya,
+                      int flag_param,
+                      int id_aset,
+                      int id_parent,
+                      QString rute_baru,
+                      QString cacah_data_name,
+                      int id_data_masuk,
+                      int id_param,
+                      int tipe_param,
+                      int id_rute,
+                      int time,
+                      int siklus,
+                      int id_database,
+                      QByteArray all_rute_param,
+                      QByteArray all_data);
+
+    void simpan_aset(QSqlQuery *query,
+                      QString rute_baru,
+                      QString cacah_data_name,
+                      int id_data_masuk,
+                      int id_param,
+                      int tipe_param,
+                      int id_rute,
+                      int time,
+                      int siklus,
+                      int id_database,
+                      QByteArray all_rute_param,
+                      QByteArray all_data);
 
 
 

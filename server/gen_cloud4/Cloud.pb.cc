@@ -31,6 +31,8 @@ constexpr pesan_client::pesan_client(
   , _timestamp_cached_byte_size_(0)
   , siklus_()
   , _siklus_cached_byte_size_(0)
+  , id_data_masuk_()
+  , _id_data_masuk_cached_byte_size_(0)
   , header_pesan_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
   , jumlah_data_(0){}
 struct pesan_clientDefaultTypeInternal {
@@ -56,6 +58,8 @@ constexpr pesan_server::pesan_server(
   , _timestamp_cached_byte_size_(0)
   , siklus_()
   , _siklus_cached_byte_size_(0)
+  , id_data_masuk_()
+  , _id_data_masuk_cached_byte_size_(0)
   , header_pesan_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
   , jumlah_data_(0){}
 struct pesan_serverDefaultTypeInternal {
@@ -80,6 +84,7 @@ constexpr mes_client::mes_client(
   , id_rute_lama_(0)
   , timestamp_(0)
   , siklus_(0)
+  , id_data_masuk_(0)
   , pesan_ke_(0){}
 struct mes_clientDefaultTypeInternal {
   constexpr mes_clientDefaultTypeInternal()
@@ -103,6 +108,7 @@ constexpr mes_server::mes_server(
   , id_rute_lama_(0)
   , timestamp_(0)
   , siklus_(0)
+  , id_data_masuk_(0)
   , pesan_ke_(0){}
 struct mes_serverDefaultTypeInternal {
   constexpr mes_serverDefaultTypeInternal()
@@ -133,6 +139,7 @@ const uint32_t TableStruct_Cloud_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pr
   PROTOBUF_FIELD_OFFSET(::Cloud::pesan_client, id_rute_lama_),
   PROTOBUF_FIELD_OFFSET(::Cloud::pesan_client, timestamp_),
   PROTOBUF_FIELD_OFFSET(::Cloud::pesan_client, siklus_),
+  PROTOBUF_FIELD_OFFSET(::Cloud::pesan_client, id_data_masuk_),
   PROTOBUF_FIELD_OFFSET(::Cloud::pesan_client, jumlah_data_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Cloud::pesan_server, _internal_metadata_),
@@ -148,6 +155,7 @@ const uint32_t TableStruct_Cloud_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pr
   PROTOBUF_FIELD_OFFSET(::Cloud::pesan_server, id_rute_lama_),
   PROTOBUF_FIELD_OFFSET(::Cloud::pesan_server, timestamp_),
   PROTOBUF_FIELD_OFFSET(::Cloud::pesan_server, siklus_),
+  PROTOBUF_FIELD_OFFSET(::Cloud::pesan_server, id_data_masuk_),
   PROTOBUF_FIELD_OFFSET(::Cloud::pesan_server, jumlah_data_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Cloud::mes_client, _internal_metadata_),
@@ -164,6 +172,7 @@ const uint32_t TableStruct_Cloud_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pr
   PROTOBUF_FIELD_OFFSET(::Cloud::mes_client, id_rute_lama_),
   PROTOBUF_FIELD_OFFSET(::Cloud::mes_client, timestamp_),
   PROTOBUF_FIELD_OFFSET(::Cloud::mes_client, siklus_),
+  PROTOBUF_FIELD_OFFSET(::Cloud::mes_client, id_data_masuk_),
   PROTOBUF_FIELD_OFFSET(::Cloud::mes_client, data_),
   PROTOBUF_FIELD_OFFSET(::Cloud::mes_client, param_),
   PROTOBUF_FIELD_OFFSET(::Cloud::mes_client, pesan_ke_),
@@ -182,15 +191,16 @@ const uint32_t TableStruct_Cloud_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pr
   PROTOBUF_FIELD_OFFSET(::Cloud::mes_server, id_rute_lama_),
   PROTOBUF_FIELD_OFFSET(::Cloud::mes_server, timestamp_),
   PROTOBUF_FIELD_OFFSET(::Cloud::mes_server, siklus_),
+  PROTOBUF_FIELD_OFFSET(::Cloud::mes_server, id_data_masuk_),
   PROTOBUF_FIELD_OFFSET(::Cloud::mes_server, data_),
   PROTOBUF_FIELD_OFFSET(::Cloud::mes_server, param_),
   PROTOBUF_FIELD_OFFSET(::Cloud::mes_server, pesan_ke_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Cloud::pesan_client)},
-  { 15, -1, -1, sizeof(::Cloud::pesan_server)},
-  { 30, -1, -1, sizeof(::Cloud::mes_client)},
-  { 48, -1, -1, sizeof(::Cloud::mes_server)},
+  { 16, -1, -1, sizeof(::Cloud::pesan_server)},
+  { 32, -1, -1, sizeof(::Cloud::mes_client)},
+  { 51, -1, -1, sizeof(::Cloud::mes_server)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -201,36 +211,38 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
 };
 
 const char descriptor_table_protodef_Cloud_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\013Cloud.proto\022\005Cloud\"\274\001\n\014pesan_client\022\024\n"
+  "\n\013Cloud.proto\022\005Cloud\"\323\001\n\014pesan_client\022\024\n"
   "\014header_pesan\030\001 \001(\t\022\014\n\004aset\030\002 \003(\t\022\014\n\004rut"
   "e\030\003 \003(\t\022\025\n\rid_param_lama\030\004 \003(\005\022\025\n\rid_tip"
   "e_param\030\005 \003(\005\022\024\n\014id_rute_lama\030\006 \003(\005\022\021\n\tt"
-  "imestamp\030\007 \003(\005\022\016\n\006siklus\030\010 \003(\005\022\023\n\013jumlah"
-  "_data\030\t \001(\005\"\274\001\n\014pesan_server\022\024\n\014header_p"
-  "esan\030\001 \001(\t\022\014\n\004aset\030\002 \003(\t\022\014\n\004rute\030\003 \003(\t\022\025"
-  "\n\rid_param_lama\030\004 \003(\005\022\025\n\rid_tipe_param\030\005"
-  " \003(\005\022\024\n\014id_rute_lama\030\006 \003(\005\022\021\n\ttimestamp\030"
-  "\007 \003(\005\022\016\n\006siklus\030\010 \003(\005\022\023\n\013jumlah_data\030\t \001"
-  "(\005\"\351\001\n\nmes_client\022\024\n\014header_pesan\030\001 \001(\t\022"
-  "\023\n\013jumlah_data\030\002 \001(\005\022\014\n\004aset\030\003 \001(\t\022\014\n\004ru"
-  "te\030\004 \001(\t\022\025\n\rid_param_lama\030\005 \001(\005\022\025\n\rid_ti"
-  "pe_param\030\006 \001(\005\022\024\n\014id_rute_lama\030\007 \001(\005\022\021\n\t"
-  "timestamp\030\010 \001(\005\022\016\n\006siklus\030\t \001(\005\022\014\n\004data\030"
-  "\n \001(\014\022\r\n\005param\030\013 \001(\014\022\020\n\010pesan_ke\030\014 \001(\005\"\351"
-  "\001\n\nmes_server\022\024\n\014header_pesan\030\001 \001(\t\022\023\n\013j"
-  "umlah_data\030\002 \001(\005\022\014\n\004aset\030\003 \001(\t\022\014\n\004rute\030\004"
-  " \001(\t\022\025\n\rid_param_lama\030\005 \001(\005\022\025\n\rid_tipe_p"
-  "aram\030\006 \001(\005\022\024\n\014id_rute_lama\030\007 \001(\005\022\021\n\ttime"
-  "stamp\030\010 \001(\005\022\016\n\006siklus\030\t \001(\005\022\014\n\004data\030\n \001("
-  "\014\022\r\n\005param\030\013 \001(\014\022\020\n\010pesan_ke\030\014 \001(\0052H\n\npr"
-  "otokol_1\022:\n\014initial_data\022\023.Cloud.pesan_c"
-  "lient\032\023.Cloud.pesan_server\"\0002B\n\nprotokol"
-  "_2\0224\n\nkirim_data\022\021.Cloud.mes_client\032\021.Cl"
-  "oud.mes_server\"\000b\006proto3"
+  "imestamp\030\007 \003(\005\022\016\n\006siklus\030\010 \003(\005\022\025\n\rid_dat"
+  "a_masuk\030\t \003(\005\022\023\n\013jumlah_data\030\n \001(\005\"\323\001\n\014p"
+  "esan_server\022\024\n\014header_pesan\030\001 \001(\t\022\014\n\004ase"
+  "t\030\002 \003(\t\022\014\n\004rute\030\003 \003(\t\022\025\n\rid_param_lama\030\004"
+  " \003(\005\022\025\n\rid_tipe_param\030\005 \003(\005\022\024\n\014id_rute_l"
+  "ama\030\006 \003(\005\022\021\n\ttimestamp\030\007 \003(\005\022\016\n\006siklus\030\010"
+  " \003(\005\022\025\n\rid_data_masuk\030\t \003(\005\022\023\n\013jumlah_da"
+  "ta\030\n \001(\005\"\200\002\n\nmes_client\022\024\n\014header_pesan\030"
+  "\001 \001(\t\022\023\n\013jumlah_data\030\002 \001(\005\022\014\n\004aset\030\003 \001(\t"
+  "\022\014\n\004rute\030\004 \001(\t\022\025\n\rid_param_lama\030\005 \001(\005\022\025\n"
+  "\rid_tipe_param\030\006 \001(\005\022\024\n\014id_rute_lama\030\007 \001"
+  "(\005\022\021\n\ttimestamp\030\010 \001(\005\022\016\n\006siklus\030\t \001(\005\022\025\n"
+  "\rid_data_masuk\030\n \001(\005\022\014\n\004data\030\013 \001(\014\022\r\n\005pa"
+  "ram\030\014 \001(\014\022\020\n\010pesan_ke\030\r \001(\005\"\200\002\n\nmes_serv"
+  "er\022\024\n\014header_pesan\030\001 \001(\t\022\023\n\013jumlah_data\030"
+  "\002 \001(\005\022\014\n\004aset\030\003 \001(\t\022\014\n\004rute\030\004 \001(\t\022\025\n\rid_"
+  "param_lama\030\005 \001(\005\022\025\n\rid_tipe_param\030\006 \001(\005\022"
+  "\024\n\014id_rute_lama\030\007 \001(\005\022\021\n\ttimestamp\030\010 \001(\005"
+  "\022\016\n\006siklus\030\t \001(\005\022\025\n\rid_data_masuk\030\n \001(\005\022"
+  "\014\n\004data\030\013 \001(\014\022\r\n\005param\030\014 \001(\014\022\020\n\010pesan_ke"
+  "\030\r \001(\0052H\n\nprotokol_1\022:\n\014initial_data\022\023.C"
+  "loud.pesan_client\032\023.Cloud.pesan_server\"\000"
+  "2B\n\nprotokol_2\0224\n\nkirim_data\022\021.Cloud.mes"
+  "_client\032\021.Cloud.mes_server\"\000b\006proto3"
   ;
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_Cloud_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_Cloud_2eproto = {
-  false, false, 1024, descriptor_table_protodef_Cloud_2eproto, "Cloud.proto", 
+  false, false, 1116, descriptor_table_protodef_Cloud_2eproto, "Cloud.proto", 
   &descriptor_table_Cloud_2eproto_once, nullptr, 0, 4,
   schemas, file_default_instances, TableStruct_Cloud_2eproto::offsets,
   file_level_metadata_Cloud_2eproto, file_level_enum_descriptors_Cloud_2eproto, file_level_service_descriptors_Cloud_2eproto,
@@ -258,7 +270,8 @@ pesan_client::pesan_client(::PROTOBUF_NAMESPACE_ID::Arena* arena,
   id_tipe_param_(arena),
   id_rute_lama_(arena),
   timestamp_(arena),
-  siklus_(arena) {
+  siklus_(arena),
+  id_data_masuk_(arena) {
   SharedCtor();
   if (!is_message_owned) {
     RegisterArenaDtor(arena);
@@ -273,7 +286,8 @@ pesan_client::pesan_client(const pesan_client& from)
       id_tipe_param_(from.id_tipe_param_),
       id_rute_lama_(from.id_rute_lama_),
       timestamp_(from.timestamp_),
-      siklus_(from.siklus_) {
+      siklus_(from.siklus_),
+      id_data_masuk_(from.id_data_masuk_) {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   header_pesan_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -330,6 +344,7 @@ void pesan_client::Clear() {
   id_rute_lama_.Clear();
   timestamp_.Clear();
   siklus_.Clear();
+  id_data_masuk_.Clear();
   header_pesan_.ClearToEmpty();
   jumlah_data_ = 0;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
@@ -436,9 +451,20 @@ const char* pesan_client::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_I
         } else
           goto handle_unusual;
         continue;
-      // int32 jumlah_data = 9;
+      // repeated int32 id_data_masuk = 9;
       case 9:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 72)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 74)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedInt32Parser(_internal_mutable_id_data_masuk(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<uint8_t>(tag) == 72) {
+          _internal_add_id_data_masuk(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 jumlah_data = 10;
+      case 10:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 80)) {
           jumlah_data_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
@@ -548,10 +574,19 @@ uint8_t* pesan_client::_InternalSerialize(
     }
   }
 
-  // int32 jumlah_data = 9;
+  // repeated int32 id_data_masuk = 9;
+  {
+    int byte_size = _id_data_masuk_cached_byte_size_.load(std::memory_order_relaxed);
+    if (byte_size > 0) {
+      target = stream->WriteInt32Packed(
+          9, _internal_id_data_masuk(), byte_size, target);
+    }
+  }
+
+  // int32 jumlah_data = 10;
   if (this->_internal_jumlah_data() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(9, this->_internal_jumlah_data(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(10, this->_internal_jumlah_data(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -661,6 +696,21 @@ size_t pesan_client::ByteSizeLong() const {
     total_size += data_size;
   }
 
+  // repeated int32 id_data_masuk = 9;
+  {
+    size_t data_size = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      Int32Size(this->id_data_masuk_);
+    if (data_size > 0) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+            static_cast<int32_t>(data_size));
+    }
+    int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(data_size);
+    _id_data_masuk_cached_byte_size_.store(cached_size,
+                                    std::memory_order_relaxed);
+    total_size += data_size;
+  }
+
   // string header_pesan = 1;
   if (!this->_internal_header_pesan().empty()) {
     total_size += 1 +
@@ -668,7 +718,7 @@ size_t pesan_client::ByteSizeLong() const {
         this->_internal_header_pesan());
   }
 
-  // int32 jumlah_data = 9;
+  // int32 jumlah_data = 10;
   if (this->_internal_jumlah_data() != 0) {
     total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_jumlah_data());
   }
@@ -702,6 +752,7 @@ void pesan_client::MergeFrom(const pesan_client& from) {
   id_rute_lama_.MergeFrom(from.id_rute_lama_);
   timestamp_.MergeFrom(from.timestamp_);
   siklus_.MergeFrom(from.siklus_);
+  id_data_masuk_.MergeFrom(from.id_data_masuk_);
   if (!from._internal_header_pesan().empty()) {
     _internal_set_header_pesan(from._internal_header_pesan());
   }
@@ -734,6 +785,7 @@ void pesan_client::InternalSwap(pesan_client* other) {
   id_rute_lama_.InternalSwap(&other->id_rute_lama_);
   timestamp_.InternalSwap(&other->timestamp_);
   siklus_.InternalSwap(&other->siklus_);
+  id_data_masuk_.InternalSwap(&other->id_data_masuk_);
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
       &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
       &header_pesan_, lhs_arena,
@@ -763,7 +815,8 @@ pesan_server::pesan_server(::PROTOBUF_NAMESPACE_ID::Arena* arena,
   id_tipe_param_(arena),
   id_rute_lama_(arena),
   timestamp_(arena),
-  siklus_(arena) {
+  siklus_(arena),
+  id_data_masuk_(arena) {
   SharedCtor();
   if (!is_message_owned) {
     RegisterArenaDtor(arena);
@@ -778,7 +831,8 @@ pesan_server::pesan_server(const pesan_server& from)
       id_tipe_param_(from.id_tipe_param_),
       id_rute_lama_(from.id_rute_lama_),
       timestamp_(from.timestamp_),
-      siklus_(from.siklus_) {
+      siklus_(from.siklus_),
+      id_data_masuk_(from.id_data_masuk_) {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   header_pesan_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -835,6 +889,7 @@ void pesan_server::Clear() {
   id_rute_lama_.Clear();
   timestamp_.Clear();
   siklus_.Clear();
+  id_data_masuk_.Clear();
   header_pesan_.ClearToEmpty();
   jumlah_data_ = 0;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
@@ -941,9 +996,20 @@ const char* pesan_server::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_I
         } else
           goto handle_unusual;
         continue;
-      // int32 jumlah_data = 9;
+      // repeated int32 id_data_masuk = 9;
       case 9:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 72)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 74)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedInt32Parser(_internal_mutable_id_data_masuk(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<uint8_t>(tag) == 72) {
+          _internal_add_id_data_masuk(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 jumlah_data = 10;
+      case 10:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 80)) {
           jumlah_data_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
@@ -1053,10 +1119,19 @@ uint8_t* pesan_server::_InternalSerialize(
     }
   }
 
-  // int32 jumlah_data = 9;
+  // repeated int32 id_data_masuk = 9;
+  {
+    int byte_size = _id_data_masuk_cached_byte_size_.load(std::memory_order_relaxed);
+    if (byte_size > 0) {
+      target = stream->WriteInt32Packed(
+          9, _internal_id_data_masuk(), byte_size, target);
+    }
+  }
+
+  // int32 jumlah_data = 10;
   if (this->_internal_jumlah_data() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(9, this->_internal_jumlah_data(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(10, this->_internal_jumlah_data(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -1166,6 +1241,21 @@ size_t pesan_server::ByteSizeLong() const {
     total_size += data_size;
   }
 
+  // repeated int32 id_data_masuk = 9;
+  {
+    size_t data_size = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      Int32Size(this->id_data_masuk_);
+    if (data_size > 0) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+            static_cast<int32_t>(data_size));
+    }
+    int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(data_size);
+    _id_data_masuk_cached_byte_size_.store(cached_size,
+                                    std::memory_order_relaxed);
+    total_size += data_size;
+  }
+
   // string header_pesan = 1;
   if (!this->_internal_header_pesan().empty()) {
     total_size += 1 +
@@ -1173,7 +1263,7 @@ size_t pesan_server::ByteSizeLong() const {
         this->_internal_header_pesan());
   }
 
-  // int32 jumlah_data = 9;
+  // int32 jumlah_data = 10;
   if (this->_internal_jumlah_data() != 0) {
     total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_jumlah_data());
   }
@@ -1207,6 +1297,7 @@ void pesan_server::MergeFrom(const pesan_server& from) {
   id_rute_lama_.MergeFrom(from.id_rute_lama_);
   timestamp_.MergeFrom(from.timestamp_);
   siklus_.MergeFrom(from.siklus_);
+  id_data_masuk_.MergeFrom(from.id_data_masuk_);
   if (!from._internal_header_pesan().empty()) {
     _internal_set_header_pesan(from._internal_header_pesan());
   }
@@ -1239,6 +1330,7 @@ void pesan_server::InternalSwap(pesan_server* other) {
   id_rute_lama_.InternalSwap(&other->id_rute_lama_);
   timestamp_.InternalSwap(&other->timestamp_);
   siklus_.InternalSwap(&other->siklus_);
+  id_data_masuk_.InternalSwap(&other->id_data_masuk_);
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
       &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
       &header_pesan_, lhs_arena,
@@ -1471,27 +1563,35 @@ const char* mes_client::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID:
         } else
           goto handle_unusual;
         continue;
-      // bytes data = 10;
+      // int32 id_data_masuk = 10;
       case 10:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 82)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 80)) {
+          id_data_masuk_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // bytes data = 11;
+      case 11:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 90)) {
           auto str = _internal_mutable_data();
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // bytes param = 11;
-      case 11:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 90)) {
+      // bytes param = 12;
+      case 12:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 98)) {
           auto str = _internal_mutable_param();
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // int32 pesan_ke = 12;
-      case 12:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 96)) {
+      // int32 pesan_ke = 13;
+      case 13:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 104)) {
           pesan_ke_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
@@ -1592,22 +1692,28 @@ uint8_t* mes_client::_InternalSerialize(
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(9, this->_internal_siklus(), target);
   }
 
-  // bytes data = 10;
+  // int32 id_data_masuk = 10;
+  if (this->_internal_id_data_masuk() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(10, this->_internal_id_data_masuk(), target);
+  }
+
+  // bytes data = 11;
   if (!this->_internal_data().empty()) {
     target = stream->WriteBytesMaybeAliased(
-        10, this->_internal_data(), target);
+        11, this->_internal_data(), target);
   }
 
-  // bytes param = 11;
+  // bytes param = 12;
   if (!this->_internal_param().empty()) {
     target = stream->WriteBytesMaybeAliased(
-        11, this->_internal_param(), target);
+        12, this->_internal_param(), target);
   }
 
-  // int32 pesan_ke = 12;
+  // int32 pesan_ke = 13;
   if (this->_internal_pesan_ke() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(12, this->_internal_pesan_ke(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(13, this->_internal_pesan_ke(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -1647,14 +1753,14 @@ size_t mes_client::ByteSizeLong() const {
         this->_internal_rute());
   }
 
-  // bytes data = 10;
+  // bytes data = 11;
   if (!this->_internal_data().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
         this->_internal_data());
   }
 
-  // bytes param = 11;
+  // bytes param = 12;
   if (!this->_internal_param().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
@@ -1691,7 +1797,12 @@ size_t mes_client::ByteSizeLong() const {
     total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_siklus());
   }
 
-  // int32 pesan_ke = 12;
+  // int32 id_data_masuk = 10;
+  if (this->_internal_id_data_masuk() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_id_data_masuk());
+  }
+
+  // int32 pesan_ke = 13;
   if (this->_internal_pesan_ke() != 0) {
     total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_pesan_ke());
   }
@@ -1750,6 +1861,9 @@ void mes_client::MergeFrom(const mes_client& from) {
   }
   if (from._internal_siklus() != 0) {
     _internal_set_siklus(from._internal_siklus());
+  }
+  if (from._internal_id_data_masuk() != 0) {
+    _internal_set_id_data_masuk(from._internal_id_data_masuk());
   }
   if (from._internal_pesan_ke() != 0) {
     _internal_set_pesan_ke(from._internal_pesan_ke());
@@ -2030,27 +2144,35 @@ const char* mes_server::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID:
         } else
           goto handle_unusual;
         continue;
-      // bytes data = 10;
+      // int32 id_data_masuk = 10;
       case 10:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 82)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 80)) {
+          id_data_masuk_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // bytes data = 11;
+      case 11:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 90)) {
           auto str = _internal_mutable_data();
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // bytes param = 11;
-      case 11:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 90)) {
+      // bytes param = 12;
+      case 12:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 98)) {
           auto str = _internal_mutable_param();
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // int32 pesan_ke = 12;
-      case 12:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 96)) {
+      // int32 pesan_ke = 13;
+      case 13:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 104)) {
           pesan_ke_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
@@ -2151,22 +2273,28 @@ uint8_t* mes_server::_InternalSerialize(
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(9, this->_internal_siklus(), target);
   }
 
-  // bytes data = 10;
+  // int32 id_data_masuk = 10;
+  if (this->_internal_id_data_masuk() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(10, this->_internal_id_data_masuk(), target);
+  }
+
+  // bytes data = 11;
   if (!this->_internal_data().empty()) {
     target = stream->WriteBytesMaybeAliased(
-        10, this->_internal_data(), target);
+        11, this->_internal_data(), target);
   }
 
-  // bytes param = 11;
+  // bytes param = 12;
   if (!this->_internal_param().empty()) {
     target = stream->WriteBytesMaybeAliased(
-        11, this->_internal_param(), target);
+        12, this->_internal_param(), target);
   }
 
-  // int32 pesan_ke = 12;
+  // int32 pesan_ke = 13;
   if (this->_internal_pesan_ke() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(12, this->_internal_pesan_ke(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(13, this->_internal_pesan_ke(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -2206,14 +2334,14 @@ size_t mes_server::ByteSizeLong() const {
         this->_internal_rute());
   }
 
-  // bytes data = 10;
+  // bytes data = 11;
   if (!this->_internal_data().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
         this->_internal_data());
   }
 
-  // bytes param = 11;
+  // bytes param = 12;
   if (!this->_internal_param().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
@@ -2250,7 +2378,12 @@ size_t mes_server::ByteSizeLong() const {
     total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_siklus());
   }
 
-  // int32 pesan_ke = 12;
+  // int32 id_data_masuk = 10;
+  if (this->_internal_id_data_masuk() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_id_data_masuk());
+  }
+
+  // int32 pesan_ke = 13;
   if (this->_internal_pesan_ke() != 0) {
     total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_pesan_ke());
   }
@@ -2309,6 +2442,9 @@ void mes_server::MergeFrom(const mes_server& from) {
   }
   if (from._internal_siklus() != 0) {
     _internal_set_siklus(from._internal_siklus());
+  }
+  if (from._internal_id_data_masuk() != 0) {
+    _internal_set_id_data_masuk(from._internal_id_data_masuk());
   }
   if (from._internal_pesan_ke() != 0) {
     _internal_set_pesan_ke(from._internal_pesan_ke());

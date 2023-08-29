@@ -21,21 +21,18 @@ HEADERS += \
     gen_cloud4/Cloud.pb.h \
     bisa.h \
     #tampilserver.h
-    mainwindow.h \
     strc.h
 
 SOURCES += \
     bisa.cpp \
     gen_cloud4/Cloud.grpc.pb.cc \
     gen_cloud4/Cloud.pb.cc \
-    main.cpp \
+    main.cpp
      #tampilserver.cpp
-    mainwindow.cpp
 
-FORMS += \
+FORMS +=
   #  bisa.ui \
- \   # tampilserver.ui
-    mainwindow.ui
+    # tampilserver.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

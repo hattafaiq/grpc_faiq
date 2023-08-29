@@ -18,6 +18,7 @@ class GreeterClient{
     QString s_pesan_alarm;
     QStringList list_data_tampil;
     QStringList list_rute;
+    QVector<int> s_id_masuk;
     QVector<int> s_id_param_lama;
     QVector<int> s_tipe_param;
     QVector<int> s_id_rute_lama;
@@ -27,7 +28,7 @@ class GreeterClient{
 
     GreeterClient(std::shared_ptr<Channel> channel)
       : stub_(protokol_1::NewStub(channel)) {}
-   std::string initial_data(const std::string& user) {
+    std::string initial_data(const std::string& user) {
     std::cout <<"kirim request:"<< user <<std::endl;
     request.set_header_pesan(user);
     Status status = stub_->initial_data(&context,request,&reply );
@@ -45,7 +46,7 @@ class GreeterClient{
     }
   }
 
-   void pesan_pertama(QStringList rute,QStringList aset, QVector<int> data1, QVector<int> data2, QVector<int> data3, QVector<int> data4, QVector<int> data5){
+   void pesan_pertama(QStringList rute,QStringList aset, QVector<int> data0,QVector<int> data1, QVector<int> data2, QVector<int> data3, QVector<int> data4, QVector<int> data5){
        //qDebug()<<"pesan pertama"<<data2.size()<<data3.size()<<data4.size()<<data5.size();
        if(data1.size()!=0){
            for(int a=0; a<data1.size(); a++ ){
@@ -61,19 +62,22 @@ class GreeterClient{
              "siklus"<<data5[a]<<rutes;
            }
 
-           std::vector<int> id_param,id_tip_parm,id_rut,time,siklus;//(data_n[0], n);
+           std::vector<int> id_param,id_tip_parm,id_rut,time,siklus,id_masuk;//(data_n[0], n);
            std::string list_aset;
+           id_masuk    = data0.toStdVector();
            id_param    = data1.toStdVector();
            id_tip_parm = data2.toStdVector();
            id_rut      = data3.toStdVector();
            time        = data4.toStdVector();
            siklus      = data5.toStdVector();
-           std::cout <<id_param.size() << id_tip_parm.size() << id_rut.size() << time.size() << siklus.size() <<std::endl;
+           std::cout <<id_masuk.size() <<id_param.size() << id_tip_parm.size() << id_rut.size() << time.size() << siklus.size() <<std::endl;
+           google::protobuf::RepeatedField<int> id_masuk_s(id_masuk.begin(), id_masuk.end());
            google::protobuf::RepeatedField<int> id_param_s(id_param.begin(), id_param.end());
            google::protobuf::RepeatedField<int> id_tip_parm_s(id_tip_parm.begin(), id_tip_parm.end());
            google::protobuf::RepeatedField<int> id_rut_s(id_rut.begin(), id_rut.end());
            google::protobuf::RepeatedField<int> time_s(time.begin(), time.end());
            google::protobuf::RepeatedField<int> siklus_s(siklus.begin(), siklus.end());
+           request.mutable_id_data_masuk()->Swap(&id_masuk_s);
            request.mutable_id_param_lama()->Swap(&id_param_s);
            request.mutable_id_tipe_param()->Swap(&id_tip_parm_s);
            request.mutable_id_rute_lama()->Swap(&id_rut_s);
@@ -91,6 +95,7 @@ class GreeterClient{
        for(int i=0; i<reply.aset_size(); i++){
            list_rute.push_back(QString::fromStdString(reply.rute(i)));
            list_data_tampil.push_back(QString::fromStdString(reply.aset(i)));
+           s_id_masuk.push_back(reply.id_data_masuk(i));
            s_id_param_lama.push_back(reply.id_param_lama(i));
            s_tipe_param.push_back(reply.id_tipe_param(i));
            s_id_rute_lama.push_back(reply.id_rute_lama(i));
@@ -98,6 +103,7 @@ class GreeterClient{
            s_siklus.push_back(reply.siklus(i));
            std::cout << reply.aset(i) << " "
                      << reply.id_param_lama(i) << " "
+                     << reply.id_data_masuk(i) << " "
                      << reply.id_tipe_param(i)<< " "
                      << reply.id_rute_lama(i)<< " "
                      << reply.timestamp(i)<< " "
@@ -107,7 +113,7 @@ class GreeterClient{
        }
        std::cout << "terima data yang belum ada di server: "
            << reply.id_param_lama_size() << " "
-           << reply.id_param_lama_size() << " "
+           << reply.id_data_masuk_size() << " "
            << reply.id_tipe_param_size() << " "
            << reply.id_rute_lama_size() << " "
            << reply.timestamp_size() << " "
@@ -149,8 +155,8 @@ class GreeterClient2{
       request.set_id_rute_lama(s_id_rute_lama);
       request.set_timestamp(s_time);
       request.set_siklus(s_siklus);
-      request.set_param(param_set);
-      request.set_data(data);
+      request.set_param(param_set.data(), param_set.size());
+      request.set_data(data.data(), data.size());
       Status status = stub_->kirim_data(&context,request,&reply );
 
      // qDebug()<<"-counter"<<counter;
@@ -313,9 +319,7 @@ void controller::mulai_cari(QSqlQuery *query)
         }
     if(!query->exec(qu)) qDebug()<< __FUNCTION__ << __LINE__ << "ERROR : "<<query->lastError().text();
     else{while(query->next()){
-         all_data.append(query->value("data").toByteArray());
-       // qDebug()<<"tiem:"<<query->value("data_timestamp").toInt();
-        data_n[0].push_back(data_[0][i]);//id_rute lama
+        data_n[0].push_back(data_[0][i]);//data masuk lama
         data_n[1].push_back(data_[1][i]);//id_param
         data_n[2].push_back(data_[2][i]);//id_tipe_param
         data_n[3].push_back(data_[3][i]);//id_rute
@@ -344,22 +348,6 @@ for(int i=0; i<data_n[0].size(); i++){
     cari_induk_paramm(data_n[1][i], data_n[2][i]);
 }
 //--------------------mode cari aset end-----------------------------------------------//
-
-
-    //cari data rute_isi yang mau dipindahkan berdasarkan data yang exist
-    //tujuannya untuk efisiensi jumlah data yang mau ditambahkan ke rute_isi
-    //sehingga tidak semua isi rute dipindahkan langsung.
-
-    for(int i=0; i<data_n[0].size(); i++){
-        qu = QString("SELECT param_setting "
-                    "FROM rute_isi"
-                    " WHERE id_rute=%1 AND id_param=%2").arg(QString::number(data_n[3][i]),QString::number(data_n[1][i]));
-           if(!query->exec(qu)) qDebug()<< __FUNCTION__ << __LINE__ << "ERROR : "<<query->lastError().text();
-           else{while(query->next()){
-           //     qDebug()<<"list rute_isi"<<data_n[3][i]<<data_n[1][i]<<query->value("param_setting").toByteArray().size();
-                all_rute_param.append(query->value("param_setting").toByteArray());
-            }}
-    }
     for(int i=0; i<data_->size(); i++){
         data_[i].clear();}
     for(int i=0; i<datax->size(); i++){
@@ -372,22 +360,21 @@ void controller::CallServer(std::string header, int flag, std::string server_ala
     grpc::ChannelArguments ch_args;
     ch_args.SetMaxReceiveMessageSize(-1);
 
+//    qDebug()<<"cek dulu----"
+//           <<cacah_data_name.size()
+//            <<data_n[0].size()
+//              <<data_n[1].size()
+//                <<data_n[2].size()
+//                  <<data_n[3].size()
+//                    <<data_n[4].size()
+//                      <<data_n[5].size()
+//                     <<"----";
  if(flag ==1){
     GreeterClient greeter( grpc::CreateCustomChannel (server_alamat, grpc::InsecureChannelCredentials(), ch_args));
     std::cout <<"client:"<<header <<std::endl;
     qDebug()<<rute_baru.size();//note c_rute masih kosong
-    if(flag_sukses==0)greeter.pesan_pertama(rute_baru,cacah_data_name,data_n[1],data_n[2],data_n[3],data_n[4],data_n[5]);
+    if(flag_sukses==0)greeter.pesan_pertama(rute_baru,cacah_data_name,data_n[0],data_n[1],data_n[2],data_n[3],data_n[4],data_n[5]);
     std::string balasan = greeter.initial_data(header);
-    qDebug()<<"-----"
-          <<c_rute.size()
-           <<cacah_data_name.size()
-            <<data_n[0].size()
-              <<data_n[1].size()
-                <<data_n[2].size()
-                  <<data_n[3].size()
-                    <<data_n[4].size()
-                      <<data_n[5].size()
-                     <<"----";
     alarm_message=0;
     alarm_message_data=0;
     if(greeter.alarm_pesan!=0){
@@ -398,7 +385,12 @@ void controller::CallServer(std::string header, int flag, std::string server_ala
     if(balasan=="balas"){
         counter_pesan=0;
         flag_sukses=1;
+
+        //ini maksudnya mengumpulkan data yang sudah di eliminasi server
+        //atau data yang tidak ada diserver
         greeter.proses_eliminasi();
+
+        //dipindah data yang sudah dikumpulkan dari balasan server
         c_rute = greeter.list_rute;
         aset_info_server = greeter.list_data_tampil;
         c_id_param_lama = greeter.s_id_param_lama;
@@ -406,6 +398,39 @@ void controller::CallServer(std::string header, int flag, std::string server_ala
         c_id_rute_lama = greeter.s_id_rute_lama;
         c_time = greeter.s_time;
         c_siklus = greeter.s_siklus;
+        c_id_masuk_lama = greeter.s_id_masuk;
+
+        //cari setting param
+        QSqlQuery query(db);
+        for(int i=0; i<c_id_rute_lama.size(); i++){
+            QString qu;
+            qu = QString("SELECT param_setting FROM rute_isi"
+                        " WHERE id_rute=%1 AND id_param=%2").arg(QString::number(c_id_rute_lama[i]),QString::number(c_id_param_lama[i]));
+               if(!query.exec(qu)) qDebug()<< __FUNCTION__ << __LINE__ << "ERROR : "<<query.lastError().text();
+               else{while(query.next()){
+                    c_all_rute_param.append(query.value("param_setting").toByteArray());
+                }}
+
+            qu = QString("SELECT data FROM %1 WHERE id_param=%2 AND id_data_masuk=%3")
+                           .arg(get_table_name(c_tipe_param[i]),QString::number(c_id_param_lama[i]),QString::number(c_id_masuk_lama[i]));
+
+              if(!query.exec(qu)) qDebug()<< __FUNCTION__ << __LINE__ << "ERROR : "<<query.lastError().text();
+              else{while(query.next()){
+                   c_all_data.append(query.value("data").toByteArray());
+                  }}
+          }
+        qDebug()<<"cek size setelah eliminasi:"<<
+                 c_rute.size()<<
+                 aset_info_server.size()<<
+                 c_id_param_lama.size()<<
+                 c_tipe_param.size()<<
+                 c_id_rute_lama.size()<<
+                 c_time.size()<<
+                 c_siklus.size()<<
+                 c_id_masuk_lama.size()<<
+                 c_all_data.size()<<
+                 c_all_rute_param.size();
+
         //proses seleksi nama per siklus menjadi 1 silinder saja
         QString nama_aset;
         for(int i=0; i<greeter.list_data_tampil.size(); i++){
@@ -422,10 +447,12 @@ void controller::CallServer(std::string header, int flag, std::string server_ala
      //int count=0;
      GreeterClient2 greeter( grpc::CreateCustomChannel (server_alamat, grpc::InsecureChannelCredentials(), ch_args));
      std::string balasan;
+
      if(greeter.alarm_pesan!=0){
          alarm_message = greeter.alarm_pesan;
          isi_pesan();
      }
+
      balasan = greeter.kirim_data(header,
                                  (QString) aset_info_server[counter_pesan],
                                   (QString) c_rute[counter_pesan],
@@ -434,22 +461,28 @@ void controller::CallServer(std::string header, int flag, std::string server_ala
                                      c_id_rute_lama[counter_pesan],
                                       c_time[counter_pesan],
                                        c_siklus[counter_pesan],
-                                        (QByteArray) all_rute_param[counter_pesan],
-                                         (QByteArray) all_data[counter_pesan],
+                                         c_all_rute_param[counter_pesan],
+                                          c_all_data[counter_pesan],
                                           counter_pesan
-                                      );
-     std::cout <<"reply dari server:->"<< balasan<< std::endl;
+                                   );
+     std::cout <<"reply dari server:->"<< balasan << std::endl;
      if(balasan=="terima_data"){//lanjutkan kirim data loop
-        qDebug()<<"- setelah direply server, lanjut kirim data ke-->"<<counter_pesan;
+        qDebug()<<"- setelah direply server, lanjut kirim data ke-->"<<counter_pesan << c_all_rute_param[counter_pesan].size() << c_all_data[counter_pesan].size();
         flag_sukses=1;
         counter_pesan += 1;
-        if(!flag_emit_cukup)emit_gas_kirim(counter_pesan,10);
+        if(!flag_emit_cukup)emit_gas_kirim(counter_pesan,c_id_param_lama.size());
         else{
-            qDebug()<<"sudah selesai upload semua data sejumlah="<<10;
+            qDebug()<<"sudah selesai upload semua data sejumlah="<<c_id_param_lama.size();
         }
      }
-     else{
-        //flag_sukses=0;
+     else if(balasan=="reload") {
+         qDebug()<<"- setelah direply server, lanjut kirim data ke-->"<<counter_pesan << c_all_rute_param[counter_pesan].size() << c_all_data[counter_pesan].size();
+         flag_sukses=1;
+         counter_pesan += 1;
+         if(!flag_emit_cukup)emit_gas_kirim(counter_pesan,c_id_param_lama.size());
+         else{
+             qDebug()<<"sudah selesai upload semua data sejumlah="<<c_id_param_lama.size();
+         }
      }
  }
 }
@@ -522,7 +555,7 @@ void controller::isi_pesan()
             qDebug()<<"GRPC_STATUS_DATA_LOSS";
             break;
         default:
-            qDebug()<<"ok";
+            qDebug()<<"GRPC STATUS OK == terkirim";
     }
 }
 
