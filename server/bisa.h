@@ -28,6 +28,8 @@
 #include <QSet>
 #include <QDateTime>
 
+#include <controller.h>
+
 #define FFT_LINES_DISABLE   0
 #define FFT_LINES_50        1
 #define FFT_LINES_100       2
@@ -56,29 +58,13 @@ public:
     QVector<int> t_id_rute;
     QVector<int> t_time;
     QVector<int> t_siklus;
-    int save_data(QString rute,
-                     QString aset,
-                     int id_data_masuk,
-                     int id_param,
-                     int tipe_param,
-                     int id_rute,
-                     int time,
-                     int siklus,
-                     int id_database,
-                     QByteArray all_rute_param,
-                     QByteArray all_data);
-    QSqlDatabase dbx;
-    int s_id_rute_baru;
-
 
 private:
-//    TampilServer jj;
+
     QSqlDatabase db;
     QString con_name;
     void mulai_cari_server(QSqlQuery *query);
- //  int decode_fft_lines(int setting_lines );
 
-    //QListWidget *list_check;
     QString get_table_name(int tipe);
     QStringList check_bok;
     QListWidget *list_check;
@@ -87,39 +73,6 @@ private:
     QVBoxLayout *box2;
     QVBoxLayout *box3;
     QLabel *list3;
-
-    void simpan_param(QSqlQuery *query,
-                      int id_paramnya,
-                      int flag_param,
-                      int id_aset,
-                      int id_parent,
-                      QString rute_baru,
-                      QString cacah_data_name,
-                      int id_data_masuk,
-                      int id_param,
-                      int tipe_param,
-                      int id_rute,
-                      int time,
-                      int siklus,
-                      int id_database,
-                      QByteArray all_rute_param,
-                      QByteArray all_data);
-
-    void simpan_aset(QSqlQuery *query,
-                      QString rute_baru,
-                      QString cacah_data_name,
-                      int id_data_masuk,
-                      int id_param,
-                      int tipe_param,
-                      int id_rute,
-                      int time,
-                      int siklus,
-                      int id_database,
-                      QByteArray all_rute_param,
-                      QByteArray all_data);
-
-
-
 
 public slots:
 };
