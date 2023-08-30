@@ -24,7 +24,8 @@ public:
                      int id_database,
                      QByteArray all_rute_param,
                      QByteArray all_data);
-    void simpan_param(QSqlQuery *query,
+
+    int simpan_param(QSqlQuery *query,
                       int id_paramnya,
                       int flag_param,
                       int id_aset,
@@ -41,7 +42,7 @@ public:
                       QByteArray all_rute_param,
                       QByteArray all_data);
 
-    void simpan_aset(QSqlQuery *query,
+    int simpan_aset(QSqlQuery *query,
                       QString rute_baru,
                       QString cacah_data_name,
                       int id_data_masuk,

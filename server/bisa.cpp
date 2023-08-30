@@ -9,13 +9,7 @@
 ///
 ///
 ///
-//komunikasi masih belum bisa stabil, coba dicari data yang kemaren
-//untuk balas balasan 1 sama lain dan tidak terikat 1 loop atau membahayakan
-
-//server kenapa kok hang kadang enggak kadang lancar kadang nggak?
-//clearkan dulu kenapa servernya kalo bolak balik compare dan synchronize
-//baru nanti yang lain seperti save dan lanjut ke status
-
+//data dirubah karena tidak efisien sehingga butuh info data aja untuk relasi aset dengan data info terdahulu
 #include "bisa.h"
 #include "strc.h"
 //#include <grpcpp/grpcpp.h>
@@ -40,10 +34,9 @@ class GreeterServiceImpl final : public protokol_1::Service  {
     Status initial_data(ServerContext* context, const pesan_client* request, pesan_server* reply) override {
         int flag_pesan=0;
         QStringList rute_s;
-        QByteArrayList all_data;
-        QByteArrayList all_rute_param;
         QStringList cacah_data_aset;
         QVector<int> data_new[7];
+        int id_database;
         if(request->header_pesan()=="list_info"){
             qDebug()<<"-------------------------";
             qDebug()<<"client:"<<"list info";
@@ -89,8 +82,16 @@ class GreeterServiceImpl final : public protokol_1::Service  {
                 <<data_new[5].size();
 
             //------mulai eliminasi--------------------//
-            b.eliminasi_data(rute_s,cacah_data_aset,data_new[0],data_new[1],data_new[2],data_new[3],data_new[4],data_new[5]);
-            //-----------------------------------------------------//
+            b.eliminasi_data(id_database,
+                             rute_s,
+                             cacah_data_aset,
+                             data_new[0],
+                             data_new[1],
+                             data_new[2],
+                             data_new[3],
+                             data_new[4],
+                             data_new[5]);
+            //-----------------------------------------//
 
             //---mulai kirim data yang belum ada-------//
 //            qDebug()<<"---inisial data yang belom ada di server---";
@@ -142,28 +143,30 @@ class GreeterServiceImpl2 final : public protokol_2::Service  {
             QByteArray all_data = QByteArray::fromStdString(request->data());
             QByteArray all_rute_param = QByteArray::fromStdString(request->param());
             std::cout<<"cek data_upload client:" <<
+                          request->id_database()<< " "<<
                           request->jumlah_data()<< " "<<
                           request->pesan_ke()<< " "<<
                           request->aset() << " "<<
-                           request->rute() <<" "<<
-                           request->id_data_masuk()<<" "<<
-                           request->id_param_lama() <<" "<<
-                           request->id_tipe_param() <<" "<<
-                           request->id_rute_lama() <<" "<<
-                           request->timestamp() <<" "<<
-                           request->siklus() <<"| size data:"<<
-                           all_data.toStdString().size() <<"| size set param: "<<
-                           all_rute_param.toStdString().size() <<" "<<
-                           std::endl;
-                            QString rute = QString::fromStdString(request->rute());
-                            QString aset = QString::fromStdString(request->aset());
-                            int id_data_masuk = request->id_data_masuk();
-                            int id_param = request->id_param_lama();
-                            int tipe_param = request->id_tipe_param();
-                            int id_rute = request->id_rute_lama();
-                            int time = request->timestamp();
-                            int siklus = request->siklus();
-                            int id_database = 0;
+                          request->rute() <<" "<<
+                          request->id_data_masuk()<<" "<<
+                          request->id_param_lama() <<" "<<
+                          request->id_tipe_param() <<" "<<
+                          request->id_rute_lama() <<" "<<
+                          request->timestamp() <<" "<<
+                          request->siklus() <<"| size data:"<<
+                          all_data.toStdString().size() <<"| size set param: "<<
+                          all_rute_param.toStdString().size() <<" "<<
+                          std::endl;
+
+                        QString rute = QString::fromStdString(request->rute());
+                        QString aset = QString::fromStdString(request->aset());
+                        int id_data_masuk = request->id_data_masuk();
+                        int id_param = request->id_param_lama();
+                        int tipe_param = request->id_tipe_param();
+                        int id_rute = request->id_rute_lama();
+                        int time = request->timestamp();
+                        int siklus = request->siklus();
+                        int id_database = request->id_database();
                 cc = new controller;
                 if(cc->save_data(rute,
                             aset,
@@ -236,7 +239,7 @@ void bisa::mulai_cari_server(QSqlQuery *query)
 
 }
 
-void bisa::eliminasi_data(QStringList rute,QStringList aset, QVector<int> id_data_masuk1, QVector<int> id_param1, QVector<int> tipe_param1,QVector<int> id_rute1, QVector<int> time1, QVector<int> siklus1)
+void bisa::eliminasi_data(int id_database, QStringList rute,QStringList aset, QVector<int> id_data_masuk1, QVector<int> id_param1, QVector<int> tipe_param1,QVector<int> id_rute1, QVector<int> time1, QVector<int> siklus1)
 {
     QVector<int> id_data_masuk = id_data_masuk1;
     QVector<int> id_param = id_param1;
@@ -267,9 +270,13 @@ void bisa::eliminasi_data(QStringList rute,QStringList aset, QVector<int> id_dat
     QSqlQuery query(data_base.db);
     int konter=0;
     QString qu;
+//------------------------------------------------------------------GANTI BAHAYA!!!!----------------------------------------------->>
+    //disini cek id_database dulu yang dibagian server
+    //dari id database ambil id paramnya
+
     for(int i=0; i<id_param1.size(); i++){
         //qDebug()<<"2cek data:"<<tipe_param[i]<<time[i]<<siklus[i];
-        qu = QString("SELECT id FROM %1 WHERE data_timestamp=%2").arg(cc->get_table_name(tipe_param1[i]),QString::number(time1[i]));
+         qu = QString("SELECT id FROM %1 WHERE data_timestamp=%2").arg(cc->get_table_name(tipe_param1[i]),QString::number(time1[i]));
         if(tipe_param1[i]==3 || tipe_param1[i]==28 ||tipe_param1[i]==2|| tipe_param1[i]==11){
          qu = QString("SELECT id FROM %1 WHERE data_timestamp=%2 AND siklus=%3").arg(cc->get_table_name(tipe_param1[i]),QString::number(time1[i]),QString::number(siklus1[i]));
         }
@@ -289,6 +296,7 @@ void bisa::eliminasi_data(QStringList rute,QStringList aset, QVector<int> id_dat
 
 //    //ccek ulang yang tidak ada siapa aja
     qDebug()<<"------------cek sudah eliminasi data----------";
+    qDebug()<<"- id database:"<<id_database;
     qDebug()<<"- jumlah data rute:"<<rute.size();
     qDebug()<<"- jumlah data list aset:"<<cacah_data_aset.size();
     qDebug()<<"- jumlah data id_data_masuk:"<< id_data_masuk.size();//1

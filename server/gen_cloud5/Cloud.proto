@@ -1,0 +1,92 @@
+
+syntax = "proto3";
+
+package Cloud;
+
+service protokol_1 {
+  rpc initial_data (pesan_client) returns(pesan_server){}
+}
+
+service protokol_2{
+ rpc kirim_data (mes_client) returns(mes_server){}
+}
+
+
+message pesan_client {
+  string header_pesan = 1;  
+  int32 jumlah_data = 2;
+  message info_data{
+  repeated string aset = 1;
+  repeated string rute = 2;
+  repeated int32 id_param_lama = 3;
+  repeated int32 id_tipe_param = 4;
+  repeated int32 id_rute_lama = 5;
+  repeated int32 timestamp = 6;
+  repeated int32 siklus = 7;
+  repeated int32 id_data_masuk = 8;
+  repeated int32 id_date_lama = 9;
+  }	
+}
+
+message pesan_server {
+  string header_pesan = 1;  
+  int32 jumlah_data = 2;
+  message info_data{
+  repeated string aset = 1;
+  repeated string rute = 2;
+  repeated int32 id_param_lama = 3;
+  repeated int32 id_tipe_param = 4;
+  repeated int32 id_rute_lama = 5;
+  repeated int32 timestamp = 6;
+  repeated int32 siklus = 7;
+  repeated int32 id_data_masuk = 8;
+  repeated int32 id_date_lama = 9;
+  }	
+}
+
+message mes_client {
+  string header_pesan = 1;
+  int32 jumlah_data = 2;
+  int32 pesan_ke = 3;
+  int32 flag_info_data =4;
+   message isi_data{
+    string aset = 1;
+    string rute = 2;
+    int32 timestamp = 3;
+    int32 siklus = 4;
+    bytes data = 5;
+    bytes param = 6;
+    int32 flag_set_param = 7;
+  }
+  message info_data{
+    int32 id_date_lama = 1;
+    int32 id_data_masuk = 2;
+    int32 id_param_lama = 3;
+    int32 id_tipe_param = 4;
+    int32 id_rute_lama = 5;		
+  }
+}
+
+message mes_server {
+  string header_pesan = 1;
+  int32 jumlah_data = 2;
+  int32 pesan_ke = 3;
+  int32 flag_info_data =4;
+   message isi_data{
+    string aset = 1;
+    string rute = 2;
+    int32 timestamp = 3;
+    int32 siklus = 4;
+    bytes data = 5;
+    bytes param = 6;
+    int32 flag_set_param = 7;
+  }
+  message info_data{
+    int32 id_date_lama = 1;
+    int32 id_data_masuk = 2;
+    int32 id_param_lama = 3;
+    int32 id_tipe_param = 4;
+    int32 id_rute_lama = 5;		
+  }
+}
+

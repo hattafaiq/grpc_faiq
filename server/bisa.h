@@ -49,7 +49,15 @@ public:
    explicit bisa(QObject *parent=nullptr);
    virtual ~bisa();
     void RunServer();
-    void eliminasi_data(QStringList rute,QStringList aset,QVector<int> data_masuk, QVector<int> id_param, QVector<int> tipe_param,QVector<int> id_rute, QVector<int> time, QVector<int> siklus);
+    void eliminasi_data(int id_database,
+                        QStringList rute,
+                        QStringList aset,
+                        QVector<int> data_masuk,
+                        QVector<int> id_param,
+                        QVector<int> tipe_param,
+                        QVector<int> id_rute,
+                        QVector<int> time,
+                        QVector<int> siklus);
     QStringList list_aset;
     QStringList list_rute;
     QVector<int> t_id_param_lama;

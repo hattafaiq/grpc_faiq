@@ -21,7 +21,9 @@ message pesan_client {
   repeated int32 timestamp = 7;
   repeated int32 siklus = 8;
   repeated int32 id_data_masuk = 9;
-  int32 jumlah_data = 10;
+  int32 id_database = 10;
+  int32 id_user = 11;
+  int32 jumlah_data = 12;
 }
 
 message pesan_server {
@@ -51,6 +53,7 @@ message mes_client {
   bytes data = 11;
   bytes param = 12;
   int32 pesan_ke = 13;
+  int32 id_database = 14;
 }
 
 message mes_server {
@@ -67,5 +70,6 @@ message mes_server {
   bytes data = 11;
   bytes param = 12;
   int32 pesan_ke = 13;
+  int32 id_database = 14;
 }
 

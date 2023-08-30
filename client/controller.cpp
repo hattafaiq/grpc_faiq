@@ -46,7 +46,7 @@ class GreeterClient{
     }
   }
 
-   void pesan_pertama(QStringList rute,QStringList aset, QVector<int> data0,QVector<int> data1, QVector<int> data2, QVector<int> data3, QVector<int> data4, QVector<int> data5){
+   void pesan_pertama(int id_database, QStringList rute,QStringList aset, QVector<int> data0,QVector<int> data1, QVector<int> data2, QVector<int> data3, QVector<int> data4, QVector<int> data5){
        //qDebug()<<"pesan pertama"<<data2.size()<<data3.size()<<data4.size()<<data5.size();
        if(data1.size()!=0){
            for(int a=0; a<data1.size(); a++ ){
@@ -84,6 +84,7 @@ class GreeterClient{
            request.mutable_timestamp()->Swap(&time_s);
            request.mutable_siklus()->Swap(&siklus_s);
 
+           request.set_id_database(id_database);
            request.set_header_pesan("list_info");
        }
        else{
@@ -135,6 +136,7 @@ class GreeterClient2{
     GreeterClient2(std::shared_ptr<Channel> channel)
       : stub_(protokol_2::NewStub(channel)) {}
    std::string kirim_data(const std::string& user,
+                          int id_database,
                           QString asets,
                           QString rute,
                           int s_id_param_lama,
@@ -146,6 +148,8 @@ class GreeterClient2{
                           QByteArray data,
                           int counter
                           ) {
+
+      request.set_id_database(id_database);
       request.set_header_pesan(user);
       request.set_pesan_ke(counter);
       request.set_aset(asets.toStdString());
@@ -373,7 +377,7 @@ void controller::CallServer(std::string header, int flag, std::string server_ala
     GreeterClient greeter( grpc::CreateCustomChannel (server_alamat, grpc::InsecureChannelCredentials(), ch_args));
     std::cout <<"client:"<<header <<std::endl;
     qDebug()<<rute_baru.size();//note c_rute masih kosong
-    if(flag_sukses==0)greeter.pesan_pertama(rute_baru,cacah_data_name,data_n[0],data_n[1],data_n[2],data_n[3],data_n[4],data_n[5]);
+    if(flag_sukses==0)greeter.pesan_pertama(id_database, rute_baru,cacah_data_name,data_n[0],data_n[1],data_n[2],data_n[3],data_n[4],data_n[5]);
     std::string balasan = greeter.initial_data(header);
     alarm_message=0;
     alarm_message_data=0;
@@ -454,6 +458,7 @@ void controller::CallServer(std::string header, int flag, std::string server_ala
      }
 
      balasan = greeter.kirim_data(header,
+                                  id_database,
                                  (QString) aset_info_server[counter_pesan],
                                   (QString) c_rute[counter_pesan],
                                    c_id_param_lama[counter_pesan],

@@ -208,7 +208,9 @@ class pesan_client final :
     kSiklusFieldNumber = 8,
     kIdDataMasukFieldNumber = 9,
     kHeaderPesanFieldNumber = 1,
-    kJumlahDataFieldNumber = 10,
+    kIdDatabaseFieldNumber = 10,
+    kIdUserFieldNumber = 11,
+    kJumlahDataFieldNumber = 12,
   };
   // repeated string aset = 2;
   int aset_size() const;
@@ -404,7 +406,25 @@ class pesan_client final :
   std::string* _internal_mutable_header_pesan();
   public:
 
-  // int32 jumlah_data = 10;
+  // int32 id_database = 10;
+  void clear_id_database();
+  int32_t id_database() const;
+  void set_id_database(int32_t value);
+  private:
+  int32_t _internal_id_database() const;
+  void _internal_set_id_database(int32_t value);
+  public:
+
+  // int32 id_user = 11;
+  void clear_id_user();
+  int32_t id_user() const;
+  void set_id_user(int32_t value);
+  private:
+  int32_t _internal_id_user() const;
+  void _internal_set_id_user(int32_t value);
+  public:
+
+  // int32 jumlah_data = 12;
   void clear_jumlah_data();
   int32_t jumlah_data() const;
   void set_jumlah_data(int32_t value);
@@ -435,6 +455,8 @@ class pesan_client final :
   ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t > id_data_masuk_;
   mutable std::atomic<int> _id_data_masuk_cached_byte_size_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr header_pesan_;
+  int32_t id_database_;
+  int32_t id_user_;
   int32_t jumlah_data_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Cloud_2eproto;
@@ -572,7 +594,9 @@ class pesan_server final :
     kSiklusFieldNumber = 8,
     kIdDataMasukFieldNumber = 9,
     kHeaderPesanFieldNumber = 1,
-    kJumlahDataFieldNumber = 10,
+    kIdDatabaseFieldNumber = 10,
+    kIdUserFieldNumber = 11,
+    kJumlahDataFieldNumber = 12,
   };
   // repeated string aset = 2;
   int aset_size() const;
@@ -768,7 +792,25 @@ class pesan_server final :
   std::string* _internal_mutable_header_pesan();
   public:
 
-  // int32 jumlah_data = 10;
+  // int32 id_database = 10;
+  void clear_id_database();
+  int32_t id_database() const;
+  void set_id_database(int32_t value);
+  private:
+  int32_t _internal_id_database() const;
+  void _internal_set_id_database(int32_t value);
+  public:
+
+  // int32 id_user = 11;
+  void clear_id_user();
+  int32_t id_user() const;
+  void set_id_user(int32_t value);
+  private:
+  int32_t _internal_id_user() const;
+  void _internal_set_id_user(int32_t value);
+  public:
+
+  // int32 jumlah_data = 12;
   void clear_jumlah_data();
   int32_t jumlah_data() const;
   void set_jumlah_data(int32_t value);
@@ -799,6 +841,8 @@ class pesan_server final :
   ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t > id_data_masuk_;
   mutable std::atomic<int> _id_data_masuk_cached_byte_size_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr header_pesan_;
+  int32_t id_database_;
+  int32_t id_user_;
   int32_t jumlah_data_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Cloud_2eproto;
@@ -940,6 +984,7 @@ class mes_client final :
     kSiklusFieldNumber = 9,
     kIdDataMasukFieldNumber = 10,
     kPesanKeFieldNumber = 13,
+    kIdDatabaseFieldNumber = 14,
   };
   // string header_pesan = 1;
   void clear_header_pesan();
@@ -1083,6 +1128,15 @@ class mes_client final :
   void _internal_set_pesan_ke(int32_t value);
   public:
 
+  // int32 id_database = 14;
+  void clear_id_database();
+  int32_t id_database() const;
+  void set_id_database(int32_t value);
+  private:
+  int32_t _internal_id_database() const;
+  void _internal_set_id_database(int32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Cloud.mes_client)
  private:
   class _Internal;
@@ -1103,6 +1157,7 @@ class mes_client final :
   int32_t siklus_;
   int32_t id_data_masuk_;
   int32_t pesan_ke_;
+  int32_t id_database_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Cloud_2eproto;
 };
@@ -1243,6 +1298,7 @@ class mes_server final :
     kSiklusFieldNumber = 9,
     kIdDataMasukFieldNumber = 10,
     kPesanKeFieldNumber = 13,
+    kIdDatabaseFieldNumber = 14,
   };
   // string header_pesan = 1;
   void clear_header_pesan();
@@ -1386,6 +1442,15 @@ class mes_server final :
   void _internal_set_pesan_ke(int32_t value);
   public:
 
+  // int32 id_database = 14;
+  void clear_id_database();
+  int32_t id_database() const;
+  void set_id_database(int32_t value);
+  private:
+  int32_t _internal_id_database() const;
+  void _internal_set_id_database(int32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Cloud.mes_server)
  private:
   class _Internal;
@@ -1406,6 +1471,7 @@ class mes_server final :
   int32_t siklus_;
   int32_t id_data_masuk_;
   int32_t pesan_ke_;
+  int32_t id_database_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Cloud_2eproto;
 };
@@ -1903,7 +1969,47 @@ pesan_client::mutable_id_data_masuk() {
   return _internal_mutable_id_data_masuk();
 }
 
-// int32 jumlah_data = 10;
+// int32 id_database = 10;
+inline void pesan_client::clear_id_database() {
+  id_database_ = 0;
+}
+inline int32_t pesan_client::_internal_id_database() const {
+  return id_database_;
+}
+inline int32_t pesan_client::id_database() const {
+  // @@protoc_insertion_point(field_get:Cloud.pesan_client.id_database)
+  return _internal_id_database();
+}
+inline void pesan_client::_internal_set_id_database(int32_t value) {
+  
+  id_database_ = value;
+}
+inline void pesan_client::set_id_database(int32_t value) {
+  _internal_set_id_database(value);
+  // @@protoc_insertion_point(field_set:Cloud.pesan_client.id_database)
+}
+
+// int32 id_user = 11;
+inline void pesan_client::clear_id_user() {
+  id_user_ = 0;
+}
+inline int32_t pesan_client::_internal_id_user() const {
+  return id_user_;
+}
+inline int32_t pesan_client::id_user() const {
+  // @@protoc_insertion_point(field_get:Cloud.pesan_client.id_user)
+  return _internal_id_user();
+}
+inline void pesan_client::_internal_set_id_user(int32_t value) {
+  
+  id_user_ = value;
+}
+inline void pesan_client::set_id_user(int32_t value) {
+  _internal_set_id_user(value);
+  // @@protoc_insertion_point(field_set:Cloud.pesan_client.id_user)
+}
+
+// int32 jumlah_data = 12;
 inline void pesan_client::clear_jumlah_data() {
   jumlah_data_ = 0;
 }
@@ -2410,7 +2516,47 @@ pesan_server::mutable_id_data_masuk() {
   return _internal_mutable_id_data_masuk();
 }
 
-// int32 jumlah_data = 10;
+// int32 id_database = 10;
+inline void pesan_server::clear_id_database() {
+  id_database_ = 0;
+}
+inline int32_t pesan_server::_internal_id_database() const {
+  return id_database_;
+}
+inline int32_t pesan_server::id_database() const {
+  // @@protoc_insertion_point(field_get:Cloud.pesan_server.id_database)
+  return _internal_id_database();
+}
+inline void pesan_server::_internal_set_id_database(int32_t value) {
+  
+  id_database_ = value;
+}
+inline void pesan_server::set_id_database(int32_t value) {
+  _internal_set_id_database(value);
+  // @@protoc_insertion_point(field_set:Cloud.pesan_server.id_database)
+}
+
+// int32 id_user = 11;
+inline void pesan_server::clear_id_user() {
+  id_user_ = 0;
+}
+inline int32_t pesan_server::_internal_id_user() const {
+  return id_user_;
+}
+inline int32_t pesan_server::id_user() const {
+  // @@protoc_insertion_point(field_get:Cloud.pesan_server.id_user)
+  return _internal_id_user();
+}
+inline void pesan_server::_internal_set_id_user(int32_t value) {
+  
+  id_user_ = value;
+}
+inline void pesan_server::set_id_user(int32_t value) {
+  _internal_set_id_user(value);
+  // @@protoc_insertion_point(field_set:Cloud.pesan_server.id_user)
+}
+
+// int32 jumlah_data = 12;
 inline void pesan_server::clear_jumlah_data() {
   jumlah_data_ = 0;
 }
@@ -2849,6 +2995,26 @@ inline void mes_client::set_pesan_ke(int32_t value) {
   // @@protoc_insertion_point(field_set:Cloud.mes_client.pesan_ke)
 }
 
+// int32 id_database = 14;
+inline void mes_client::clear_id_database() {
+  id_database_ = 0;
+}
+inline int32_t mes_client::_internal_id_database() const {
+  return id_database_;
+}
+inline int32_t mes_client::id_database() const {
+  // @@protoc_insertion_point(field_get:Cloud.mes_client.id_database)
+  return _internal_id_database();
+}
+inline void mes_client::_internal_set_id_database(int32_t value) {
+  
+  id_database_ = value;
+}
+inline void mes_client::set_id_database(int32_t value) {
+  _internal_set_id_database(value);
+  // @@protoc_insertion_point(field_set:Cloud.mes_client.id_database)
+}
+
 // -------------------------------------------------------------------
 
 // mes_server
@@ -3266,6 +3432,26 @@ inline void mes_server::_internal_set_pesan_ke(int32_t value) {
 inline void mes_server::set_pesan_ke(int32_t value) {
   _internal_set_pesan_ke(value);
   // @@protoc_insertion_point(field_set:Cloud.mes_server.pesan_ke)
+}
+
+// int32 id_database = 14;
+inline void mes_server::clear_id_database() {
+  id_database_ = 0;
+}
+inline int32_t mes_server::_internal_id_database() const {
+  return id_database_;
+}
+inline int32_t mes_server::id_database() const {
+  // @@protoc_insertion_point(field_get:Cloud.mes_server.id_database)
+  return _internal_id_database();
+}
+inline void mes_server::_internal_set_id_database(int32_t value) {
+  
+  id_database_ = value;
+}
+inline void mes_server::set_id_database(int32_t value) {
+  _internal_set_id_database(value);
+  // @@protoc_insertion_point(field_set:Cloud.mes_server.id_database)
 }
 
 #ifdef __GNUC__
