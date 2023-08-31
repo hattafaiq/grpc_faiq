@@ -36,7 +36,9 @@ Tampil::Tampil(QWidget *parent) :
 
 void Tampil::setup_tampil_hirarki_server()
 {
+  //  QString filename = "PT.PJB UBJOM PLTMG ARUN.dbb";
     QString filename = "rotatinghal.dbb";
+  //  QString filename = "QC_custom.dbb";
     QString con_name;
     con_name = QString("LOC_DB%1").arg(2);
     db =QSqlDatabase::addDatabase("QSQLITE",con_name);
@@ -482,11 +484,10 @@ void Tampil::on_PB_synchron_clicked()
             if(cc->alarm_message_data!=0)
                 QMessageBox::warning(this, "Kirim Data Error ("+QString::number(cc->alarm_message_data)+")", "Error ("+cc->pesan_alarm+")"+
                                      "data ke:"+QString::number(cc->counter_pesan));
-
-        }
-        else{
-            QMessageBox::information(this,"informasi","tidak ada data yang terupdate");
-        }
+            }
+            else{
+                QMessageBox::information(this,"informasi","tidak ada data yang terupdate");
+            }
     }
 }
 

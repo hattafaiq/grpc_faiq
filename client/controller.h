@@ -24,10 +24,19 @@ using grpc::ChannelArguments;
 using Cloud::protokol_1;
 using Cloud::protokol_2;
 
-using Cloud::mes_client;
-using Cloud::mes_server;
+//pesan kebutuhan kirim pesan data//
 using Cloud::pesan_client;
+//using Cloud::pesan_client_info_data;
 using Cloud::pesan_server;
+//using Cloud::pesan_server_info_data;
+
+//pesan kebutuhan kirim pesan data//
+using Cloud::mes_client;
+//using Cloud::mes_client_isi_data;
+//using Cloud::mes_client_info_data;
+using Cloud::mes_server;
+//using Cloud::mes_server_isi_data;
+//using Cloud::mes_server_info_data;
 
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
@@ -197,6 +206,7 @@ private:
     void cari_induk_paramm(int parameter, int tipe);
     void cari_induk(int p_id_aset);
     void mulai_cari(QSqlQuery *query);
+    int last_conter;
 
 
 //public slots:

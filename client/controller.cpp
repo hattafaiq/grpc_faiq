@@ -475,16 +475,17 @@ void controller::CallServer(std::string header, int flag, std::string server_ala
         qDebug()<<"- setelah direply server, lanjut kirim data ke-->"<<counter_pesan << c_all_rute_param[counter_pesan].size() << c_all_data[counter_pesan].size();
         flag_sukses=1;
         counter_pesan += 1;
+        last_conter = counter_pesan;
         if(!flag_emit_cukup)emit_gas_kirim(counter_pesan,c_id_param_lama.size());
         else{
             qDebug()<<"sudah selesai upload semua data sejumlah="<<c_id_param_lama.size();
         }
      }
      else if(balasan=="reload") {
-         qDebug()<<"- setelah direply server, lanjut kirim data ke-->"<<counter_pesan << c_all_rute_param[counter_pesan].size() << c_all_data[counter_pesan].size();
+         qDebug()<<"- setelah direply server, lanjut kirim data ke-->"<<last_conter << c_all_rute_param[last_conter].size() << c_all_data[counter_pesan].size();
          flag_sukses=1;
          counter_pesan += 1;
-         if(!flag_emit_cukup)emit_gas_kirim(counter_pesan,c_id_param_lama.size());
+         if(!flag_emit_cukup)emit_gas_kirim(last_conter,c_id_param_lama.size());
          else{
              qDebug()<<"sudah selesai upload semua data sejumlah="<<c_id_param_lama.size();
          }
@@ -567,7 +568,10 @@ void controller::isi_pesan()
 void controller::initial_database()
 {
     // flag_pengiriman=0;
+   // QString filename = "PT.PJB UBJOM PLTMG ARUN.dbb";
      QString filename = "rotatinghal.dbb";
+   // QString filename = "QC_custom.dbb";
+ //   QString filename = "PLTMG ARUN LHOKSEUMAWE.dbb";
      QString con_name;
      con_name = QString("LOC_DB%1").arg(2);
      db =QSqlDatabase::addDatabase("QSQLITE",con_name);

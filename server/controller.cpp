@@ -1,6 +1,7 @@
 #include "controller.h"
 
 struct data data_base;
+struct id_info_data info;
 
 controller::controller()
 {
@@ -22,7 +23,7 @@ int controller::save_data(QString  rute_baru,
     //id_database=49965;
     QSqlQuery query(data_base.db);
     int id_param=0;
-    int id_data_info=0;
+    id_data_info=0;
  //---------------------------------------------------------------------------------------------------//
     qDebug()<<"id paramnya size";
     id_param = simpan_aset(&query,
@@ -37,7 +38,7 @@ int controller::save_data(QString  rute_baru,
                 all_rute_param,
                 all_data);
 
-    int id_rute_baru;
+    int id_rute_baru=0;
     QString qu;
     qu = QString("INSERT INTO rute (nama_rute,id_database)"
                  " SELECT '%1',%2 WHERE NOT EXISTS "
@@ -63,40 +64,39 @@ int controller::save_data(QString  rute_baru,
     qDebug()<<"----------------------------------------";
 
     //masukkan isi_rute dulu
+//    if(siklus==1 || siklus==0){
+//        //ini ditambahkan && tipe terkait
+//        qu = QString("SELECT id FROM rute WHERE nama_rute='%1'").
+//                arg(rute_baru);
+//        if(!query.exec(qu)) {qDebug()<< "ERROR:: " <<query.lastError().text();}
+//        else{while(query.next()){
+//                 id_rute_baru=query.value("id").toInt();
+//                 s_id_rute_baru=id_rute_baru;//new id rute
+//                 qDebug()<<"id_rute:"<<id_rute_baru <<rute_baru;
+//                 QString qa;
+//                         qa.sprintf("INSERT INTO info_data (id_aset, id_last_param, id_tipe_param, id_last_date, id_last_data_masuk, kanal) "
+//                                    "values(:id_aset, :id_last_param, :id_tipe_param, :id_last_date, :id_last_data_masuk, kanal)");
+//                         query.exec("pragma synchronous = off;");
+//                         query.prepare(qa);
+//                         query.bindValue(":id_rute",id_rute_baru);
+//                         query.bindValue(":id_aset",id_param);
+//                         query.bindValue(":id_last_param",id_last_param);
+//                         query.bindValue(":id_tipe_param",tipe_param);
 
-    qu = QString("SELECT id FROM rute WHERE nama_rute='%1'").
-            arg(rute_baru);
-    if(!query.exec(qu)) {qDebug()<< "ERROR:: " <<query.lastError().text();}
-    else{while(query.next()){
-             id_rute_baru=query.value("id").toInt();
-             s_id_rute_baru=id_rute_baru;//new id rute
-             qDebug()<<"id_rute:"<<id_rute_baru <<rute_baru;
-             QString qa;
-                     qa.sprintf("INSERT INTO info_data (id_aset, id_last_param, id_tipe_param, info_rms, info_peak, id_last_date, id_last_data_masuk, kanal) "
-                                "values(:id_aset, :id_last_param, :id_tipe_param, :info_rms, :info_peak, :id_last_date, :id_last_data_masuk, kanal)");
-                     query.exec("pragma synchronous = off;");
-                     query.prepare(qa);
-                     query.bindValue(":id_aset",id_rute_baru);
-                     query.bindValue(":id_last_param",id_last_param);
-                     query.bindValue(":id_tipe_param",tipe_param);
+//                         query.bindValue(":id_last_date",0);
+//                         query.bindValue(":id_last_data_masuk",0);
+//                         query.bindValue(":kanal",1);
+//                         if(!query.exec()){
 
-                     query.bindValue(":info_rms",0.22);
-                     query.bindValue(":info_peak",0.11);
-                     query.bindValue(":id_last_date",0);
-                     query.bindValue(":id_last_data_masuk",0);
-                     query.bindValue(":kanal",1);
-
-                     if(!query.exec()){
-
-                     }
-                     else{
-                       id_data_info= query.lastInsertId().toInt();
-                     }
-                     //
-            }
-        }
-//      qDebug()<<"rute baru cek"<<rute_baru;
-//-------------------------------------------------------------------------------------------------------------------------------->>>>
+//                         }
+//                         else{
+//                           id_data_info= query.lastInsertId().toInt();
+//                           last_data_info=id_data_info;
+//                         }
+//                }
+//        }
+//     }
+////-------------------------------------------------------------------------------------------------------------------------------->>>>
 
     qu = QString("SELECT id FROM rute WHERE nama_rute='%1'").
             arg(rute_baru);
@@ -107,20 +107,45 @@ int controller::save_data(QString  rute_baru,
          qDebug()<<"tipe_data:"<<tipe_param;
          QString tipe_data = get_table_name(tipe_param);
          QString qa;
+
+         if(siklus==1 || siklus==0){
+             //ini ditambahkan && tipe terkait
+
+              qa.sprintf("INSERT INTO info_data (id_rute, id_aset, id_last_param, id_tipe_param, id_last_date, id_last_data_masuk, kanal) "
+                         "values(:id_rute, :id_aset, :id_last_param, :id_tipe_param, :id_last_date, :id_last_data_masuk, kanal)");
+              query.exec("pragma synchronous = off;");
+              query.prepare(qa);
+              query.bindValue(":id_rute",id_rute_baru);
+              query.bindValue(":id_aset",id_param);
+              query.bindValue(":id_last_param",id_last_param);
+              query.bindValue(":id_tipe_param",tipe_param);
+
+              query.bindValue(":id_last_date",0);
+              query.bindValue(":id_last_data_masuk",0);
+              query.bindValue(":kanal",1);
+              if(!query.exec()){}
+              else{
+                id_data_info= query.lastInsertId().toInt();
+                info.id=id_data_info;
+              }
+          }
+
          if(tipe_param==410 || tipe_param==420 || tipe_param==430||
             tipe_param==41 || tipe_param==42 || tipe_param==43){
-              qa.sprintf("INSERT INTO %s (id_info_data, id_rute, data, set_param, siklus, data_timestamp, flag_set_param) "
-                         "values(:id_info_data, :id_rute, :data, :set_param, :siklus, :data_timestamp, :flag_set_param)",
+              qa.sprintf("INSERT INTO %s (id_info_data, data, set_param, siklus, data_timestamp, flag_set_param, info_rms, info_peak) "
+                         "values(:id_info_data, :data, :set_param, :siklus, :data_timestamp, :flag_set_param, :info_rms, :info_peak)",
                             tipe_data.toUtf8().data());
                               query.exec("pragma synchronous = off;");
                               query.prepare(qa);
-                              query.bindValue(":id_info_data",id_data_info);//id_info_data from last insert id info data
-                              query.bindValue(":id_rute",id_rute_baru);
+                              query.bindValue(":id_info_data",info.id);//id_info_data from last insert id info data
+                              //query.bindValue(":id_rute",id_rute_baru);
                               query.bindValue(":data",all_data);
                               query.bindValue(":set_param",all_rute_param);
                               query.bindValue(":siklus",0);//jika dihapus lebih baik
                               query.bindValue(":data_timestamp",time);
                               query.bindValue(":flag_set_param",0); //ganti data asli ya nanti
+                              query.bindValue(":info_rms",0.22);
+                              query.bindValue(":info_peak",0.11);
                               //query.exec();
                               if(!query.exec())return 0;
                               else return 1;
@@ -130,18 +155,20 @@ int controller::save_data(QString  rute_baru,
         }
         else if(tipe_param==28 || tipe_param==3 ||tipe_param==2 || tipe_param==11){
 
-             qa.sprintf("INSERT INTO %s (id_info_data, id_rute, data, set_param, siklus, data_timestamp, flag_set_param) "
-                        "values(:id_info_data, :id_rute, :data, :set_param, :siklus, :data_timestamp, :flag_set_param)",
+             qa.sprintf("INSERT INTO %s (id_info_data, data, set_param, siklus, data_timestamp, flag_set_param, info_rms, info_peak) "
+                        "values(:id_info_data, :data, :set_param, :siklus, :data_timestamp, :flag_set_param, :info_rms, :info_peak)",
                            tipe_data.toUtf8().data());
                              query.exec("pragma synchronous = off;");
                              query.prepare(qa);
-                             query.bindValue(":id_info_data",id_data_info);//id_info_data from last insert id info data
-                             query.bindValue(":id_rute",id_rute_baru);
+                             query.bindValue(":id_info_data",info.id);//id_info_data from last insert id info data
+                             //query.bindValue(":id_rute",id_rute_baru);
                              query.bindValue(":data",all_data);
                              query.bindValue(":set_param",all_rute_param);
                              query.bindValue(":siklus",siklus);
                              query.bindValue(":data_timestamp",time);
                              query.bindValue(":flag_set_param",0); //ganti data asli ya nanti
+                             query.bindValue(":info_rms",0.22);
+                             query.bindValue(":info_peak",0.11);
                              //query.exec();
                              if(!query.exec())return 0;
                              else return 1;
@@ -153,47 +180,7 @@ int controller::save_data(QString  rute_baru,
 
 int controller::simpan_param(QSqlQuery *query, int id_paramnya, int flag_masukkan_param, int id_aset, int id_parent, QString rute_baru, QString cacah_data_name, int id_data_masuk, int id_param, int tipe_param, int id_rute, int time, int siklus, int id_database, QByteArray all_rute_param, QByteArray all_data)
 {
-    QString aa;
-//    if(flag_masukkan_param==0){
-//        //aa = QString("INSERT INTO parameter ( id_tipe_param, id_aset, urut) VALUES('%1',%2,%3)").arg(QString::number(data_new[2][a]),QString::number(id_parent),QString::number(1));
-//        aa = QString("INSERT INTO parameter (id_tipe_param,id_aset,urut)"
-//                     " SELECT %1,%2,%3 WHERE NOT EXISTS "
-//                     "(SELECT id_tipe_param,id_aset,urut FROM parameter "
-//                     "WHERE id_tipe_param=%4 AND id_aset=%5)").
-//                     arg(QString::number(tipe_param),//id_tipe_param
-//                         QString::number(id_parent),//id_aset
-//                         QString::number(1),//urut
-//                         QString::number(tipe_param),//id_tipe_param
-//                         QString::number(id_parent));//id_aset
-//        qDebug()<<id_parent<<"------<<>>";
-//        id_paramnya=id_parent;
-//        if(!query->exec(aa)){qDebug()<<"1gagal simpen"<<id_aset;}
-//        else{while(query->next()){qDebug()<<"1sukses="<<id_aset;
-//            id_paramnya=query->lastInsertId().toInt();
-//           // flag_masuk_param1=1;
-//            }}
-//    }
-//    else{
-//   // aa = QString("INSERT INTO parameter ( id_tipe_param, id_aset, urut) VALUES('%1',%2,%3)").arg(QString::number(data_new[2][a]),QString::number(id_aset),QString::number(1));
-//    aa = QString("INSERT INTO parameter (id_tipe_param, id_aset, urut)"
-//                 " SELECT %1,%2,%3 WHERE NOT EXISTS "
-//                 "(SELECT id_tipe_param,id_aset,urut FROM parameter "
-//                 "WHERE id_tipe_param=%4 AND id_aset=%5)").
-//            arg(QString::number(tipe_param),//id_tipe_param
-//                QString::number(id_aset),//id_aset
-//                QString::number(1),//urut
-//                QString::number(tipe_param),//id_tipe_param
-//                QString::number(id_aset));//id_aset
-//    qDebug()<<aa;
-//    if(!query->exec(aa)){qDebug()<<"1gagal simpen"<<id_aset;}
-//    else{while(query->next()){qDebug()<<"1sukses="<<id_aset;
-//        id_paramnya=query->lastInsertId().toInt();
-//        //flag_masuk_param2=1;
-//        }}
-//   // flag_masukkan_param=0;
-//    }
-    id_param = id_paramnya;
-    id_parent=0;
+
     return id_param;
 }
 
@@ -240,23 +227,13 @@ int controller::simpan_aset(QSqlQuery *query, QString rute_baru, QString cacah_d
         }
         id_aset=query->lastInsertId().toInt();
     }
+    if(!flag_masukkan_param){
+        id_param = id_parent;
+    }
+    else{
+        id_param = id_aset;
+    }
 
-    id_param = simpan_param(query,
-                 id_paramnya,
-                 flag_masukkan_param,
-                 id_aset,
-                 id_parent,
-                 rute_baru,
-                 cacah_data_name,
-                 id_data_masuk,
-                 id_param,
-                 tipe_param,
-                 id_rute,
-                 time,
-                 siklus,
-                 id_database,
-                 all_rute_param,
-                 all_data);
 return id_param;
 }
 
@@ -264,6 +241,107 @@ QString controller::get_table_name(int tipe)
 {
     QString nama_tabel = QString("data_%1_tipe").arg(tipe);
     return nama_tabel;
+}
+
+
+void controller::eliminasi_data(int id_database, QStringList rute,QStringList aset, QVector<int> id_data_masuk1, QVector<int> id_param1, QVector<int> tipe_param1,QVector<int> id_rute1, QVector<int> time1, QVector<int> siklus1)
+{
+    QVector<int> id_data_masuk = id_data_masuk1;
+    QVector<int> id_param = id_param1;
+    QVector<int> tipe_param = tipe_param1;
+    QVector<int> id_rute = id_rute1;
+    QVector<int> time = time1;
+    QVector<int> siklus = siklus1;
+    QStringList cacah_data_aset = aset;
+
+
+    //masukin nilainya per array bro
+    qDebug()<<"------------cek eliminasi data awal----------";
+    qDebug()<<"- jumlah data rute:"<<rute.size();
+    qDebug()<<"- jumlah data id_data_masuk:"<< id_data_masuk.size();
+    qDebug()<<"- jumlah data id_param:"<< id_param.size();//1
+    qDebug()<<"- jumlah data tipe_param:"<< tipe_param.size();//2
+    qDebug()<<"- jumlah data id_rute:"<<id_rute.size();//3
+    qDebug()<<"- jumlah data time:"<<time.size();//4
+    qDebug()<<"- jumlah data siklus:"<<siklus.size();//5
+    qDebug()<<"----------------------------------------";
+    for(int i=0; i<id_param.size(); i++){
+        qDebug()<<"cek data:"<<rute[i]<<id_data_masuk[i]<<tipe_param[i]<<time[i]<<siklus[i];
+    }
+    controller *cc;
+    cc = new controller;
+    QSqlQuery query(data_base.db);
+    int konter=0;
+    QString qu;
+
+//    qDebug()<<"-------------------------------clean dan detile-------------------------------------------------";
+    //mungkin bisa disederhanakan lagi tapi masih belum tau caranya
+
+    for(int i=0; i<id_param1.size(); i++){
+        qu = QString("SELECT id_info_data "
+                     "FROM %1 "
+                     "WHERE data_timestamp=%2").arg(cc->get_table_name(tipe_param1[i]),QString::number(time1[i]));
+                      //qDebug()<<qu;
+                    if(!query.exec(qu)) {qDebug()<< "kenapa ERROR1:: " <<query.lastError().text();}
+                    else{while(query.next()){
+                            qu = QString("SELECT id_aset "
+                                         "FROM info_data "
+                                         "WHERE id=%1").arg(QString::number(query.value("id_info_data").toInt()));
+                                      //  qDebug()<<qu;
+                                        if(!query.exec(qu)) {qDebug()<< "kenapa ERROR2:: " <<query.lastError().text();}
+                                        else{while(query.next()){
+                                                qu = QString("SELECT id_database "
+                                                             "FROM aset "
+                                                             "WHERE id=%1").arg(QString::number(query.value("id_aset").toInt()));
+                                                                if(!query.exec(qu)) {qDebug()<< "kenapa ERROR2:: " <<query.lastError().text();}
+                                                                else{while(query.next()){
+                                                                            if(query.value("id_database").toInt()==id_database){;
+                                                                                rute.erase(rute.begin()+i-konter);
+                                                                                id_data_masuk.erase(id_data_masuk.begin()+i-konter);
+                                                                                id_param.erase(id_param.begin()+i-konter);
+                                                                                tipe_param.erase(tipe_param.begin()+i-konter);
+                                                                                id_rute.erase(id_rute.begin()+i-konter);
+                                                                                time.erase(time.begin()+i-konter);
+                                                                                siklus.erase(siklus.begin()+i-konter);
+                                                                                cacah_data_aset.erase(cacah_data_aset.begin()+i-konter);
+                                                                                konter+=1;
+                                                                            }
+                                                                }}
+                                            }}
+                        }}
+    }
+
+//    //ccek ulang yang tidak ada siapa aja
+    qDebug()<<"------------cek sudah eliminasi data----------";
+    qDebug()<<"- id database:"<<id_database;
+    qDebug()<<"- jumlah data rute:"<<rute.size();
+    qDebug()<<"- jumlah data list aset:"<<cacah_data_aset.size();
+    qDebug()<<"- jumlah data id_data_masuk:"<< id_data_masuk.size();//1
+    qDebug()<<"- jumlah data id_param:"<< id_param.size();//1
+    qDebug()<<"- jumlah data tipe_param:"<< tipe_param.size();//2
+    qDebug()<<"- jumlah data id_rute:"<<id_rute.size();//3
+    qDebug()<<"- jumlah data time:"<<time.size();//4
+    qDebug()<<"- jumlah data siklus:"<<siklus.size();//5
+    qDebug()<<"-------------cek data yang sudah dieliminasi---";
+    for(int a=0; a<id_param.size(); a++){
+        qDebug()<<"-"
+                <<cacah_data_aset[a]
+                <<tipe_param[a]
+                <<id_rute[a]
+                <<time[a]
+                <<siklus[a]
+                <<rute[a]
+                <<id_data_masuk[a];
+    }
+    qDebug()<<"-----------------------------------------------";
+    list_rute = rute;
+    list_aset = cacah_data_aset;
+    t_id_param_lama = id_param;
+    t_tipe_param = tipe_param;
+    t_id_rute = id_rute;
+    t_time = time;
+    t_siklus = siklus;
+    t_id_data_masuk = id_data_masuk;
 }
 
 void controller::database_connect()

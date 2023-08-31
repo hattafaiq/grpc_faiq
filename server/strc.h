@@ -8,4 +8,9 @@ struct data{
     int counter;
 };
 
+struct id_info_data{
+    int id;
+};
+
+
 #endif // STRC_H

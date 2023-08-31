@@ -13,6 +13,26 @@ class controller
 {
 public:
     controller();
+
+    QStringList list_aset;
+    QStringList list_rute;
+    QVector<int> t_id_param_lama;
+    QVector<int> t_id_data_masuk;
+    QVector<int> t_tipe_param;
+    QVector<int> t_id_rute;
+    QVector<int> t_time;
+    QVector<int> t_siklus;
+
+    void eliminasi_data(int id_database,
+                        QStringList rute,
+                        QStringList aset,
+                        QVector<int> data_masuk,
+                        QVector<int> id_param,
+                        QVector<int> tipe_param,
+                        QVector<int> id_rute,
+                        QVector<int> time,
+                        QVector<int> siklus);
+
     int save_data(QString rute,
                      QString aset,
                      int id_data_masuk,
@@ -57,6 +77,8 @@ public:
 
     QString get_table_name(int tipe);
     int s_id_rute_baru;
+    int last_data_info;
+    int id_data_info;
     void database_connect();
 
 };
