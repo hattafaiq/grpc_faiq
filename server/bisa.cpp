@@ -11,9 +11,9 @@
 ///
 //data dirubah karena tidak efisien sehingga butuh info data aja untuk relasi aset dengan data info terdahulu
 #include "bisa.h"
-#include "strc.h"
+//#include "strc.h"
 //#include <grpcpp/grpcpp.h>
-//struct data data_base;
+
 
 using grpc::Server;
 using grpc::ServerBuilder;
@@ -24,29 +24,23 @@ using Cloud::protokol_2;
 
 //pesan kebutuhan kirim pesan data//
 using Cloud::pesan_client;
-//using Cloud::pesan_client_info_data;
 using Cloud::pesan_server;
-//using Cloud::pesan_server_info_data;
 
-//pesan kebutuhan kirim pesan data//
 using Cloud::mes_client;
-//using Cloud::mes_client_isi_data;
-//using Cloud::mes_client_info_data;
 using Cloud::mes_server;
-//using Cloud::mes_server_isi_data;
-//using Cloud::mes_server_info_data;
 
 class GreeterServiceImpl final : public protokol_1::Service  {
     public:
     //bisa b;
-    controller *cc;
+//    service_compare cc;
+    t_service_compare *serv1;
     Status initial_data(ServerContext* context, const pesan_client* request, pesan_server* reply) override {
+        serv1 = new t_service_compare;
         QStringList rute_s;
         QStringList cacah_data_aset;
         QVector<int> data_new[7];
         int id_database;
-        cc = new controller;
-        cc->database_connect();
+        //cc = new controller;
         if(request->header_pesan()=="list_info"){
             qDebug()<<"-------------------------";
             qDebug()<<"client:"<<"list info";
@@ -92,16 +86,26 @@ class GreeterServiceImpl final : public protokol_1::Service  {
                 <<data_new[5].size();
 
             //------mulai eliminasi--------------------//
-            cc->eliminasi_data(
-                    request->id_database(),
-                    rute_s,
-                    cacah_data_aset,
-                    data_new[0],
-                    data_new[1],
-                    data_new[2],
-                    data_new[3],
-                    data_new[4],
-                    data_new[5]);
+            serv1->id_database = request->id_database();
+            serv1->list_rute = rute_s;
+            serv1->list_aset = cacah_data_aset ;
+            serv1->t_id_param_lama = data_new[0];
+            serv1->t_id_data_masuk = data_new[1];
+            serv1->t_tipe_param=data_new[2];
+            serv1->t_id_rute=data_new[3];
+            serv1->t_time=data_new[4];
+            serv1->t_siklus=data_new[5];
+            serv1->start();
+//            cc.eliminasi_data(
+//                    request->id_database(),
+//                    rute_s,
+//                    cacah_data_aset,
+//                    data_new[0],
+//                    data_new[1],
+//                    data_new[2],
+//                    data_new[3],
+//                    data_new[4],
+//                    data_new[5]);
             //-----------------------------------------//
 
             //---mulai kirim data yang belum ada-------//
@@ -110,12 +114,13 @@ class GreeterServiceImpl final : public protokol_1::Service  {
 //                qDebug()<<b.t_tipe_param[i]<<b.t_time[i]<<b.t_siklus[i];
 //            }
             std::vector<int> id_data_masuk, id_param,id_tip_parm,id_rut,time,siklus;
-            id_data_masuk = cc->t_id_data_masuk.toStdVector();
-            id_param    = cc->t_id_param_lama.toStdVector();
-            id_tip_parm = cc->t_tipe_param.toStdVector();
-            id_rut      = cc->t_id_rute.toStdVector();
-            time        = cc->t_time.toStdVector();
-            siklus      = cc->t_siklus.toStdVector();
+            id_data_masuk = serv1->t_id_data_masuk.toStdVector();
+            id_param    = serv1->t_id_param_lama.toStdVector();
+            id_tip_parm = serv1->t_tipe_param.toStdVector();
+            id_rut      = serv1->t_id_rute.toStdVector();
+            time        = serv1->t_time.toStdVector();
+            siklus      = serv1->t_siklus.toStdVector();
+
 
             google::protobuf::RepeatedField<int> id_data_masuk_s(id_data_masuk.begin(), id_data_masuk.end());
             google::protobuf::RepeatedField<int> id_param_s(id_param.begin(), id_param.end());
@@ -130,15 +135,16 @@ class GreeterServiceImpl final : public protokol_1::Service  {
             reply->mutable_siklus()->Swap(&siklus_s);
             reply->mutable_id_data_masuk()->Swap(&id_data_masuk_s);
             //----------------------------------------//
-            for(int x=0; x<cc->list_aset.size(); x++){
-                QString ay = cc->list_aset[x];
-                QString rute = cc->list_rute[x];
+            for(int x=0; x<serv1->list_aset.size(); x++){
+                QString ay = serv1->list_aset[x];
+                QString rute = serv1->list_rute[x];
                 reply->mutable_rute()->Add(rute.toStdString());
                 reply->mutable_aset()->Add(ay.toStdString());
             }
             reply->set_header_pesan("balas");
         }
     return Status::OK;
+   // delete serv1;
 }
 
 };
@@ -146,7 +152,7 @@ class GreeterServiceImpl final : public protokol_1::Service  {
 class GreeterServiceImpl2 final : public protokol_2::Service  {
     public:
 //    bisa *b;
-    controller *cc;
+    controller cc;
     Status kirim_data(ServerContext* context, const mes_client* request, mes_server* reply) override {
         std::cout <<"req pesan dari client diterima:->" << request->header_pesan() <<std::endl;
         if(request->header_pesan()=="kirim_data"){
@@ -178,8 +184,8 @@ class GreeterServiceImpl2 final : public protokol_2::Service  {
                         int time = request->timestamp();
                         int siklus = request->siklus();
                         int id_database = request->id_database();
-                cc = new controller;
-                if(cc->save_data(rute,
+                //cc = new controller;
+                if(cc.save_data(rute,
                             aset,
                             id_data_masuk,
                             id_param,
@@ -205,7 +211,8 @@ bisa::bisa(QObject *parent) : QObject(parent)
 
 void bisa::RunServer() {
    // siapa.apa =9;
-
+    database_con db;
+    db.connect_db();
     GreeterServiceImpl service;
     GreeterServiceImpl2 service2;
     ServerBuilder builder;
@@ -223,6 +230,9 @@ void bisa::RunServer() {
 
     std::unique_ptr<Server> server(builder.BuildAndStart());
     std::cout << "Server listening on " << server_address << std::endl;
+
+    std::cout <<"service 1"<< &service << std::endl;
+    std::cout <<"service 2"<< &service2 << std::endl;
     // grpc::ServerAsyncResponseWriter<EchoResponse> response_writer()
 
     // 18 agustus 2023
@@ -287,4 +297,9 @@ int decode_fft_lines(int setting_lines )
         return 12800;
     else
         return 0;
+}
+
+void bisa::database_connect()
+{
+
 }

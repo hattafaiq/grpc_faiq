@@ -18,18 +18,24 @@ QMAKE_LFLAGS+= -fsanitize=address -static-libasan
 
 HEADERS += \
     controller.h \
+    database_con.h \
     gen_cloud4/Cloud.grpc.pb.h \
     gen_cloud4/Cloud.pb.h \
     bisa.h \
     #tampilserver.h
-    strc.h
+    service_compare.h \
+    strc.h \
+    t_service_compare.h
 
 SOURCES += \
     bisa.cpp \
     controller.cpp \
+    database_con.cpp \
     gen_cloud4/Cloud.grpc.pb.cc \
     gen_cloud4/Cloud.pb.cc \
-    main.cpp
+    main.cpp \
+    service_compare.cpp \
+    t_service_compare.cpp
      #tampilserver.cpp
 
 FORMS +=

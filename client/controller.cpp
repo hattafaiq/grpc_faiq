@@ -11,8 +11,6 @@ class GreeterClient{
  public:
     pesan_client request;
     pesan_server reply;
-    mes_client mes_request;
-    mes_server mes_reply;
     ClientContext context;
     int alarm_pesan;
     QString s_pesan_alarm;
@@ -388,6 +386,7 @@ void controller::CallServer(std::string header, int flag, std::string server_ala
 
     if(balasan=="balas"){
         counter_pesan=0;
+        counter_reload=0;
         flag_sukses=1;
 
         //ini maksudnya mengumpulkan data yang sudah di eliminasi server
@@ -473,6 +472,7 @@ void controller::CallServer(std::string header, int flag, std::string server_ala
      std::cout <<"reply dari server:->"<< balasan << std::endl;
      if(balasan=="terima_data"){//lanjutkan kirim data loop
         qDebug()<<"- setelah direply server, lanjut kirim data ke-->"<<counter_pesan << c_all_rute_param[counter_pesan].size() << c_all_data[counter_pesan].size();
+        counter_reload=0;
         flag_sukses=1;
         counter_pesan += 1;
         last_conter = counter_pesan;
@@ -484,11 +484,13 @@ void controller::CallServer(std::string header, int flag, std::string server_ala
      else if(balasan=="reload") {
          qDebug()<<"- setelah direply server, lanjut kirim data ke-->"<<last_conter << c_all_rute_param[last_conter].size() << c_all_data[counter_pesan].size();
          flag_sukses=1;
-         counter_pesan += 1;
-         if(!flag_emit_cukup)emit_gas_kirim(last_conter,c_id_param_lama.size());
-         else{
-             qDebug()<<"sudah selesai upload semua data sejumlah="<<c_id_param_lama.size();
-         }
+         counter_reload+=1;
+         std::string server_address("127.0.0.1:50051");
+         if(counter_reload==1) qDebug()<<"sudah client stop dulu!!!";//CallServer("kirim_data",3,server_address,0,0);
+//         if(!flag_emit_cukup)emit_gas_kirim(last_conter,c_id_param_lama.size());
+//         else{
+//             qDebug()<<"sudah selesai upload semua data sejumlah="<<c_id_param_lama.size();
+//         }
      }
  }
 }
@@ -568,10 +570,9 @@ void controller::isi_pesan()
 void controller::initial_database()
 {
     // flag_pengiriman=0;
-   // QString filename = "PT.PJB UBJOM PLTMG ARUN.dbb";
      QString filename = "rotatinghal.dbb";
-   // QString filename = "QC_custom.dbb";
- //   QString filename = "PLTMG ARUN LHOKSEUMAWE.dbb";
+//    QString filename = "QC_custom.dbb";
+
      QString con_name;
      con_name = QString("LOC_DB%1").arg(2);
      db =QSqlDatabase::addDatabase("QSQLITE",con_name);

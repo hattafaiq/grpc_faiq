@@ -14,21 +14,13 @@
 #include "gen_cloud4/Cloud.grpc.pb.h"
 #include "gen_cloud4/Cloud.pb.h"
 
-#include <QSqlQuery>
-#include <QSqlError>
-#include <QSqlDatabase>
-#include <QSqlRelationalTableModel>
-#include <QMessageBox>
-
-#include <QLabel>
-#include <QCheckBox>
-#include <QVBoxLayout>
-#include <QMessageBox>
-#include <QListWidget>
 #include <QSet>
 #include <QDateTime>
 
 #include <controller.h>
+#include <t_service_compare.h>
+#include <database_con.h>
+
 
 #define FFT_LINES_DISABLE   0
 #define FFT_LINES_50        1
@@ -49,22 +41,17 @@ public:
    explicit bisa(QObject *parent=nullptr);
    virtual ~bisa();
     void RunServer();
+    void database_connect();
 
 private:
 
     QSqlDatabase db;
     QString con_name;
     void mulai_cari_server(QSqlQuery *query);
-   // void database_connect();
+//   t_service_compare *serv1;
 
     QString get_table_name(int tipe);
-    QStringList check_bok;
-    QListWidget *list_check;
-    QVBoxLayout *box1;
-    QLabel *list1;
-    QVBoxLayout *box2;
-    QVBoxLayout *box3;
-    QLabel *list3;
+
 
 public slots:
 };

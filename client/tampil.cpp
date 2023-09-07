@@ -36,9 +36,8 @@ Tampil::Tampil(QWidget *parent) :
 
 void Tampil::setup_tampil_hirarki_server()
 {
-  //  QString filename = "PT.PJB UBJOM PLTMG ARUN.dbb";
     QString filename = "rotatinghal.dbb";
-  //  QString filename = "QC_custom.dbb";
+//    QString filename = "QC_custom.dbb";
     QString con_name;
     con_name = QString("LOC_DB%1").arg(2);
     db =QSqlDatabase::addDatabase("QSQLITE",con_name);

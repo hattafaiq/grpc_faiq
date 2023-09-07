@@ -33,7 +33,7 @@ public:
     explicit Tampil(QWidget *parent = nullptr);
     ~Tampil();
     Ui::Tampil *ui;
-     controller *cc;
+    controller *cc;
 
     int flag_sukses;
     int flag_pengiriman;

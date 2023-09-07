@@ -201,6 +201,7 @@ public:
     void emit_gas_kirim(int counter, int maks);
     int flag_emit_cukup;
     int counter_pesan;
+    int counter_reload;
 
 private:
     void cari_induk_paramm(int parameter, int tipe);
